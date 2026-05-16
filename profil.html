@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Megane Market - Mon profil</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #0a0f1a;
+            color: #eef2ff;
+            min-height: 100vh;
+            padding-bottom: 40px;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ============ HEADER ============ */
+        .main-header {
+            position: sticky;
+            top: 16px;
+            z-index: 100;
+            background: #0e1a26;
+            border-radius: 60px;
+            border: 1px solid #2a3a4a;
+            height: 60px;
+            margin: 16px 16px 0 16px;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .main-header:hover { border-color: #5a9eff; box-shadow: 0 4px 20px rgba(90,158,255,0.15); }
+
+        .back-btn {
+            background: #1a2a3a;
+            border: 1px solid #2a3a4a;
+            border-radius: 40px;
+            padding: 8px 16px;
+            cursor: pointer;
+            color: #eef2ff;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover { background: #5a9eff; color: white; transform: translateX(-4px); }
+
+        .main-header h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-align: center;
+            flex: 1;
+        }
+
+        /* ============ CONTENU ============ */
+        .main-content {
+            padding: 24px 16px;
+            max-width: 540px;
+            margin: 0 auto;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        /* ============ CARTE AVATAR ============ */
+        .avatar-card {
+            background: linear-gradient(135deg, #0e1a26 0%, #0a1520 100%);
+            border: 1px solid #2a3a4a;
+            border-radius: 28px;
+            padding: 28px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 20px;
+            text-align: center;
+            transition: border-color 0.3s;
+        }
+
+        .avatar-card:hover { border-color: #5a9eff; }
+
+        .avatar-wrap {
+            position: relative;
+            width: 90px;
+            height: 90px;
+            cursor: pointer;
+        }
+
+        .avatar-wrap img {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #5a9eff;
+            transition: filter 0.2s, transform 0.2s;
+        }
+
+        .avatar-wrap:hover img { filter: brightness(0.7); transform: scale(1.04); }
+
+        .avatar-edit-icon {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            background: #5a9eff;
+            border-radius: 50%;
+            width: 26px;
+            height: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            color: white;
+            pointer-events: none;
+        }
+
+        .avatar-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #eef2ff;
+        }
+
+        .avatar-email {
+            font-size: 0.8rem;
+            color: #8a9aaa;
+        }
+
+        .avatar-location {
+            font-size: 0.8rem;
+            color: #5a9eff;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Badge connexion */
+        .badge-connected {
+            background: rgba(74, 222, 128, 0.12);
+            border: 1px solid #4ade80;
+            color: #4ade80;
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 4px 14px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .badge-dot {
+            width: 6px;
+            height: 6px;
+            background: #4ade80;
+            border-radius: 50%;
+            animation: pulse-dot 1.5s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0.4; }
+        }
+
+        /* ============ SECTIONS FORM ============ */
+        .section-card {
+            background: #0e1a26;
+            border: 1px solid #2a3a4a;
+            border-radius: 24px;
+            overflow: hidden;
+            margin-bottom: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .section-card:hover { border-color: #3a4a5a; }
+
+        .section-title {
+            padding: 16px 20px 0;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: #5a9eff;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Champ formulaire en ligne */
+        .field-row {
+            display: flex;
+            align-items: center;
+            padding: 14px 20px;
+            border-bottom: 1px solid #1a2a3a;
+            gap: 14px;
+        }
+
+        .field-row:last-child { border-bottom: none; }
+
+        .field-icon {
+            width: 36px;
+            height: 36px;
+            background: #1a2a3a;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #5a9eff;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .field-content { flex: 1; min-width: 0; }
+
+        .field-label {
+            font-size: 0.72rem;
+            color: #8a9aaa;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .field-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: #eef2ff;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem;
+            outline: none;
+            padding: 0;
+        }
+
+        .field-input::placeholder { color: #4a5a6a; }
+        .field-input:disabled { color: #6a7a8a; cursor: not-allowed; }
+
+        /* Ligne avec textarea */
+        .field-row.textarea-row { align-items: flex-start; }
+        .field-row.textarea-row .field-icon { margin-top: 2px; }
+
+        .field-textarea {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: #eef2ff;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem;
+            outline: none;
+            resize: none;
+            padding: 0;
+            min-height: 60px;
+        }
+
+        .field-textarea::placeholder { color: #4a5a6a; }
+
+        /* Focus effect sur toute la ligne */
+        .field-row:focus-within {
+            background: rgba(90, 158, 255, 0.04);
+        }
+
+        /* ============ BOUTONS ============ */
+        .btn-save {
+            width: 100%;
+            padding: 16px;
+            background: #5a9eff;
+            border: none;
+            border-radius: 40px;
+            color: white;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-family: 'DM Sans', sans-serif;
+            box-shadow: 0 4px 16px rgba(90,158,255,0.3);
+            margin-bottom: 12px;
+        }
+
+        .btn-save:hover { background: #3a7ecc; transform: translateY(-2px); }
+        .btn-save:active { transform: translateY(0); }
+        .btn-save:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        .btn-logout {
+            width: 100%;
+            padding: 14px;
+            background: transparent;
+            border: 1px solid #ff4d4d44;
+            border-radius: 40px;
+            color: #ff4d4d;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .btn-logout:hover { background: #ff4d4d; color: white; border-color: #ff4d4d; }
+
+        /* ============ TOAST ============ */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: #1a2a3a;
+            color: #eef2ff;
+            padding: 12px 24px;
+            border-radius: 60px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: 1px solid #2a3a4a;
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            z-index: 300;
+            white-space: nowrap;
+        }
+
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .toast.success { border-color: #4ade80; color: #4ade80; }
+        .toast.error   { border-color: #ff4d4d; color: #ff4d4d; }
+
+        /* ============ MODAL LOADING ============ */
+        .modal-loading {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1100;
+        }
+
+        .modal-card {
+            background: #0e1a26;
+            border-radius: 28px;
+            padding: 32px;
+            text-align: center;
+            border: 1px solid #2a3a4a;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #2a3a4a;
+            border-top-color: #5a9eff;
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            animation: spin 0.8s linear infinite;
+        }
+
+        /* ============ LOADER INITIAL ============ */
+        .page-loader {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+            gap: 16px;
+            color: #8a9aaa;
+        }
+
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 480px) {
+            .main-header { margin: 12px 12px 0 12px; height: 55px; padding: 0 15px; }
+            .back-btn { padding: 6px 12px; font-size: 0.75rem; }
+            .main-content { padding: 20px 12px; }
+            .field-row { padding: 12px 16px; }
+            .section-title { padding: 14px 16px 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <a href="index.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Retour
+        </a>
+        <h3>Mon profil</h3>
+        <div style="width:70px;"></div>
+    </header>
+
+    <main class="main-content" id="mainContent">
+        <div class="page-loader">
+            <div class="spinner"></div>
+            <p>Chargement de votre profil...</p>
+        </div>
+    </main>
+
+    <div id="loadingModal" class="modal-loading" style="display:none;">
+        <div class="modal-card">
+            <div class="spinner"></div>
+            <p id="modalStatus">Chargement...</p>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <!-- Input caché pour l'avatar -->
+    <input type="file" id="avatarInput" accept="image/*" style="display:none;">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+    (function() {
+        const SUPABASE_URL      = 'https://emcsigvlopntwbfkkjkh.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtY3NpZ3Zsb3BudHdiZmtramtoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4ODE5MTgsImV4cCI6MjA5NDQ1NzkxOH0.YwYoV-azL3WEFtHoh4yoF7xTLrOwZILKCzJrGPsCs6I';
+
+        const supabase      = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const mainContent   = document.getElementById('mainContent');
+        const loadingModal  = document.getElementById('loadingModal');
+        const toastEl       = document.getElementById('toast');
+        const avatarInput   = document.getElementById('avatarInput');
+
+        let currentUserId   = null;
+        let currentUser     = null;
+        let newAvatarFile   = null;
+
+        // ============ UTILITAIRES ============
+        function showLoading(msg = 'Chargement...') {
+            document.getElementById('modalStatus').textContent = msg;
+            loadingModal.style.display = 'flex';
+        }
+
+        function hideLoading() {
+            loadingModal.style.display = 'none';
+        }
+
+        function showToast(msg, type = 'info') {
+            toastEl.textContent = msg;
+            toastEl.className = `toast ${type} show`;
+            setTimeout(() => toastEl.className = 'toast', 3000);
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const d = document.createElement('div');
+            d.textContent = text;
+            return d.innerHTML;
+        }
+
+        // ============ SESSION ============
+        async function checkSession() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) { window.location.href = 'login.html'; return false; }
+            currentUserId = session.user.id;
+            currentUser   = session.user;
+            return true;
+        }
+
+        // ============ CHARGER ET AFFICHER ============
+        async function loadProfile() {
+            // Profil acheteur en base
+            const { data: buyer } = await supabase
+                .from('buyers')
+                .select('*')
+                .eq('id', currentUserId)
+                .single();
+
+            const name     = buyer?.full_name || '';
+            const phone    = buyer?.phone     || '';
+            const city     = buyer?.city      || '';
+            const address  = buyer?.address   || '';
+            const avatarUrl = buyer?.avatar_url || '';
+            const email    = currentUser.email;
+
+            // Avatar par défaut si vide
+            const displayAvatar = avatarUrl
+                ? avatarUrl
+                : `https://ui-avatars.com/api/?name=${encodeURIComponent(name || email)}&background=1a2a3a&color=5a9eff&size=90`;
+
+            mainContent.innerHTML = `
+
+                <!-- Carte avatar -->
+                <div class="avatar-card">
+                    <div class="avatar-wrap" id="avatarWrap">
+                        <img id="avatarImg" src="${escapeHtml(displayAvatar)}" alt="Avatar">
+                        <div class="avatar-edit-icon"><i class="fas fa-camera"></i></div>
+                    </div>
+                    <div>
+                        <div class="avatar-name" id="displayName">${escapeHtml(name || 'Nouveau client')}</div>
+                        <div class="avatar-email">${escapeHtml(email)}</div>
+                        ${city ? `<div class="avatar-location"><i class="fas fa-map-marker-alt"></i>${escapeHtml(city)}</div>` : ''}
+                    </div>
+                    <div class="badge-connected">
+                        <div class="badge-dot"></div> Connecté
+                    </div>
+                </div>
+
+                <!-- Infos personnelles -->
+                <div class="section-card">
+                    <div class="section-title"><i class="fas fa-user"></i> Informations personnelles</div>
+
+                    <div class="field-row">
+                        <div class="field-icon"><i class="fas fa-signature"></i></div>
+                        <div class="field-content">
+                            <div class="field-label">Nom complet</div>
+                            <input class="field-input" type="text" id="fullName"
+                                   placeholder="Votre nom" value="${escapeHtml(name)}">
+                        </div>
+                    </div>
+
+                    <div class="field-row">
+                        <div class="field-icon"><i class="fas fa-envelope"></i></div>
+                        <div class="field-content">
+                            <div class="field-label">Email</div>
+                            <input class="field-input" type="email" value="${escapeHtml(email)}" disabled>
+                        </div>
+                    </div>
+
+                    <div class="field-row">
+                        <div class="field-icon"><i class="fab fa-whatsapp"></i></div>
+                        <div class="field-content">
+                            <div class="field-label">Numéro WhatsApp</div>
+                            <input class="field-input" type="tel" id="phone"
+                                   placeholder="Ex : 07 00 00 00 00" value="${escapeHtml(phone)}">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Livraison -->
+                <div class="section-card">
+                    <div class="section-title"><i class="fas fa-map-marker-alt"></i> Localisation</div>
+
+                    <div class="field-row">
+                        <div class="field-icon"><i class="fas fa-city"></i></div>
+                        <div class="field-content">
+                            <div class="field-label">Ville / Quartier</div>
+                            <input class="field-input" type="text" id="city"
+                                   placeholder="Ex : Abidjan, Cocody" value="${escapeHtml(city)}">
+                        </div>
+                    </div>
+
+                    <div class="field-row textarea-row">
+                        <div class="field-icon"><i class="fas fa-home"></i></div>
+                        <div class="field-content">
+                            <div class="field-label">Adresse complète <span style="color:#4a5a6a;font-weight:400;">(optionnel)</span></div>
+                            <textarea class="field-textarea" id="address"
+                                      placeholder="Ex : Rue des Jardins, près du marché">${escapeHtml(address)}</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Boutons -->
+                <button class="btn-save" id="saveBtn">
+                    <i class="fas fa-check"></i> Enregistrer
+                </button>
+                <button class="btn-logout" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i> Se déconnecter
+                </button>
+            `;
+
+            // Mettre à jour la carte avatar en live quand le nom change
+            document.getElementById('fullName').addEventListener('input', (e) => {
+                const val = e.target.value.trim();
+                document.getElementById('displayName').textContent = val || 'Nouveau client';
+            });
+
+            // Clic avatar → ouvre le sélecteur
+            document.getElementById('avatarWrap').addEventListener('click', () => avatarInput.click());
+
+            document.getElementById('saveBtn').addEventListener('click', saveProfile);
+            document.getElementById('logoutBtn').addEventListener('click', logout);
+        }
+
+        // ============ UPLOAD AVATAR ============
+        avatarInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            newAvatarFile = file;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                const img = document.getElementById('avatarImg');
+                if (img) img.src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+            showToast('Photo sélectionnée — cliquez Enregistrer', 'info');
+        });
+
+        // ============ SAUVEGARDER ============
+        async function saveProfile() {
+            const fullName = document.getElementById('fullName')?.value.trim() || '';
+            const phone    = document.getElementById('phone')?.value.trim()    || '';
+            const city     = document.getElementById('city')?.value.trim()     || '';
+            const address  = document.getElementById('address')?.value.trim()  || '';
+
+            const saveBtn = document.getElementById('saveBtn');
+            saveBtn.disabled = true;
+            showLoading('Enregistrement...');
+
+            try {
+                // Upload avatar si nouveau fichier
+                let avatarUrl = null;
+                if (newAvatarFile) {
+                    const ext  = newAvatarFile.name.split('.').pop();
+                    const path = `${currentUserId}/avatar.${ext}`;
+
+                    const { error: upErr } = await supabase.storage
+                        .from('buyers-avatars')
+                        .upload(path, newAvatarFile, { upsert: true });
+
+                    if (!upErr) {
+                        const { data: urlData } = supabase.storage
+                            .from('buyers-avatars')
+                            .getPublicUrl(path);
+                        avatarUrl = urlData.publicUrl;
+
+                        // Mettre à jour l'image affichée
+                        const img = document.getElementById('avatarImg');
+                        if (img && avatarUrl) img.src = avatarUrl;
+                    }
+                    newAvatarFile = null;
+                }
+
+                // Upsert profil
+                const payload = {
+                    id        : currentUserId,
+                    full_name : fullName,
+                    phone     : phone,
+                    city      : city,
+                    address   : address,
+                    updated_at: new Date().toISOString()
+                };
+
+                if (avatarUrl) payload.avatar_url = avatarUrl;
+
+                const { error } = await supabase
+                    .from('buyers')
+                    .upsert(payload);
+
+                if (error) throw error;
+
+                // Mettre à jour la ville dans la carte avatar
+                const avatarCard = document.querySelector('.avatar-location');
+                if (city) {
+                    if (avatarCard) {
+                        avatarCard.innerHTML = `<i class="fas fa-map-marker-alt"></i>${escapeHtml(city)}`;
+                    } else {
+                        // Insérer si pas encore présent
+                        const nameEl = document.getElementById('displayName');
+                        if (nameEl && nameEl.parentElement) {
+                            const locDiv = document.createElement('div');
+                            locDiv.className = 'avatar-location';
+                            locDiv.innerHTML = `<i class="fas fa-map-marker-alt"></i>${escapeHtml(city)}`;
+                            nameEl.parentElement.appendChild(locDiv);
+                        }
+                    }
+                }
+
+                showToast('Profil enregistré !', 'success');
+
+            } catch (err) {
+                console.error(err);
+                showToast('Erreur : ' + err.message, 'error');
+            } finally {
+                saveBtn.disabled = false;
+                hideLoading();
+            }
+        }
+
+        // ============ DÉCONNEXION ============
+        async function logout() {
+            showLoading('Déconnexion...');
+            await supabase.auth.signOut();
+            window.location.href = 'login.html';
+        }
+
+        // ============ INIT ============
+        async function init() {
+            const ok = await checkSession();
+            if (!ok) return;
+            await loadProfile();
+        }
+
+        init();
+    })();
+    </script>
+</body>
+</html>

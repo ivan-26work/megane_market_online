@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Megane Market - Actualités</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #0a0f1a;
+            color: #eef2ff;
+            min-height: 100vh;
+            padding-bottom: 30px;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .main-header {
+            position: sticky;
+            top: 16px;
+            z-index: 100;
+            background: #0e1a26;
+            border-radius: 60px;
+            border: 1px solid #2a3a4a;
+            height: 60px;
+            margin: 16px 16px 0 16px;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .main-header:hover {
+            border-color: #5a9eff;
+            box-shadow: 0 4px 20px rgba(90, 158, 255, 0.15);
+        }
+
+        .back-btn {
+            background: #1a2a3a;
+            border: 1px solid #2a3a4a;
+            border-radius: 40px;
+            padding: 8px 16px;
+            cursor: pointer;
+            color: #eef2ff;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: #5a9eff;
+            color: white;
+            transform: translateX(-4px);
+        }
+
+        .main-header h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-align: center;
+            flex: 1;
+        }
+
+        .main-content {
+            padding: 20px 16px;
+            max-width: 800px;
+            margin: 0 auto;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .cards-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Badge statut produit */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .status-active {
+            background: rgba(74, 222, 128, 0.15);
+            color: #4ade80;
+            border: 1px solid #4ade80;
+        }
+
+        .status-inactive {
+            background: rgba(255, 77, 77, 0.15);
+            color: #ff4d4d;
+            border: 1px solid #ff4d4d;
+        }
+
+        /* Carte produit normale (bordure verte) */
+        .product-card {
+            background: #0e1a26;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 2px solid #4ade80;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(74, 222, 128, 0.2);
+        }
+
+        /* Carte produit à la une (bordure jaune) */
+        .product-card.featured {
+            border-color: #ffaa44;
+            position: relative;
+        }
+
+        .product-card.featured::before {
+            content: "⭐";
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: #ffaa44;
+            color: #1a2a3a;
+            font-size: 1rem;
+            padding: 6px 10px;
+            border-radius: 30px;
+            z-index: 2;
+            font-weight: 700;
+        }
+
+        .product-images {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+            background: #1a2a3a;
+        }
+
+        .product-images img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover .product-images img {
+            transform: scale(1.05);
+        }
+
+        .image-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.6);
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+            transition: all 0.2s;
+            z-index: 3;
+        }
+
+        .image-nav:hover {
+            background: #5a9eff;
+        }
+
+        .image-nav.prev { left: 8px; }
+        .image-nav.next { right: 8px; }
+
+        .image-counter {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 20px;
+            z-index: 3;
+        }
+
+        .product-info {
+            padding: 16px;
+        }
+
+        .market-name {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #5a9eff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 6px;
+        }
+
+        .market-location {
+            font-size: 0.75rem;
+            color: #8a9aaa;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 10px;
+        }
+
+        .product-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #eef2ff;
+            margin-bottom: 8px;
+        }
+
+        .product-price {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #5a9eff;
+        }
+
+        /* Carte message admin */
+        .message-card {
+            background: #0e1a26;
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            gap: 16px;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+            border: 1px solid #2a3a4a;
+        }
+
+        .message-card:hover {
+            transform: translateY(-2px);
+            border-color: #5a9eff;
+        }
+
+        .admin-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #5a9eff;
+            flex-shrink: 0;
+        }
+
+        .admin-avatar-placeholder {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #1a2a3a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #5a9eff;
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+
+        .message-content {
+            flex: 1;
+        }
+
+        .admin-name {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #5a9eff;
+            margin-bottom: 8px;
+        }
+
+        .message-text {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #eef2ff;
+        }
+
+        .message-date {
+            font-size: 0.7rem;
+            color: #8a9aaa;
+            margin-top: 8px;
+        }
+
+        /* Carte info générique (activation/désactivation produit) */
+        .info-card {
+            background: #0e1a26;
+            border-radius: 20px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+            border: 1px solid #2a3a4a;
+        }
+
+        .info-card:hover {
+            transform: translateY(-2px);
+            border-color: #5a9eff;
+        }
+
+        .info-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #1a2a3a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .info-icon.active {
+            color: #4ade80;
+        }
+
+        .info-icon.inactive {
+            color: #ff4d4d;
+        }
+
+        .info-icon.message {
+            color: #5a9eff;
+        }
+
+        .info-content {
+            flex: 1;
+        }
+
+        .info-title {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #eef2ff;
+            margin-bottom: 4px;
+        }
+
+        .info-detail {
+            font-size: 0.75rem;
+            color: #8a9aaa;
+        }
+
+        .info-date {
+            font-size: 0.7rem;
+            color: #5a9eff;
+            margin-top: 6px;
+        }
+
+        .loader {
+            text-align: center;
+            padding: 60px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid #2a3a4a;
+            border-top-color: #5a9eff;
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #8a9aaa;
+        }
+
+        @media (max-width: 600px) {
+            .main-header {
+                margin: 12px 12px 0 12px;
+                height: 55px;
+                padding: 0 15px;
+            }
+            .back-btn {
+                padding: 6px 12px;
+                font-size: 0.75rem;
+            }
+            .product-images {
+                height: 160px;
+            }
+            .message-card {
+                padding: 16px;
+            }
+            .admin-avatar, .admin-avatar-placeholder {
+                width: 50px;
+                height: 50px;
+            }
+            .info-card {
+                padding: 12px 16px;
+            }
+            .info-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <a href="index.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Retour
+        </a>
+        <h3>Actualités</h3>
+        <div style="width: 70px;"></div>
+    </header>
+
+    <main class="main-content" id="mainContent">
+        <div class="loader">
+            <div class="spinner"></div>
+            <p>Chargement des actualités...</p>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        (function() {
+            const SUPABASE_URL = 'https://emcsigvlopntwbfkkjkh.supabase.co';
+            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtY3NpZ3Zsb3BudHdiZmtramtoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4ODE5MTgsImV4cCI6MjA5NDQ1NzkxOH0.YwYoV-azL3WEFtHoh4yoF7xTLrOwZILKCzJrGPsCs6I';
+
+            const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            const mainContent = document.getElementById('mainContent');
+
+            function escapeHtml(text) {
+                if (!text) return '';
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            function formatPrice(price) {
+                return new Intl.NumberFormat('fr-FR').format(price);
+            }
+
+            function formatDate(dateStr) {
+                if (!dateStr) return '';
+                const date = new Date(dateStr);
+                return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+            }
+
+            function initCarousel(container, images) {
+                if (!container || !images || images.length <= 1) return;
+
+                const imgElement = container.querySelector('.carousel-img');
+                const prevBtn = container.querySelector('.image-nav.prev');
+                const nextBtn = container.querySelector('.image-nav.next');
+                const counter = container.querySelector('.image-counter');
+                
+                if (!imgElement) return;
+
+                let currentIndex = 0;
+                const total = images.length;
+
+                function updateImage() {
+                    imgElement.src = images[currentIndex];
+                    if (counter) counter.textContent = `${currentIndex + 1} / ${total}`;
+                }
+
+                if (prevBtn) {
+                    prevBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        currentIndex = (currentIndex - 1 + total) % total;
+                        updateImage();
+                    });
+                }
+
+                if (nextBtn) {
+                    nextBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        currentIndex = (currentIndex + 1) % total;
+                        updateImage();
+                    });
+                }
+
+                updateImage();
+            }
+
+            async function loadData() {
+                try {
+                    // 1. Récupérer les marchés actifs
+                    const { data: markets, error: marketsError } = await supabase
+                        .from('markets')
+                        .select('id, market_name, city, avatar_url, announcement_text, announcement_type, show_announcement, updated_at')
+                        .eq('market_active', true);
+
+                    if (marketsError) throw marketsError;
+
+                    if (!markets || markets.length === 0) {
+                        mainContent.innerHTML = `
+                            <div class="empty-state">
+                                <i class="fas fa-store-slash"></i>
+                                <p>Aucun marché actif pour le moment</p>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    const activeMarketIds = markets.map(m => m.id);
+
+                    // 2. Récupérer tous les produits (actifs ET inactifs)
+                    const { data: products, error: productsError } = await supabase
+                        .from('products')
+                        .select('*')
+                        .in('user_id', activeMarketIds)
+                        .order('created_at', { ascending: false });
+
+                    if (productsError) throw productsError;
+
+                    // 3. Construire tous les événements (produits, changements de statut, messages)
+                    let allEvents = [];
+
+                    // 3.1 Ajouter les produits (création)
+                    for (const product of products || []) {
+                        const market = markets.find(m => m.id === product.user_id);
+                        allEvents.push({
+                            id: `product_${product.id}`,
+                            type: product.featured ? 'featured_product' : 'product',
+                            date: product.created_at,
+                            product: product,
+                            market: market,
+                            status: product.active === false ? 'inactive' : 'active'
+                        });
+                    }
+
+                    // 3.2 Ajouter les messages admin (tous, pas seulement le dernier)
+                    for (const market of markets) {
+                        if (market.show_announcement === true && market.announcement_text) {
+                            allEvents.push({
+                                id: `message_${market.id}_${market.updated_at}`,
+                                type: 'message',
+                                date: market.updated_at,
+                                market: market,
+                                message: market.announcement_text,
+                                message_type: market.announcement_type || 'info'
+                            });
+                        }
+                    }
+
+                    // 3.3 Ajouter des événements pour les produits désactivés/réactivés
+                    // (on simule à partir de la date de mise à jour)
+                    for (const product of products || []) {
+                        if (product.updated_at && product.updated_at !== product.created_at) {
+                            // Si le produit a été désactivé ou réactivé
+                            const statusText = product.active === false ? 'désactivé' : 'réactivé';
+                            allEvents.push({
+                                id: `status_${product.id}_${product.updated_at}`,
+                                type: 'status_change',
+                                date: product.updated_at,
+                                product: product,
+                                market: markets.find(m => m.id === product.user_id),
+                                status: product.active,
+                                statusText: statusText
+                            });
+                        }
+                    }
+
+                    // 4. Trier par date décroissante (plus récent en premier)
+                    allEvents.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                    // 5. Générer le HTML
+                    let html = '<div class="cards-grid">';
+                    let lastDate = null;
+
+                    for (const event of allEvents) {
+                        // Ajouter un séparateur de date si différent
+                        const eventDate = new Date(event.date).toLocaleDateString('fr-FR');
+                        if (lastDate !== eventDate) {
+                            if (lastDate !== null) html += `<div style="height: 8px;"></div>`;
+                            lastDate = eventDate;
+                        }
+
+                        if (event.type === 'product' || event.type === 'featured_product') {
+                            // Carte produit
+                            const product = event.product;
+                            const market = event.market;
+                            const isFeatured = event.type === 'featured_product';
+                            const images = (product.images || []).filter(Boolean);
+                            const firstImage = images[0] || '';
+                            const isActive = product.active !== false;
+                            
+                            html += `
+                                <div class="product-card ${isFeatured ? 'featured' : ''}" data-product-id="${product.id}">
+                                    <div class="product-images" id="carousel-${product.id}">
+                                        <img class="carousel-img" src="${escapeHtml(firstImage)}" alt="${escapeHtml(product.name)}">
+                                        ${images.length > 1 ? `
+                                            <button class="image-nav prev"><i class="fas fa-chevron-left"></i></button>
+                                            <button class="image-nav next"><i class="fas fa-chevron-right"></i></button>
+                                            <div class="image-counter">1 / ${images.length}</div>
+                                        ` : ''}
+                                    </div>
+                                    <div class="product-info">
+                                        <div class="market-name">
+                                            <i class="fas fa-store"></i> ${escapeHtml(market?.market_name || 'Marché')}
+                                            ${!isActive ? '<span class="status-badge status-inactive">Indisponible</span>' : '<span class="status-badge status-active">Disponible</span>'}
+                                        </div>
+                                        <div class="market-location">
+                                            <i class="fas fa-map-marker-alt"></i> ${escapeHtml(market?.city || 'Localisation non précisée')}
+                                        </div>
+                                        <div class="product-title">${escapeHtml(product.name)}</div>
+                                        <div class="product-price">${formatPrice(product.price)} FCFA</div>
+                                        <div class="info-date">${formatDate(event.date)}</div>
+                                    </div>
+                                </div>
+                            `;
+                        } 
+                        else if (event.type === 'message') {
+                            // Carte message admin
+                            const market = event.market;
+                            const avatarUrl = market.avatar_url;
+                            html += `
+                                <div class="message-card">
+                                    ${avatarUrl 
+                                        ? `<img src="${escapeHtml(avatarUrl)}" class="admin-avatar" alt="Admin">`
+                                        : `<div class="admin-avatar-placeholder"><i class="fas fa-user-circle"></i></div>`
+                                    }
+                                    <div class="message-content">
+                                        <div class="admin-name">${escapeHtml(market.market_name || 'Administrateur')}</div>
+                                        <div class="message-text">${escapeHtml(event.message)}</div>
+                                        <div class="message-date">${formatDate(event.date)}</div>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                        else if (event.type === 'status_change') {
+                            // Carte changement de statut (activé/désactivé)
+                            const product = event.product;
+                            const market = event.market;
+                            const isActive = event.status;
+                            html += `
+                                <div class="info-card" data-product-id="${product.id}">
+                                    <div class="info-icon ${isActive ? 'active' : 'inactive'}">
+                                        <i class="fas ${isActive ? 'fa-check-circle' : 'fa-ban'}"></i>
+                                    </div>
+                                    <div class="info-content">
+                                        <div class="info-title">
+                                            Produit ${event.statusText}
+                                        </div>
+                                        <div class="info-detail">
+                                            ${escapeHtml(product.name)} - ${escapeHtml(market?.market_name || 'Marché')}
+                                        </div>
+                                        <div class="info-date">${formatDate(event.date)}</div>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    }
+
+                    html += '</div>';
+
+                    if (allEvents.length === 0) {
+                        html = `
+                            <div class="empty-state">
+                                <i class="fas fa-newspaper"></i>
+                                <p>Aucune actualité pour le moment</p>
+                                <p style="font-size: 0.8rem; margin-top: 8px;">Revenez plus tard !</p>
+                            </div>
+                        `;
+                    }
+
+                    mainContent.innerHTML = html;
+
+                    // Initialiser les carrousels et les clics
+                    document.querySelectorAll('.product-card').forEach(card => {
+                        const productId = card.getAttribute('data-product-id');
+                        if (productId) {
+                            const product = (products || []).find(p => p.id === productId);
+                            if (product && product.images && product.images.length > 1) {
+                                const container = card.querySelector('.product-images');
+                                if (container) {
+                                    initCarousel(container, product.images.filter(Boolean));
+                                }
+                            }
+
+                            card.addEventListener('click', () => {
+                                window.location.href = `viewproduct.html?id=${productId}`;
+                            });
+                        }
+                    });
+
+                    document.querySelectorAll('.info-card').forEach(card => {
+                        const productId = card.getAttribute('data-product-id');
+                        if (productId) {
+                            card.addEventListener('click', () => {
+                                window.location.href = `viewproduct.html?id=${productId}`;
+                            });
+                        }
+                    });
+
+                } catch (err) {
+                    console.error('Erreur:', err);
+                    mainContent.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <p>Erreur chargement des actualités</p>
+                            <p style="font-size:0.8rem;margin-top:8px;">${err.message}</p>
+                        </div>
+                    `;
+                }
+            }
+
+            loadData();
+        })();
+    </script>
+</body>
+</html>

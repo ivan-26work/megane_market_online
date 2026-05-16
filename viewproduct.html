@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Megane Market - Détail produit</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #0a0f1a;
+            color: #eef2ff;
+            min-height: 100vh;
+            padding-bottom: 90px;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(60px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ============ HEADER ============ */
+        .main-header {
+            position: sticky;
+            top: 16px;
+            z-index: 100;
+            background: #0e1a26;
+            border-radius: 60px;
+            border: 1px solid #2a3a4a;
+            height: 60px;
+            margin: 16px 16px 0 16px;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .main-header:hover {
+            border-color: #5a9eff;
+            box-shadow: 0 4px 20px rgba(90, 158, 255, 0.15);
+        }
+
+        .back-btn {
+            background: #1a2a3a;
+            border: 1px solid #2a3a4a;
+            border-radius: 40px;
+            padding: 8px 16px;
+            cursor: pointer;
+            color: #eef2ff;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover { background: #5a9eff; color: white; transform: translateX(-4px); }
+
+        .main-header h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-align: center;
+            flex: 1;
+            padding: 0 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .placeholder { width: 80px; }
+
+        /* ============ CONTENU ============ */
+        .main-content {
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        /* ============ IMAGES ============ */
+        .image-container {
+            position: relative;
+            background: #1a2a3a;
+            border-radius: 24px;
+            margin-bottom: 24px;
+            overflow: hidden;
+            aspect-ratio: 1 / 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-container img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .image-container:hover img { transform: scale(1.05); }
+
+        .image-placeholder {
+            width: 100%; height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2a3a4a;
+            font-size: 4rem;
+        }
+
+        .image-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.6);
+            border: none;
+            border-radius: 50%;
+            width: 40px; height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+            transition: all 0.3s ease;
+            z-index: 2;
+        }
+
+        .image-nav:hover { background: #5a9eff; transform: translateY(-50%) scale(1.1); }
+        .image-nav.prev { left: 16px; }
+        .image-nav.next { right: 16px; }
+
+        .image-counter {
+            position: absolute;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.7);
+            color: white;
+            font-size: 0.75rem;
+            padding: 4px 12px;
+            border-radius: 20px;
+            backdrop-filter: blur(4px);
+        }
+
+        /* Miniatures images */
+        .image-thumbs {
+            display: flex;
+            gap: 8px;
+            margin-top: -16px;
+            margin-bottom: 24px;
+            justify-content: center;
+        }
+
+        .image-thumb {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: border-color 0.2s;
+            flex-shrink: 0;
+        }
+
+        .image-thumb.active { border-color: #5a9eff; }
+
+        .image-thumb img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+        }
+
+        /* ============ INFOS PRODUIT ============ */
+        .product-info-container {
+            background: #0e1a26;
+            border-radius: 24px;
+            border: 1px solid #2a3a4a;
+            overflow: hidden;
+            animation: fadeInUp 0.5s ease 0.1s backwards;
+        }
+
+        .info-field {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 20px;
+            border-bottom: 1px solid #1a2a3a;
+            transition: background 0.3s ease;
+        }
+
+        .info-field:hover { background: rgba(90, 158, 255, 0.05); }
+        .info-field:last-child { border-bottom: none; }
+
+        .info-field label {
+            font-weight: 600;
+            color: #5a9eff;
+            font-size: 0.85rem;
+            width: 100px;
+            flex-shrink: 0;
+        }
+
+        .info-value {
+            font-size: 0.95rem;
+            color: #eef2ff;
+            text-align: right;
+            word-break: break-word;
+            flex: 1;
+        }
+
+        .description-field { flex-direction: column; align-items: flex-start; gap: 12px; }
+        .description-field label { width: 100%; }
+        .description-field .info-value { text-align: left; line-height: 1.5; }
+
+        /* Badge catégorie */
+        .category-badge {
+            background: rgba(90, 158, 255, 0.15);
+            color: #5a9eff;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* ============ SECTION VENDEUR ============ */
+        .seller-section {
+            margin-top: 24px;
+            background: linear-gradient(135deg, #0e1a26 0%, #0a0f1a 100%);
+            border-radius: 24px;
+            border: 1px solid #2a3a4a;
+            padding: 20px;
+            animation: fadeInUp 0.5s ease 0.2s backwards;
+            transition: all 0.3s ease;
+        }
+
+        .seller-section:hover { border-color: #5a9eff; box-shadow: 0 8px 25px rgba(90, 158, 255, 0.15); }
+
+        .seller-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #5a9eff;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .seller-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .seller-name { font-size: 1rem; font-weight: 600; color: #eef2ff; }
+        .seller-location { font-size: 0.8rem; color: #8a9aaa; display: flex; align-items: center; gap: 6px; }
+
+        /* Bouton WhatsApp */
+        .whatsapp-btn {
+            background: #25D366;
+            border: none;
+            border-radius: 40px;
+            padding: 14px 24px;
+            color: white;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .whatsapp-btn:hover {
+            background: #128C7E;
+            transform: scale(1.02);
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+        }
+
+        /* ============ SPINNER ============ */
+        .loader { text-align: center; padding: 60px; }
+        .spinner {
+            width: 50px; height: 50px;
+            border: 3px solid #2a3a4a;
+            border-top-color: #5a9eff;
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            animation: spin 0.8s linear infinite;
+        }
+
+        /* ============ TOAST ============ */
+        .toast {
+            position: fixed;
+            bottom: 30px; left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: #1a2a3a;
+            color: #eef2ff;
+            padding: 12px 24px;
+            border-radius: 60px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: 1px solid #2a3a4a;
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            z-index: 200;
+            white-space: nowrap;
+        }
+
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .toast.success { border-color: #4ade80; color: #4ade80; }
+        .toast.error   { border-color: #ff4d4d; color: #ff4d4d; }
+
+        /* ============ MODAL WHATSAPP ============ */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(6px);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            z-index: 500;
+            padding: 16px;
+        }
+
+        .modal-wa {
+            background: #0e1a26;
+            border: 1px solid #2a3a4a;
+            border-radius: 28px 28px 20px 20px;
+            padding: 28px 24px;
+            width: 100%;
+            max-width: 520px;
+            animation: slideUp 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .modal-wa-title {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #25D366;
+        }
+
+        .modal-wa-subtitle {
+            font-size: 0.8rem;
+            color: #8a9aaa;
+            margin-bottom: 20px;
+        }
+
+        /* Récap produit dans le modal */
+        .modal-recap {
+            background: #1a2a3a;
+            border-radius: 16px;
+            padding: 14px;
+            margin-bottom: 18px;
+            border: 1px solid #2a3a4a;
+        }
+
+        .modal-recap-name {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #eef2ff;
+            margin-bottom: 4px;
+        }
+
+        .modal-recap-price {
+            font-size: 0.85rem;
+            color: #5a9eff;
+            font-weight: 600;
+        }
+
+        /* Zone de texte message */
+        .modal-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #5a9eff;
+            margin-bottom: 8px;
+        }
+
+        .modal-label .required { color: #ff4d4d; }
+
+        .modal-textarea {
+            width: 100%;
+            padding: 14px 16px;
+            background: #1a2a3a;
+            border: 1px solid #2a3a4a;
+            border-radius: 16px;
+            color: #eef2ff;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem;
+            resize: none;
+            outline: none;
+            min-height: 100px;
+            transition: border-color 0.2s;
+            margin-bottom: 6px;
+        }
+
+        .modal-textarea:focus { border-color: #25D366; }
+        .modal-textarea.error-border { border-color: #ff4d4d; }
+
+        .modal-char-count {
+            text-align: right;
+            font-size: 0.75rem;
+            color: #8a9aaa;
+            margin-bottom: 18px;
+        }
+
+        .modal-char-count.warn { color: #ffaa44; }
+
+        /* Boutons modal */
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-cancel {
+            flex: 1;
+            padding: 14px;
+            background: #1a2a3a;
+            border: 1px solid #2a3a4a;
+            border-radius: 40px;
+            color: #eef2ff;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .btn-cancel:hover { background: #2a3a4a; }
+
+        .btn-send-wa {
+            flex: 2;
+            padding: 14px;
+            background: #25D366;
+            border: none;
+            border-radius: 40px;
+            color: white;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .btn-send-wa:hover { background: #128C7E; }
+        .btn-send-wa:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .main-header { margin: 12px 12px 0 12px; height: 55px; padding: 0 15px; }
+            .back-btn { padding: 6px 12px; font-size: 0.75rem; }
+            .info-field { padding: 14px 16px; }
+            .info-field label { width: 80px; font-size: 0.8rem; }
+            .info-value { font-size: 0.85rem; }
+            .modal-wa { padding: 20px 16px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <a href="index.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Retour
+        </a>
+        <h3 id="productName">Produit</h3>
+        <div class="placeholder"></div>
+    </header>
+
+    <main class="main-content" id="mainContent">
+        <div class="loader">
+            <div class="spinner"></div>
+            <p>Chargement du produit...</p>
+        </div>
+    </main>
+
+    <div id="toast" class="toast"></div>
+
+    <!-- Modal WhatsApp -->
+    <div id="modalOverlay" class="modal-overlay" style="display:none;">
+        <div class="modal-wa">
+            <div class="modal-wa-title">
+                <i class="fab fa-whatsapp"></i> Commander via WhatsApp
+            </div>
+            <div class="modal-wa-subtitle">Écrivez votre message au vendeur — il sera envoyé avec vos informations.</div>
+
+            <!-- Récap produit -->
+            <div class="modal-recap">
+                <div class="modal-recap-name" id="modalProductName">—</div>
+                <div class="modal-recap-price" id="modalProductPrice">—</div>
+            </div>
+
+            <!-- Message client -->
+            <div class="modal-label">Votre message <span class="required">*</span></div>
+            <textarea class="modal-textarea" id="clientMessage" placeholder="Ex: Bonjour, je suis intéressé. Est-ce disponible ?" maxlength="500"></textarea>
+            <div class="modal-char-count" id="charCount">0 / 500</div>
+
+            <div class="modal-actions">
+                <button class="btn-cancel" id="cancelModalBtn">Annuler</button>
+                <button class="btn-send-wa" id="sendWaBtn" disabled>
+                    <i class="fab fa-whatsapp"></i> Commander
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+    (function() {
+        const SUPABASE_URL     = 'https://emcsigvlopntwbfkkjkh.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtY3NpZ3Zsb3BudHdiZmtramtoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4ODE5MTgsImV4cCI6MjA5NDQ1NzkxOH0.YwYoV-azL3WEFtHoh4yoF7xTLrOwZILKCzJrGPsCs6I';
+
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const mainContent    = document.getElementById('mainContent');
+        const productNameEl  = document.getElementById('productName');
+        const toastEl        = document.getElementById('toast');
+        const modalOverlay   = document.getElementById('modalOverlay');
+        const cancelModalBtn = document.getElementById('cancelModalBtn');
+        const sendWaBtn      = document.getElementById('sendWaBtn');
+        const clientMessage  = document.getElementById('clientMessage');
+        const charCount      = document.getElementById('charCount');
+        const modalProductName  = document.getElementById('modalProductName');
+        const modalProductPrice = document.getElementById('modalProductPrice');
+
+        let currentImages = [];
+        let currentImageIndex = 0;
+        let currentProduct = null;
+        let currentMarket  = null;
+        let buyerProfile   = null;
+
+        // ============ UTILITAIRES ============
+        function showToast(message, type = 'info') {
+            toastEl.textContent = message;
+            toastEl.className = `toast ${type} show`;
+            setTimeout(() => toastEl.className = 'toast', 3000);
+        }
+
+        function getProductId() {
+            return new URLSearchParams(window.location.search).get('id');
+        }
+
+        function formatPrice(price) {
+            return new Intl.NumberFormat('fr-FR').format(price);
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function getWhatsAppNumber(number) {
+            if (!number) return null;
+            let clean = number.replace(/\D/g, '');
+            if (clean.length === 10)      clean = '225' + clean;
+            else if (clean.startsWith('0') && clean.length === 11) clean = '225' + clean.substring(1);
+            return clean;
+        }
+
+        // ============ MODAL WhatsApp ============
+        function openWhatsAppModal() {
+            if (!currentProduct || !currentMarket) return;
+
+            modalProductName.textContent  = currentProduct.name;
+            modalProductPrice.textContent = formatPrice(currentProduct.price) + ' FCFA';
+            clientMessage.value = '';
+            charCount.textContent = '0 / 500';
+            charCount.classList.remove('warn');
+            clientMessage.classList.remove('error-border');
+            sendWaBtn.disabled = true;
+
+            modalOverlay.style.display = 'flex';
+            setTimeout(() => clientMessage.focus(), 300);
+        }
+
+        function closeModal() {
+            modalOverlay.style.display = 'none';
+        }
+
+        // Compteur de caractères + activation bouton
+        clientMessage.addEventListener('input', () => {
+            const len = clientMessage.value.trim().length;
+            const total = clientMessage.value.length;
+            charCount.textContent = `${total} / 500`;
+            charCount.classList.toggle('warn', total > 400);
+            clientMessage.classList.remove('error-border');
+
+            // Minimum 1 mot (1 caractère non-espace)
+            sendWaBtn.disabled = len < 1;
+        });
+
+        cancelModalBtn.addEventListener('click', closeModal);
+
+        // Fermer en cliquant sur l'overlay
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) closeModal();
+        });
+
+        // ============ CONSTRUIRE ET ENVOYER LE MESSAGE WA ============
+        sendWaBtn.addEventListener('click', () => {
+            const message = clientMessage.value.trim();
+            if (!message) {
+                clientMessage.classList.add('error-border');
+                showToast('Écrivez au moins un mot', 'error');
+                return;
+            }
+
+            const waNumber = getWhatsAppNumber(currentMarket.whatsapp);
+            if (!waNumber) {
+                showToast('Numéro WhatsApp vendeur introuvable', 'error');
+                return;
+            }
+
+            // ====== CONSTRUCTION DU MESSAGE ======
+            const buyer = buyerProfile || {};
+            const name     = buyer.full_name || 'Inconnu';
+            const email    = buyer.email    || '—';
+            const location = buyer.city     || buyer.address || '—';
+
+            // Lignes des images (max 3)
+            const images = (currentProduct.images || []).filter(Boolean).slice(0, 3);
+            const imageLines = images.map((url, i) => `🖼️ Image ${i + 1} : ${url}`).join('\n');
+
+            const fullMessage =
+`👤 *${name}*
+📧 ${email}
+📍 ${location}
+
+━━━━━ *${currentProduct.name}* ━━━━━
+${currentProduct.description ? `📝 ${currentProduct.description}\n` : ''}${imageLines ? imageLines + '\n' : ''}
+━━━━━━━━━━━━━━━━━━━━
+💬 *Message du client :*
+${message}`;
+
+            const url = `https://wa.me/${waNumber}?text=${encodeURIComponent(fullMessage)}`;
+
+            closeModal();
+            window.open(url, '_blank');
+        });
+
+        // ============ CHARGEMENT PRODUIT ============
+        async function loadProduct() {
+            const productId = getProductId();
+            if (!productId) { window.location.href = 'index.html'; return; }
+
+            try {
+                // Récupérer la session (optionnel — client peut ne pas être connecté)
+                const { data: { session } } = await supabase.auth.getSession();
+
+                // Profil acheteur si connecté
+                if (session) {
+                    const userId = session.user.id;
+                    const { data: bd } = await supabase
+                        .from('buyers')
+                        .select('*')
+                        .eq('id', userId)
+                        .single();
+
+                    buyerProfile = {
+                        full_name: bd?.full_name || session.user.user_metadata?.username || '',
+                        email    : session.user.email,
+                        city     : bd?.city || '',
+                        address  : bd?.address || ''
+                    };
+                }
+
+                // Récupérer le produit
+                const { data: product, error } = await supabase
+                    .from('products')
+                    .select('*')
+                    .eq('id', productId)
+                    .single();
+
+                if (error) throw error;
+                if (!product) { showToast('Produit non trouvé'); setTimeout(() => window.location.href = 'index.html', 2000); return; }
+                if (product.active === false) { showToast('Produit indisponible'); setTimeout(() => window.location.href = 'index.html', 2000); return; }
+
+                // Récupérer le vendeur
+                const { data: market, error: mErr } = await supabase
+                    .from('markets')
+                    .select('*')
+                    .eq('id', product.user_id)
+                    .single();
+
+                if (mErr) throw mErr;
+                if (market.market_active === false) { showToast('Ce marché n\'est plus actif'); setTimeout(() => window.location.href = 'index.html', 2000); return; }
+
+                currentProduct = product;
+                currentMarket  = market;
+                currentImages  = (product.images || []).filter(Boolean);
+                currentImageIndex = 0;
+
+                displayProduct(product, market);
+
+            } catch (err) {
+                console.error(err);
+                mainContent.innerHTML = `
+                    <div style="text-align:center;padding:40px;">
+                        <i class="fas fa-exclamation-triangle" style="font-size:3rem;color:#ff4d4d;"></i>
+                        <p style="margin-top:16px;">Erreur lors du chargement</p>
+                    </div>`;
+            }
+        }
+
+        // ============ AFFICHAGE PRODUIT ============
+        function displayProduct(product, market) {
+            productNameEl.textContent = product.name;
+
+            // Images
+            let imagesHtml = '';
+            if (currentImages.length > 0) {
+                imagesHtml = `
+                    <div class="image-container">
+                        <img id="mainImage" src="${escapeHtml(currentImages[0])}" alt="${escapeHtml(product.name)}">
+                        ${currentImages.length > 1 ? `
+                        <button class="image-nav prev" id="prevBtn"><i class="fas fa-chevron-left"></i></button>
+                        <button class="image-nav next" id="nextBtn"><i class="fas fa-chevron-right"></i></button>
+                        <div class="image-counter" id="imageCounter">1 / ${currentImages.length}</div>` : ''}
+                    </div>
+                `;
+                // Miniatures si plusieurs images
+                if (currentImages.length > 1) {
+                    imagesHtml += `<div class="image-thumbs">
+                        ${currentImages.map((img, i) => `
+                            <div class="image-thumb ${i === 0 ? 'active' : ''}" data-index="${i}">
+                                <img src="${escapeHtml(img)}" alt="image ${i+1}">
+                            </div>`).join('')}
+                    </div>`;
+                }
+            } else {
+                imagesHtml = `
+                    <div class="image-container">
+                        <div class="image-placeholder"><i class="fas fa-image"></i></div>
+                    </div>`;
+            }
+
+            // Champs infos
+            const priceOptionHtml = product.price_option
+                ? `<div class="info-field"><label>Option prix</label><div class="info-value">${escapeHtml(product.price_option)}</div></div>` : '';
+
+            const categoryHtml = product.category
+                ? `<div class="info-field"><label>Catégorie</label><div class="info-value"><span class="category-badge">${escapeHtml(product.category)}</span></div></div>` : '';
+
+            const descHtml = product.description
+                ? `<div class="info-field description-field"><label>Description</label><div class="info-value">${escapeHtml(product.description)}</div></div>` : '';
+
+            // Vendeur
+            const sellerName = market.market_name || market.owner_name || 'Vendeur';
+            const sellerLocation = market.city || market.location || '';
+
+            mainContent.innerHTML = `
+                ${imagesHtml}
+                <div class="product-info-container">
+                    <div class="info-field">
+                        <label>Prix</label>
+                        <div class="info-value">${formatPrice(product.price)} FCFA</div>
+                    </div>
+                    ${priceOptionHtml}
+                    ${categoryHtml}
+                    ${descHtml}
+                </div>
+                <div class="seller-section">
+                    <div class="seller-title"><i class="fas fa-store"></i> Vendeur</div>
+                    <div class="seller-info">
+                        <div class="seller-name">${escapeHtml(sellerName)}</div>
+                        ${sellerLocation ? `<div class="seller-location"><i class="fas fa-map-marker-alt"></i>${escapeHtml(sellerLocation)}</div>` : ''}
+                    </div>
+                    <button class="whatsapp-btn" id="waBtn">
+                        <i class="fab fa-whatsapp"></i> Contacter le vendeur
+                    </button>
+                </div>
+            `;
+
+            // Gestion navigation images
+            if (currentImages.length > 1) {
+                const mainImg    = document.getElementById('mainImage');
+                const prevBtn    = document.getElementById('prevBtn');
+                const nextBtn    = document.getElementById('nextBtn');
+                const imgCounter = document.getElementById('imageCounter');
+                const thumbs     = document.querySelectorAll('.image-thumb');
+
+                function goTo(idx) {
+                    currentImageIndex = idx;
+                    mainImg.src = currentImages[idx];
+                    imgCounter.textContent = `${idx + 1} / ${currentImages.length}`;
+                    thumbs.forEach((t, i) => t.classList.toggle('active', i === idx));
+                }
+
+                prevBtn.addEventListener('click', () => { if (currentImageIndex > 0) goTo(currentImageIndex - 1); });
+                nextBtn.addEventListener('click', () => { if (currentImageIndex < currentImages.length - 1) goTo(currentImageIndex + 1); });
+                thumbs.forEach(t => t.addEventListener('click', () => goTo(parseInt(t.dataset.index))));
+            }
+
+            // Bouton WhatsApp → ouvre le modal
+            document.getElementById('waBtn').addEventListener('click', () => {
+                if (!currentMarket.whatsapp) {
+                    showToast('Numéro WhatsApp indisponible', 'error');
+                    return;
+                }
+                openWhatsAppModal();
+            });
+        }
+
+        loadProduct();
+    })();
+    </script>
+</body>
+</html>

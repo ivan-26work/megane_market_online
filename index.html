@@ -549,10 +549,25 @@
             let categories = new Set();
             let activeCategory = 'all';
 
+            // ============ ENREGISTRER LE CLIC SUR PRODUIT ============
+            async function recordProductClick(productId) {
+                try {
+                    await supabase
+                        .from('product_stats')
+                        .insert({
+                            product_id: productId,
+                            view_count: 1,
+                            viewed_at: new Date().toISOString()
+                        });
+                    console.log('Clic enregistré pour le produit:', productId);
+                } catch (err) {
+                    console.error('Erreur enregistrement clic:', err);
+                }
+            }
+
             // ============ DÉTECTION COMPLÈTE DEPUIS LA BASE ============
             async function getLatestEvent() {
                 try {
-                    // Récupérer les marchés actifs
                     const { data: markets, error: marketsError } = await supabase
                         .from('markets')
                         .select('id, market_name, avatar_url, announcement_text, show_announcement, updated_at')
@@ -564,7 +579,6 @@
 
                     const activeMarketIds = markets.map(m => m.id);
 
-                    // Récupérer tous les produits
                     const { data: products, error: productsError } = await supabase
                         .from('products')
                         .select('*, user_id')
@@ -575,7 +589,6 @@
 
                     let allEvents = [];
 
-                    // 1. Nouveaux produits
                     for (const product of products || []) {
                         const market = markets.find(m => m.id === product.user_id);
                         allEvents.push({
@@ -590,7 +603,6 @@
                         });
                     }
 
-                    // 2. Produits à la une
                     for (const product of products || []) {
                         if (product.featured === true) {
                             const market = markets.find(m => m.id === product.user_id);
@@ -607,7 +619,6 @@
                         }
                     }
 
-                    // 3. Messages admin (tous)
                     for (const market of markets) {
                         if (market.show_announcement === true && market.announcement_text) {
                             allEvents.push({
@@ -623,7 +634,6 @@
                         }
                     }
 
-                    // 4. Changements de statut (activé/désactivé)
                     for (const product of products || []) {
                         if (product.updated_at && product.updated_at !== product.created_at) {
                             const market = markets.find(m => m.id === product.user_id);
@@ -644,7 +654,6 @@
 
                     if (allEvents.length === 0) return null;
 
-                    // Trier par date décroissante
                     allEvents.sort((a, b) => new Date(b.date) - new Date(a.date));
                     return allEvents[0];
 
@@ -666,7 +675,6 @@
                               (lastViewedDate && new Date(latestEvent.date) > new Date(lastViewedDate));
 
                 if (isNew) {
-                    // Afficher la bannière
                     const avatarHtml = latestEvent.adminAvatar 
                         ? `<img src="${latestEvent.adminAvatar}" class="notification-avatar" alt="${escapeHtml(latestEvent.adminName)}">`
                         : `<div class="notification-avatar-placeholder"><i class="fas fa-user-circle"></i></div>`;
@@ -685,10 +693,8 @@
                         </div>
                     `;
 
-                    // Animation du logo
                     logo.classList.add('has-new');
 
-                    // Événement clic sur la bannière
                     const bannerElement = document.getElementById('notificationBannerInner');
                     if (bannerElement) {
                         bannerElement.addEventListener('click', (e) => {
@@ -697,7 +703,6 @@
                         });
                     }
 
-                    // Fermeture
                     const closeBtn = document.getElementById('closeNotificationBtn');
                     if (closeBtn) {
                         closeBtn.addEventListener('click', (e) => {
@@ -713,7 +718,6 @@
                 }
             }
 
-            // Marquer comme vu quand on clique sur le logo
             if (logo) {
                 logo.addEventListener('click', async () => {
                     const latestEvent = await getLatestEvent();
@@ -837,8 +841,9 @@
                 }).join('');
 
                 document.querySelectorAll('.product-card').forEach(card => {
-                    card.addEventListener('click', () => {
+                    card.addEventListener('click', async () => {
                         const productId = card.getAttribute('data-id');
+                        await recordProductClick(productId);
                         window.location.href = `viewproduct.html?id=${productId}`;
                     });
                 });

@@ -550,6 +550,37 @@
         let currentMarket  = null;
         let buyerProfile   = null;
 
+        // ============ ENREGISTREMENT DES STATS ============
+        async function recordProductView(productId) {
+            try {
+                await supabase
+                    .from('product_stats')
+                    .insert({
+                        product_id: productId,
+                        view_count: 1,
+                        viewed_at: new Date().toISOString()
+                    });
+                console.log('Vue enregistrée pour le produit:', productId);
+            } catch (err) {
+                console.error('Erreur enregistrement vue:', err);
+            }
+        }
+
+        async function recordProductClick(productId) {
+            try {
+                await supabase
+                    .from('product_stats')
+                    .insert({
+                        product_id: productId,
+                        click_count: 1,
+                        clicked_at: new Date().toISOString()
+                    });
+                console.log('Clic WhatsApp enregistré pour le produit:', productId);
+            } catch (err) {
+                console.error('Erreur enregistrement clic:', err);
+            }
+        }
+
         // ============ UTILITAIRES ============
         function showToast(message, type = 'info') {
             toastEl.textContent = message;
@@ -600,27 +631,21 @@
             modalOverlay.style.display = 'none';
         }
 
-        // Compteur de caractères + activation bouton
         clientMessage.addEventListener('input', () => {
             const len = clientMessage.value.trim().length;
             const total = clientMessage.value.length;
             charCount.textContent = `${total} / 500`;
             charCount.classList.toggle('warn', total > 400);
             clientMessage.classList.remove('error-border');
-
-            // Minimum 1 mot (1 caractère non-espace)
             sendWaBtn.disabled = len < 1;
         });
 
         cancelModalBtn.addEventListener('click', closeModal);
-
-        // Fermer en cliquant sur l'overlay
         modalOverlay.addEventListener('click', (e) => {
             if (e.target === modalOverlay) closeModal();
         });
 
-        // ============ CONSTRUIRE ET ENVOYER LE MESSAGE WA ============
-        sendWaBtn.addEventListener('click', () => {
+        sendWaBtn.addEventListener('click', async () => {
             const message = clientMessage.value.trim();
             if (!message) {
                 clientMessage.classList.add('error-border');
@@ -634,13 +659,15 @@
                 return;
             }
 
+            // ====== ENREGISTRER LE CLIC COMMANDER ======
+            await recordProductClick(currentProduct.id);
+
             // ====== CONSTRUCTION DU MESSAGE ======
             const buyer = buyerProfile || {};
             const name     = buyer.full_name || 'Inconnu';
             const email    = buyer.email    || '—';
             const location = buyer.city     || buyer.address || '—';
 
-            // Lignes des images (max 3)
             const images = (currentProduct.images || []).filter(Boolean).slice(0, 3);
             const imageLines = images.map((url, i) => `🖼️ Image ${i + 1} : ${url}`).join('\n');
 
@@ -667,10 +694,8 @@ ${message}`;
             if (!productId) { window.location.href = 'index.html'; return; }
 
             try {
-                // Récupérer la session (optionnel — client peut ne pas être connecté)
                 const { data: { session } } = await supabase.auth.getSession();
 
-                // Profil acheteur si connecté
                 if (session) {
                     const userId = session.user.id;
                     const { data: bd } = await supabase
@@ -687,7 +712,6 @@ ${message}`;
                     };
                 }
 
-                // Récupérer le produit
                 const { data: product, error } = await supabase
                     .from('products')
                     .select('*')
@@ -698,7 +722,6 @@ ${message}`;
                 if (!product) { showToast('Produit non trouvé'); setTimeout(() => window.location.href = 'index.html', 2000); return; }
                 if (product.active === false) { showToast('Produit indisponible'); setTimeout(() => window.location.href = 'index.html', 2000); return; }
 
-                // Récupérer le vendeur
                 const { data: market, error: mErr } = await supabase
                     .from('markets')
                     .select('*')
@@ -712,6 +735,9 @@ ${message}`;
                 currentMarket  = market;
                 currentImages  = (product.images || []).filter(Boolean);
                 currentImageIndex = 0;
+
+                // ====== ENREGISTRER LA VUE DU PRODUIT ======
+                await recordProductView(currentProduct.id);
 
                 displayProduct(product, market);
 
@@ -729,7 +755,6 @@ ${message}`;
         function displayProduct(product, market) {
             productNameEl.textContent = product.name;
 
-            // Images
             let imagesHtml = '';
             if (currentImages.length > 0) {
                 imagesHtml = `
@@ -741,7 +766,6 @@ ${message}`;
                         <div class="image-counter" id="imageCounter">1 / ${currentImages.length}</div>` : ''}
                     </div>
                 `;
-                // Miniatures si plusieurs images
                 if (currentImages.length > 1) {
                     imagesHtml += `<div class="image-thumbs">
                         ${currentImages.map((img, i) => `
@@ -757,7 +781,6 @@ ${message}`;
                     </div>`;
             }
 
-            // Champs infos
             const priceOptionHtml = product.price_option
                 ? `<div class="info-field"><label>Option prix</label><div class="info-value">${escapeHtml(product.price_option)}</div></div>` : '';
 
@@ -767,7 +790,6 @@ ${message}`;
             const descHtml = product.description
                 ? `<div class="info-field description-field"><label>Description</label><div class="info-value">${escapeHtml(product.description)}</div></div>` : '';
 
-            // Vendeur
             const sellerName = market.market_name || market.owner_name || 'Vendeur';
             const sellerLocation = market.city || market.location || '';
 
@@ -794,7 +816,6 @@ ${message}`;
                 </div>
             `;
 
-            // Gestion navigation images
             if (currentImages.length > 1) {
                 const mainImg    = document.getElementById('mainImage');
                 const prevBtn    = document.getElementById('prevBtn');
@@ -814,7 +835,6 @@ ${message}`;
                 thumbs.forEach(t => t.addEventListener('click', () => goTo(parseInt(t.dataset.index))));
             }
 
-            // Bouton WhatsApp → ouvre le modal
             document.getElementById('waBtn').addEventListener('click', () => {
                 if (!currentMarket.whatsapp) {
                     showToast('Numéro WhatsApp indisponible', 'error');

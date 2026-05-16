@@ -613,6 +613,22 @@
                 
                 if (error) throw error;
                 
+                // Créer automatiquement le profil client dans la table buyers
+                if (data.user) {
+                    const { error: buyerError } = await supabase
+                        .from('buyers')
+                        .insert({
+                            id: data.user.id,
+                            email: userData.email,
+                            full_name: '',
+                            phone: '',
+                            city: '',
+                            address: '',
+                            created_at: new Date().toISOString()
+                        });
+                    if (buyerError) console.error('Erreur création profil client:', buyerError);
+                }
+                
                 showInfo('Compte créé !', 'success', true, 100);
                 
                 setTimeout(() => {

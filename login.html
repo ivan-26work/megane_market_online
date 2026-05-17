@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>MonMarché - Espace acheteur</title>
+    <title>Megane Market - Espace acheteur</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -333,6 +333,56 @@
             to { transform: rotate(360deg); }
         }
 
+        /* Modal accès restreint */
+        .access-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .access-modal-content {
+            background: #0e1a26;
+            border: 1px solid #2a3a4a;
+            border-radius: 30px;
+            padding: 40px;
+            text-align: center;
+            max-width: 400px;
+        }
+
+        .access-modal-content i {
+            font-size: 3rem;
+            color: #ffaa44;
+            margin-bottom: 16px;
+        }
+
+        .access-modal-content h3 {
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+        }
+
+        .access-modal-content p {
+            color: #8a9aaa;
+            margin-bottom: 24px;
+        }
+
+        .access-modal-btn {
+            background: #5a9eff;
+            border: none;
+            border-radius: 40px;
+            padding: 12px 24px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
         @media (max-width: 480px) {
             body { padding: 16px; }
             .forms-container { padding: 20px; }
@@ -644,6 +694,29 @@
             }
         }
 
+        // Vérifier et créer le profil client si nécessaire (pour les anciens comptes)
+        async function ensureBuyerProfile(userId, email) {
+            const { data: existing } = await supabase
+                .from('buyers')
+                .select('id')
+                .eq('id', userId)
+                .single();
+            
+            if (!existing) {
+                await supabase
+                    .from('buyers')
+                    .insert({
+                        id: userId,
+                        email: email,
+                        full_name: '',
+                        phone: '',
+                        city: '',
+                        address: '',
+                        created_at: new Date().toISOString()
+                    });
+            }
+        }
+
         async function login() {
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
@@ -661,6 +734,9 @@
                 if (error) throw error;
                 
                 if (data.user) {
+                    // S'assurer que l'utilisateur a un profil dans buyers
+                    await ensureBuyerProfile(data.user.id, data.user.email);
+                    
                     showInfo('Connexion réussie ! Redirection...', 'success', true, 100);
                     
                     localStorage.setItem('isAuthenticated', 'true');

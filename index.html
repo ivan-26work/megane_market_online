@@ -431,6 +431,62 @@
             opacity: 0.5;
         }
 
+        /* Modal accès restreint */
+        .access-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .access-modal-content {
+            background: #0e1a26;
+            border: 1px solid #2a3a4a;
+            border-radius: 30px;
+            padding: 40px;
+            text-align: center;
+            max-width: 400px;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        .access-modal-content i {
+            font-size: 3rem;
+            color: #ffaa44;
+            margin-bottom: 16px;
+        }
+
+        .access-modal-content h3 {
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+        }
+
+        .access-modal-content p {
+            color: #8a9aaa;
+            margin-bottom: 24px;
+        }
+
+        .access-modal-btn {
+            background: #5a9eff;
+            border: none;
+            border-radius: 40px;
+            padding: 12px 24px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .access-modal-btn:hover {
+            background: #3a7ecc;
+        }
+
         /* Responsive */
         @media (max-width: 600px) {
             .products-grid {
@@ -548,6 +604,52 @@
             let allProducts = [];
             let categories = new Set();
             let activeCategory = 'all';
+
+            // ============ VÉRIFICATION CLIENT ============
+            async function checkClientAccess() {
+                const { data: { session } } = await supabase.auth.getSession();
+                
+                if (!session) {
+                    showAccessModal('Veuillez vous connecter pour accéder au marché', 'login.html');
+                    return false;
+                }
+                
+                // Vérifier si l'utilisateur est dans la table buyers
+                const { data: buyer } = await supabase
+                    .from('buyers')
+                    .select('id')
+                    .eq('id', session.user.id)
+                    .single();
+                
+                if (!buyer) {
+                    showAccessModal('Vous êtes connecté en tant que vendeur. Pour accéder au marché, connectez-vous en tant que client.', 'login.html');
+                    return false;
+                }
+                
+                return true;
+            }
+
+            function showAccessModal(message, redirectUrl) {
+                // Cacher tout le contenu
+                document.querySelector('.main-header').style.display = 'none';
+                document.querySelector('main').style.display = 'none';
+                document.querySelector('.filters-footer').style.display = 'none';
+                
+                const modalHtml = `
+                    <div id="accessModal" class="access-modal">
+                        <div class="access-modal-content">
+                            <i class="fas fa-lock"></i>
+                            <h3>Accès restreint</h3>
+                            <p>${message}</p>
+                            <button id="accessModalBtn" class="access-modal-btn">Se connecter</button>
+                        </div>
+                    </div>
+                `;
+                document.body.insertAdjacentHTML('beforeend', modalHtml);
+                document.getElementById('accessModalBtn').onclick = () => {
+                    window.location.href = redirectUrl;
+                };
+            }
 
             // ============ ENREGISTRER LE CLIC SUR PRODUIT ============
             async function recordProductClick(productId) {
@@ -865,6 +967,10 @@
             }
 
             async function init() {
+                // Vérifier d'abord si l'utilisateur a le droit d'accéder au marché
+                const hasAccess = await checkClientAccess();
+                if (!hasAccess) return;
+                
                 await loadProducts();
                 await checkAndDisplayNotification();
             }

@@ -263,7 +263,6 @@
 
         .field-textarea::placeholder { color: #4a5a6a; }
 
-        /* Focus effect sur toute la ligne */
         .field-row:focus-within {
             background: rgba(90, 158, 255, 0.04);
         }
@@ -456,12 +455,25 @@
             return d.innerHTML;
         }
 
-        // ============ SESSION ============
-        async function checkSession() {
+        // ============ VÉRIFICATION CLIENT ============
+        async function checkClientAccess() {
             const { data: { session } } = await supabase.auth.getSession();
             if (!session) { window.location.href = 'login.html'; return false; }
+            
+            const { data: buyer } = await supabase
+                .from('buyers')
+                .select('id')
+                .eq('id', session.user.id)
+                .single();
+            
+            if (!buyer) { 
+                await supabase.auth.signOut();
+                window.location.href = 'login.html'; 
+                return false; 
+            }
+            
             currentUserId = session.user.id;
-            currentUser   = session.user;
+            currentUser = session.user;
             return true;
         }
 
@@ -504,7 +516,7 @@
                     </div>
                 </div>
 
-                <!-- Infos personnelles -->
+                <!-- Informations personnelles -->
                 <div class="section-card">
                     <div class="section-title"><i class="fas fa-user"></i> Informations personnelles</div>
 
@@ -595,86 +607,82 @@
         });
 
         // ============ SAUVEGARDER ============
-        async function saveProfile() {
-            const fullName = document.getElementById('fullName')?.value.trim() || '';
-            const phone    = document.getElementById('phone')?.value.trim()    || '';
-            const city     = document.getElementById('city')?.value.trim()     || '';
-            const address  = document.getElementById('address')?.value.trim()  || '';
+     async function saveProfile() {
+    const fullName = document.getElementById('fullName')?.value.trim() || '';
+    const phone    = document.getElementById('phone')?.value.trim()    || '';
+    const city     = document.getElementById('city')?.value.trim()     || '';
+    const address  = document.getElementById('address')?.value.trim()  || '';
 
-            const saveBtn = document.getElementById('saveBtn');
-            saveBtn.disabled = true;
-            showLoading('Enregistrement...');
+    const saveBtn = document.getElementById('saveBtn');
+    saveBtn.disabled = true;
+    showLoading('Enregistrement...');
 
-            try {
-                // Upload avatar si nouveau fichier
-                let avatarUrl = null;
-                if (newAvatarFile) {
-                    const ext  = newAvatarFile.name.split('.').pop();
-                    const path = `${currentUserId}/avatar.${ext}`;
+    try {
+        let avatarUrl = null;
+        if (newAvatarFile) {
+            const ext  = newAvatarFile.name.split('.').pop();
+            const path = `${currentUserId}/avatar.${ext}`;
 
-                    const { error: upErr } = await supabase.storage
-                        .from('buyers-avatars')
-                        .upload(path, newAvatarFile, { upsert: true });
+            const { error: upErr } = await supabase.storage
+                .from('buyers-avatars')
+                .upload(path, newAvatarFile, { upsert: true });
 
-                    if (!upErr) {
-                        const { data: urlData } = supabase.storage
-                            .from('buyers-avatars')
-                            .getPublicUrl(path);
-                        avatarUrl = urlData.publicUrl;
+            if (!upErr) {
+                const { data: urlData } = supabase.storage
+                    .from('buyers-avatars')
+                    .getPublicUrl(path);
+                avatarUrl = urlData.publicUrl;
+                const img = document.getElementById('avatarImg');
+                if (img && avatarUrl) img.src = avatarUrl;
+            }
+            newAvatarFile = null;
+        }
 
-                        // Mettre à jour l'image affichée
-                        const img = document.getElementById('avatarImg');
-                        if (img && avatarUrl) img.src = avatarUrl;
-                    }
-                    newAvatarFile = null;
+        // IMPORTANT : inclure l'email
+        const payload = {
+            id        : currentUserId,
+            email     : currentUser.email,
+            full_name : fullName,
+            phone     : phone,
+            city      : city,
+            address   : address,
+            updated_at: new Date().toISOString()
+        };
+
+        if (avatarUrl) payload.avatar_url = avatarUrl;
+
+        const { error } = await supabase
+            .from('buyers')
+            .upsert(payload);
+
+        if (error) throw error;
+
+        // Mise à jour de l'affichage de la ville
+        const avatarCard = document.querySelector('.avatar-location');
+        if (city) {
+            if (avatarCard) {
+                avatarCard.innerHTML = `<i class="fas fa-map-marker-alt"></i>${escapeHtml(city)}`;
+            } else {
+                const nameEl = document.getElementById('displayName');
+                if (nameEl && nameEl.parentElement) {
+                    const locDiv = document.createElement('div');
+                    locDiv.className = 'avatar-location';
+                    locDiv.innerHTML = `<i class="fas fa-map-marker-alt"></i>${escapeHtml(city)}`;
+                    nameEl.parentElement.appendChild(locDiv);
                 }
-
-                // Upsert profil
-                const payload = {
-                    id        : currentUserId,
-                    full_name : fullName,
-                    phone     : phone,
-                    city      : city,
-                    address   : address,
-                    updated_at: new Date().toISOString()
-                };
-
-                if (avatarUrl) payload.avatar_url = avatarUrl;
-
-                const { error } = await supabase
-                    .from('buyers')
-                    .upsert(payload);
-
-                if (error) throw error;
-
-                // Mettre à jour la ville dans la carte avatar
-                const avatarCard = document.querySelector('.avatar-location');
-                if (city) {
-                    if (avatarCard) {
-                        avatarCard.innerHTML = `<i class="fas fa-map-marker-alt"></i>${escapeHtml(city)}`;
-                    } else {
-                        // Insérer si pas encore présent
-                        const nameEl = document.getElementById('displayName');
-                        if (nameEl && nameEl.parentElement) {
-                            const locDiv = document.createElement('div');
-                            locDiv.className = 'avatar-location';
-                            locDiv.innerHTML = `<i class="fas fa-map-marker-alt"></i>${escapeHtml(city)}`;
-                            nameEl.parentElement.appendChild(locDiv);
-                        }
-                    }
-                }
-
-                showToast('Profil enregistré !', 'success');
-
-            } catch (err) {
-                console.error(err);
-                showToast('Erreur : ' + err.message, 'error');
-            } finally {
-                saveBtn.disabled = false;
-                hideLoading();
             }
         }
 
+        showToast('Profil enregistré !', 'success');
+
+    } catch (err) {
+        console.error(err);
+        showToast('Erreur : ' + err.message, 'error');
+    } finally {
+        saveBtn.disabled = false;
+        hideLoading();
+    }
+}
         // ============ DÉCONNEXION ============
         async function logout() {
             showLoading('Déconnexion...');
@@ -684,7 +692,7 @@
 
         // ============ INIT ============
         async function init() {
-            const ok = await checkSession();
+            const ok = await checkClientAccess();
             if (!ok) return;
             await loadProfile();
         }

@@ -549,37 +549,7 @@
         let currentProduct = null;
         let currentMarket  = null;
         let buyerProfile   = null;
-
-        // ============ ENREGISTREMENT DES STATS ============
-        async function recordProductView(productId) {
-            try {
-                await supabase
-                    .from('product_stats')
-                    .insert({
-                        product_id: productId,
-                        view_count: 1,
-                        viewed_at: new Date().toISOString()
-                    });
-                console.log('Vue enregistrée pour le produit:', productId);
-            } catch (err) {
-                console.error('Erreur enregistrement vue:', err);
-            }
-        }
-
-        async function recordProductClick(productId) {
-            try {
-                await supabase
-                    .from('product_stats')
-                    .insert({
-                        product_id: productId,
-                        click_count: 1,
-                        clicked_at: new Date().toISOString()
-                    });
-                console.log('Clic WhatsApp enregistré pour le produit:', productId);
-            } catch (err) {
-                console.error('Erreur enregistrement clic:', err);
-            }
-        }
+        let currentUserId  = null;
 
         // ============ UTILITAIRES ============
         function showToast(message, type = 'info') {
@@ -611,6 +581,30 @@
             return clean;
         }
 
+        // ============ ENREGISTREMENT DE LA COMMANDE ============
+        async function saveOrder() {
+            if (!currentUserId || !currentProduct) return false;
+            
+            const firstImage = (currentProduct.images && currentProduct.images[0]) ? currentProduct.images[0] : null;
+            
+            const { error } = await supabase
+                .from('orders')
+                .insert({
+                    buyer_id: currentUserId,
+                    product_id: currentProduct.id,
+                    product_name: currentProduct.name,
+                    product_price: currentProduct.price,
+                    product_image: firstImage,
+                    created_at: new Date().toISOString()
+                });
+            
+            if (error) {
+                console.error('Erreur enregistrement commande:', error);
+                return false;
+            }
+            return true;
+        }
+
         // ============ MODAL WhatsApp ============
         function openWhatsAppModal() {
             if (!currentProduct || !currentMarket) return;
@@ -631,6 +625,7 @@
             modalOverlay.style.display = 'none';
         }
 
+        // Compteur de caractères + activation bouton
         clientMessage.addEventListener('input', () => {
             const len = clientMessage.value.trim().length;
             const total = clientMessage.value.length;
@@ -645,6 +640,7 @@
             if (e.target === modalOverlay) closeModal();
         });
 
+        // ============ CONSTRUIRE ET ENVOYER LE MESSAGE WA ============
         sendWaBtn.addEventListener('click', async () => {
             const message = clientMessage.value.trim();
             if (!message) {
@@ -659,8 +655,12 @@
                 return;
             }
 
-            // ====== ENREGISTRER LE CLIC COMMANDER ======
-            await recordProductClick(currentProduct.id);
+            // ====== ENREGISTRER LA COMMANDE ======
+            const orderSaved = await saveOrder();
+            if (!orderSaved) {
+                showToast('Erreur lors de l\'enregistrement de la commande', 'error');
+                // On continue quand même pour ne pas bloquer le client
+            }
 
             // ====== CONSTRUCTION DU MESSAGE ======
             const buyer = buyerProfile || {};
@@ -694,9 +694,11 @@ ${message}`;
             if (!productId) { window.location.href = 'index.html'; return; }
 
             try {
+                // Récupérer la session
                 const { data: { session } } = await supabase.auth.getSession();
-
+                
                 if (session) {
+                    currentUserId = session.user.id;
                     const userId = session.user.id;
                     const { data: bd } = await supabase
                         .from('buyers')
@@ -712,6 +714,7 @@ ${message}`;
                     };
                 }
 
+                // Récupérer le produit
                 const { data: product, error } = await supabase
                     .from('products')
                     .select('*')
@@ -722,6 +725,7 @@ ${message}`;
                 if (!product) { showToast('Produit non trouvé'); setTimeout(() => window.location.href = 'index.html', 2000); return; }
                 if (product.active === false) { showToast('Produit indisponible'); setTimeout(() => window.location.href = 'index.html', 2000); return; }
 
+                // Récupérer le vendeur
                 const { data: market, error: mErr } = await supabase
                     .from('markets')
                     .select('*')
@@ -735,9 +739,6 @@ ${message}`;
                 currentMarket  = market;
                 currentImages  = (product.images || []).filter(Boolean);
                 currentImageIndex = 0;
-
-                // ====== ENREGISTRER LA VUE DU PRODUIT ======
-                await recordProductView(currentProduct.id);
 
                 displayProduct(product, market);
 
@@ -755,6 +756,7 @@ ${message}`;
         function displayProduct(product, market) {
             productNameEl.textContent = product.name;
 
+            // Images
             let imagesHtml = '';
             if (currentImages.length > 0) {
                 imagesHtml = `
@@ -781,6 +783,7 @@ ${message}`;
                     </div>`;
             }
 
+            // Champs infos
             const priceOptionHtml = product.price_option
                 ? `<div class="info-field"><label>Option prix</label><div class="info-value">${escapeHtml(product.price_option)}</div></div>` : '';
 
@@ -790,6 +793,7 @@ ${message}`;
             const descHtml = product.description
                 ? `<div class="info-field description-field"><label>Description</label><div class="info-value">${escapeHtml(product.description)}</div></div>` : '';
 
+            // Vendeur
             const sellerName = market.market_name || market.owner_name || 'Vendeur';
             const sellerLocation = market.city || market.location || '';
 
@@ -816,6 +820,7 @@ ${message}`;
                 </div>
             `;
 
+            // Gestion navigation images
             if (currentImages.length > 1) {
                 const mainImg    = document.getElementById('mainImage');
                 const prevBtn    = document.getElementById('prevBtn');
@@ -835,6 +840,7 @@ ${message}`;
                 thumbs.forEach(t => t.addEventListener('click', () => goTo(parseInt(t.dataset.index))));
             }
 
+            // Bouton WhatsApp → ouvre le modal
             document.getElementById('waBtn').addEventListener('click', () => {
                 if (!currentMarket.whatsapp) {
                     showToast('Numéro WhatsApp indisponible', 'error');

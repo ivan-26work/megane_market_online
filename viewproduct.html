@@ -61,7 +61,6 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            text-decoration: none;
             font-size: 0.85rem;
             transition: all 0.3s ease;
         }
@@ -364,7 +363,7 @@
             margin-bottom: 20px;
         }
 
-        /* Récap produit dans le modal */
+        /* Récap produit */
         .modal-recap {
             background: #1a2a3a;
             border-radius: 16px;
@@ -481,9 +480,9 @@
 <body>
 
     <header class="main-header">
-        <a href="index.html" class="back-btn">
+        <button class="back-btn" id="backBtn">
             <i class="fas fa-arrow-left"></i> Retour
-        </a>
+        </button>
         <h3 id="productName">Produit</h3>
         <div class="placeholder"></div>
     </header>
@@ -505,13 +504,11 @@
             </div>
             <div class="modal-wa-subtitle">Écrivez votre message au vendeur — il sera envoyé avec vos informations.</div>
 
-            <!-- Récap produit -->
             <div class="modal-recap">
                 <div class="modal-recap-name" id="modalProductName">—</div>
                 <div class="modal-recap-price" id="modalProductPrice">—</div>
             </div>
 
-            <!-- Message client -->
             <div class="modal-label">Votre message <span class="required">*</span></div>
             <textarea class="modal-textarea" id="clientMessage" placeholder="Ex: Bonjour, je suis intéressé. Est-ce disponible ?" maxlength="500"></textarea>
             <div class="modal-char-count" id="charCount">0 / 500</div>
@@ -543,6 +540,7 @@
         const charCount      = document.getElementById('charCount');
         const modalProductName  = document.getElementById('modalProductName');
         const modalProductPrice = document.getElementById('modalProductPrice');
+        const backBtn        = document.getElementById('backBtn');
 
         let currentImages = [];
         let currentImageIndex = 0;
@@ -550,6 +548,11 @@
         let currentMarket  = null;
         let buyerProfile   = null;
         let currentUserId  = null;
+
+        // Bouton retour dynamique
+        backBtn.addEventListener('click', () => {
+            window.history.back();
+        });
 
         // ============ UTILITAIRES ============
         function showToast(message, type = 'info') {
@@ -625,7 +628,6 @@
             modalOverlay.style.display = 'none';
         }
 
-        // Compteur de caractères + activation bouton
         clientMessage.addEventListener('input', () => {
             const len = clientMessage.value.trim().length;
             const total = clientMessage.value.length;
@@ -640,7 +642,6 @@
             if (e.target === modalOverlay) closeModal();
         });
 
-        // ============ CONSTRUIRE ET ENVOYER LE MESSAGE WA ============
         sendWaBtn.addEventListener('click', async () => {
             const message = clientMessage.value.trim();
             if (!message) {
@@ -655,14 +656,10 @@
                 return;
             }
 
-            // ====== ENREGISTRER LA COMMANDE ======
-            const orderSaved = await saveOrder();
-            if (!orderSaved) {
-                showToast('Erreur lors de l\'enregistrement de la commande', 'error');
-                // On continue quand même pour ne pas bloquer le client
-            }
+            // Enregistrer la commande
+            await saveOrder();
 
-            // ====== CONSTRUCTION DU MESSAGE ======
+            // Construction du message
             const buyer = buyerProfile || {};
             const name     = buyer.full_name || 'Inconnu';
             const email    = buyer.email    || '—';
@@ -694,7 +691,6 @@ ${message}`;
             if (!productId) { window.location.href = 'index.html'; return; }
 
             try {
-                // Récupérer la session
                 const { data: { session } } = await supabase.auth.getSession();
                 
                 if (session) {
@@ -714,7 +710,6 @@ ${message}`;
                     };
                 }
 
-                // Récupérer le produit
                 const { data: product, error } = await supabase
                     .from('products')
                     .select('*')
@@ -725,7 +720,6 @@ ${message}`;
                 if (!product) { showToast('Produit non trouvé'); setTimeout(() => window.location.href = 'index.html', 2000); return; }
                 if (product.active === false) { showToast('Produit indisponible'); setTimeout(() => window.location.href = 'index.html', 2000); return; }
 
-                // Récupérer le vendeur
                 const { data: market, error: mErr } = await supabase
                     .from('markets')
                     .select('*')
@@ -752,11 +746,9 @@ ${message}`;
             }
         }
 
-        // ============ AFFICHAGE PRODUIT ============
         function displayProduct(product, market) {
             productNameEl.textContent = product.name;
 
-            // Images
             let imagesHtml = '';
             if (currentImages.length > 0) {
                 imagesHtml = `
@@ -783,7 +775,6 @@ ${message}`;
                     </div>`;
             }
 
-            // Champs infos
             const priceOptionHtml = product.price_option
                 ? `<div class="info-field"><label>Option prix</label><div class="info-value">${escapeHtml(product.price_option)}</div></div>` : '';
 
@@ -793,7 +784,6 @@ ${message}`;
             const descHtml = product.description
                 ? `<div class="info-field description-field"><label>Description</label><div class="info-value">${escapeHtml(product.description)}</div></div>` : '';
 
-            // Vendeur
             const sellerName = market.market_name || market.owner_name || 'Vendeur';
             const sellerLocation = market.city || market.location || '';
 
@@ -820,7 +810,6 @@ ${message}`;
                 </div>
             `;
 
-            // Gestion navigation images
             if (currentImages.length > 1) {
                 const mainImg    = document.getElementById('mainImage');
                 const prevBtn    = document.getElementById('prevBtn');
@@ -840,7 +829,6 @@ ${message}`;
                 thumbs.forEach(t => t.addEventListener('click', () => goTo(parseInt(t.dataset.index))));
             }
 
-            // Bouton WhatsApp → ouvre le modal
             document.getElementById('waBtn').addEventListener('click', () => {
                 if (!currentMarket.whatsapp) {
                     showToast('Numéro WhatsApp indisponible', 'error');

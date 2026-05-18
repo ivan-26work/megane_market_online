@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>Megane Market - Produits</title>
+    <title>Megane Market - Actualités</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -18,19 +18,11 @@
             background: #0a0f1a;
             color: #eef2ff;
             min-height: 100vh;
-            padding-bottom: 90px;
         }
 
-        /* Animations */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
         }
 
         @keyframes shimmer {
@@ -38,90 +30,77 @@
             100% { background-position: 200% 0; }
         }
 
-        @keyframes multicolor {
-            0% { color: #5a9eff; text-shadow: 0 0 2px #5a9eff; }
-            33% { color: #4ade80; text-shadow: 0 0 2px #4ade80; }
-            66% { color: #ffaa44; text-shadow: 0 0 2px #ffaa44; }
-            100% { color: #5a9eff; text-shadow: 0 0 2px #5a9eff; }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
         }
 
-        .logo.has-new {
-            animation: multicolor 1.5s ease-in-out infinite;
-            cursor: pointer;
+        @keyframes fadeTransition {
+            0% { opacity: 0; transform: translateX(10px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes pricePulse {
+            0% { transform: scale(1); color: #5a9eff; }
+            50% { transform: scale(1.15); color: #4ade80; }
+            100% { transform: scale(1); color: #5a9eff; }
         }
 
         /* Header */
         .main-header {
             position: sticky;
-            top: 16px;
+            top: 0;
             z-index: 100;
-            background: #0e1a26;
-            border-radius: 60px;
-            border: 1px solid #2a3a4a;
-            height: 60px;
-            margin: 16px 16px 0 16px;
-            padding: 0 20px;
+            background: rgba(10, 15, 26, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid #1a2a3a;
+            padding: 16px 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            flex-wrap: wrap;
             gap: 12px;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-
-        .main-header:hover {
-            border-color: #5a9eff;
-            box-shadow: 0 4px 20px rgba(90, 158, 255, 0.15);
         }
 
         .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
             font-size: 1.2rem;
             font-weight: 700;
             color: #5a9eff;
-            white-space: nowrap;
-            transition: transform 0.3s ease;
             text-decoration: none;
         }
 
-        .logo:hover {
-            transform: scale(1.05);
+        .logo i {
+            animation: float 3s ease-in-out infinite;
         }
 
-        .search-container {
-            flex: 1;
-            position: relative;
-            max-width: 300px;
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
         }
 
-        .search-container i {
-            position: absolute;
-            left: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #8a9aaa;
-            font-size: 0.8rem;
-            transition: color 0.3s ease;
+        .market-btn {
+            background: linear-gradient(135deg, #5a9eff, #3a7ecc);
+            border: none;
+            border-radius: 40px;
+            padding: 10px 24px;
+            color: white;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
         }
 
-        .search-container input {
-            width: 100%;
-            padding: 8px 12px 8px 38px;
-            background: #1a2a3a;
-            border: 1px solid #2a3a4a;
-            border-radius: 30px;
-            color: #eef2ff;
-            font-size: 0.8rem;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        .search-container input:focus {
-            border-color: #5a9eff;
-            box-shadow: 0 0 0 2px rgba(90, 158, 255, 0.2);
-        }
-
-        .search-container input:focus + i {
-            color: #5a9eff;
+        .market-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(90, 158, 255, 0.3);
         }
 
         .profile-btn {
@@ -135,281 +114,397 @@
             justify-content: center;
             cursor: pointer;
             color: #eef2ff;
-            transition: all 0.3s ease;
+            transition: all 0.2s;
             text-decoration: none;
         }
 
         .profile-btn:hover {
             background: #5a9eff;
             color: white;
-            transform: scale(1.1);
-            border-color: #5a9eff;
+            transform: scale(1.05);
         }
 
-        /* Bannière notification */
-        .notification-banner {
-            margin: 16px 16px 0 16px;
-            padding: 12px 20px;
-            border-radius: 40px;
-            background: #0e1a26;
-            border: 1px solid #2a3a4a;
+        /* Hero */
+        .hero {
+            text-align: center;
+            padding: 60px 20px 40px;
+            background: linear-gradient(135deg, #0a0f1a 0%, #0e1a26 100%);
+            border-bottom: 1px solid #1a2a3a;
+        }
+
+        .hero h1 {
+            font-size: 2rem;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #5a9eff, #4ade80);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            color: #8a9aaa;
+            font-size: 0.9rem;
+        }
+
+        /* Bannière suggestion - deux cadres côte à côte */
+        .suggestion-banner {
+            background: linear-gradient(135deg, #0e1a26, #0a1520);
+            border: 1px solid #5a9eff;
+            border-radius: 24px;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 800px;
+            animation: fadeSlideUp 0.5s ease;
+        }
+
+        .suggestion-text {
             display: flex;
             align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            animation: fadeInUp 0.5s ease;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: #5a9eff;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-align: center;
+            justify-content: center;
         }
 
-        .notification-banner:hover {
-            border-color: #5a9eff;
-            transform: translateY(-2px);
+        .suggestion-dual {
+            display: flex;
+            gap: 20px;
+            align-items: center;
         }
 
-        .notification-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #5a9eff;
-            flex-shrink: 0;
-        }
-
-        .notification-avatar-placeholder {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
+        .suggestion-image-box {
+            flex: 1;
+            aspect-ratio: 1 / 1;
             background: #1a2a3a;
+            border-radius: 20px;
+            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #5a9eff;
-            font-size: 1.2rem;
-            flex-shrink: 0;
-        }
-
-        .notification-content {
-            flex: 1;
-        }
-
-        .notification-message {
-            font-weight: 600;
-            font-size: 0.85rem;
-            color: #eef2ff;
-        }
-
-        .notification-sub {
-            font-size: 0.7rem;
-            color: #8a9aaa;
-            margin-top: 2px;
-        }
-
-        .notification-close {
-            background: none;
-            border: none;
-            color: #8a9aaa;
-            font-size: 1rem;
             cursor: pointer;
-            padding: 5px;
-            transition: color 0.2s;
+            transition: transform 0.3s ease;
         }
 
-        .notification-close:hover {
-            color: #ff4d4d;
+        .suggestion-image-box:hover {
+            transform: scale(1.02);
         }
 
-        /* Grille produits */
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
+        .suggestion-image-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .suggestion-image-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #2a3a4a;
+        }
+
+        .suggestion-info-box {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .suggestion-info-box .product-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .suggestion-info-box .product-price {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #5a9eff;
+        }
+
+        .suggestion-btn {
+            background: #5a9eff;
+            border: none;
+            border-radius: 40px;
+            padding: 10px 20px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: fit-content;
+        }
+
+        .suggestion-btn:hover {
+            background: #3a7ecc;
+            transform: scale(1.02);
+        }
+
+        .suggestion-nav-container {
+            display: flex;
+            justify-content: center;
             gap: 16px;
-            padding: 20px;
-            animation: fadeInUp 0.5s ease;
+            margin-top: 20px;
         }
 
+        .suggestion-nav {
+            background: #1a2a3a;
+            border: 1px solid #2a3a4a;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #eef2ff;
+            transition: all 0.2s;
+        }
+
+        .suggestion-nav:hover {
+            background: #5a9eff;
+            border-color: #5a9eff;
+            transform: scale(1.05);
+        }
+
+        /* Flux actualités */
+        .news-feed {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Carte produit */
         .product-card {
             background: #0e1a26;
-            border: 1px solid #2a3a4a;
-            border-radius: 20px;
+            border: 1px solid #1a2a3a;
+            border-radius: 24px;
+            margin-bottom: 24px;
             overflow: hidden;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            animation: fadeInUp 0.5s ease backwards;
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            animation: fadeSlideUp 0.5s ease backwards;
+            position: relative;
         }
-
-        .product-card:nth-child(1) { animation-delay: 0.05s; }
-        .product-card:nth-child(2) { animation-delay: 0.1s; }
-        .product-card:nth-child(3) { animation-delay: 0.15s; }
-        .product-card:nth-child(4) { animation-delay: 0.2s; }
-        .product-card:nth-child(5) { animation-delay: 0.25s; }
-        .product-card:nth-child(6) { animation-delay: 0.3s; }
 
         .product-card:hover {
-            transform: translateY(-6px);
+            transform: translateY(-4px);
             border-color: #5a9eff;
-            box-shadow: 0 12px 30px rgba(90, 158, 255, 0.2);
+            box-shadow: 0 15px 30px rgba(90, 158, 255, 0.1);
         }
 
-        .product-card:active {
-            transform: scale(0.98);
-            transition: transform 0.1s ease;
+        .product-card.featured {
+            border: 2px solid #ffaa44;
+        }
+
+        .product-card.featured::before {
+            content: "⭐ À LA UNE ⭐";
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: #ffaa44;
+            color: #1a2a3a;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 30px;
+            z-index: 2;
+        }
+
+        .product-image-container {
+            position: relative;
+            width: 100%;
+            height: 220px;
+            overflow: hidden;
+            cursor: pointer;
         }
 
         .product-image {
             width: 100%;
-            height: 150px;
+            height: 100%;
             object-fit: cover;
-            background: #1a2a3a;
-            transition: transform 0.5s ease;
+            transition: transform 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1);
         }
 
-        .product-card:hover .product-image {
+        .product-image-container:hover .product-image {
             transform: scale(1.05);
         }
 
         .product-image-placeholder {
             width: 100%;
-            height: 150px;
+            height: 100%;
             background: #1a2a3a;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #5a9eff;
-            font-size: 2.5rem;
-            transition: all 0.3s ease;
+            color: #2a3a4a;
+            font-size: 3rem;
         }
 
         .product-info {
-            padding: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .market-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #1a2a3a;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            color: #5a9eff;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .product-card:hover .market-badge {
+            background: #5a9eff;
+            color: white;
         }
 
         .product-name {
-            font-weight: 600;
-            font-size: 0.85rem;
-            margin-bottom: 6px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .product-card:hover .product-name {
-            color: #5a9eff;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            line-height: 1.3;
         }
 
         .product-price {
+            font-size: 1.1rem;
             font-weight: 700;
             color: #5a9eff;
-            font-size: 0.9rem;
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .product-price.pulse {
+            animation: pricePulse 0.5s ease-in-out;
+        }
+
+        .product-description {
+            font-size: 0.85rem;
+            color: #8a9aaa;
+            line-height: 1.5;
+            margin-bottom: 16px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .product-footer {
+            display: flex;
+            justify-content: flex-end;
+            padding-top: 12px;
+            border-top: 1px solid #1a2a3a;
+        }
+
+        .detail-link {
+            background: transparent;
+            border: 1px solid #5a9eff;
+            border-radius: 40px;
+            padding: 6px 16px;
+            color: #5a9eff;
+            font-weight: 600;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .detail-link:hover {
+            background: #5a9eff;
+            color: white;
+        }
+
+        /* Carte message admin */
+        .message-card {
+            background: linear-gradient(135deg, #0e1a26, #0a1520);
+            border: 1px solid #1a2a3a;
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 24px;
+            display: flex;
+            gap: 16px;
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            animation: fadeSlideUp 0.5s ease;
+        }
+
+        .message-card:hover {
+            transform: translateY(-4px);
+            border-color: #5a9eff;
+            box-shadow: 0 12px 30px rgba(90, 158, 255, 0.1);
+        }
+
+        .admin-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #5a9eff;
             transition: transform 0.3s ease;
         }
 
-        .product-card:hover .product-price {
-            transform: translateX(4px);
+        .message-card:hover .admin-avatar {
+            transform: scale(1.05);
         }
 
-        /* Footer filtres */
-        .filters-footer {
-            position: fixed;
-            bottom: 16px;
-            left: 16px;
-            right: 16px;
-            background: #0e1a26;
-            border-radius: 60px;
-            border: 1px solid #2a3a4a;
-            height: 60px;
-            padding: 0 20px;
-            z-index: 100;
-            overflow-x: auto;
-            white-space: nowrap;
+        .admin-avatar-placeholder {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: #1a2a3a;
             display: flex;
             align-items: center;
-            gap: 8px;
-            scrollbar-width: none;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-
-        .filters-footer:hover {
-            border-color: #5a9eff;
-            box-shadow: 0 4px 20px rgba(90, 158, 255, 0.15);
-        }
-
-        .filters-footer::-webkit-scrollbar {
-            display: none;
-        }
-
-        .filter-chip {
-            display: inline-block;
-            padding: 8px 20px;
-            background: #1a2a3a;
-            border: 1px solid #2a3a4a;
-            border-radius: 40px;
-            font-size: 0.8rem;
-            font-weight: 500;
-            color: #8a9aaa;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            flex-shrink: 0;
-        }
-
-        .filter-chip:hover {
-            border-color: #5a9eff;
+            justify-content: center;
+            font-size: 1.5rem;
             color: #5a9eff;
-            transform: translateY(-2px);
         }
 
-        .filter-chip.active {
-            background: #5a9eff;
-            border-color: #5a9eff;
-            color: white;
-            animation: pulse 0.5s ease;
+        .message-content {
+            flex: 1;
         }
 
-        /* Loader */
-        .loader {
-            text-align: center;
-            padding: 60px;
+        .admin-name {
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: #5a9eff;
         }
 
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 3px solid #2a3a4a;
-            border-top-color: #5a9eff;
-            border-radius: 50%;
-            margin: 0 auto 16px;
-            animation: spin 0.8s linear infinite;
+        .message-text {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #eef2ff;
+            margin-bottom: 10px;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .message-date {
+            font-size: 0.7rem;
+            color: #6a8aaa;
         }
 
-        /* Skeleton loader */
-        .skeleton-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-            padding: 20px;
-        }
-
+        /* Skeleton */
         .skeleton-card {
             background: #0e1a26;
-            border-radius: 20px;
+            border-radius: 24px;
+            margin-bottom: 24px;
             overflow: hidden;
         }
 
         .skeleton-image {
-            height: 150px;
+            height: 220px;
             background: linear-gradient(90deg, #1a2a3a 25%, #2a3a4a 50%, #1a2a3a 75%);
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
         }
 
         .skeleton-text {
-            height: 12px;
+            height: 16px;
             background: #1a2a3a;
-            margin: 12px;
+            margin: 16px;
             border-radius: 8px;
         }
 
@@ -417,176 +512,97 @@
             width: 60%;
         }
 
-        .empty-products {
-            grid-column: 1 / -1;
+        .empty-state {
             text-align: center;
             padding: 60px 20px;
             color: #8a9aaa;
-            animation: fadeInUp 0.5s ease;
         }
 
-        .empty-products i {
-            font-size: 3rem;
-            margin-bottom: 16px;
-            opacity: 0.5;
-        }
-
-        /* Modal accès restreint */
-        .access-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            backdrop-filter: blur(8px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-        }
-
-        .access-modal-content {
-            background: #0e1a26;
-            border: 1px solid #2a3a4a;
-            border-radius: 30px;
-            padding: 40px;
-            text-align: center;
-            max-width: 400px;
-            animation: fadeInUp 0.3s ease;
-        }
-
-        .access-modal-content i {
-            font-size: 3rem;
-            color: #ffaa44;
-            margin-bottom: 16px;
-        }
-
-        .access-modal-content h3 {
-            font-size: 1.3rem;
-            margin-bottom: 12px;
-        }
-
-        .access-modal-content p {
-            color: #8a9aaa;
-            margin-bottom: 24px;
-        }
-
-        .access-modal-btn {
-            background: #5a9eff;
-            border: none;
-            border-radius: 40px;
-            padding: 12px 24px;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .access-modal-btn:hover {
-            background: #3a7ecc;
-        }
-
-        /* Responsive */
         @media (max-width: 600px) {
-            .products-grid {
-                gap: 10px;
-                padding: 12px;
-            }
-            
-            .product-image, .product-image-placeholder {
-                height: 110px;
-            }
-            
-            .product-name {
-                font-size: 0.7rem;
-            }
-            
-            .product-price {
-                font-size: 0.7rem;
-            }
-            
-            .product-info {
-                padding: 8px;
-            }
-            
-            .filter-chip {
-                padding: 6px 14px;
-                font-size: 0.7rem;
-            }
-            
             .main-header {
-                margin: 12px 12px 0 12px;
-                height: 55px;
-                padding: 0 15px;
+                padding: 12px 16px;
             }
-            
-            .profile-btn {
-                width: 36px;
-                height: 36px;
+            .hero h1 {
+                font-size: 1.5rem;
             }
-
-            .notification-banner {
-                margin: 12px 12px 0 12px;
-                padding: 10px 16px;
+            .product-image-container {
+                height: 180px;
             }
-
-            .notification-avatar, .notification-avatar-placeholder {
-                width: 36px;
-                height: 36px;
+            .product-name {
+                font-size: 1rem;
             }
-
-            .notification-message {
-                font-size: 0.75rem;
+            .message-card {
+                flex-direction: column;
+                text-align: center;
             }
-        }
-
-        @media (max-width: 450px) {
-            .products-grid {
-                gap: 8px;
-                padding: 10px;
+            .admin-avatar, .admin-avatar-placeholder {
+                margin: 0 auto;
             }
-            
-            .product-image, .product-image-placeholder {
-                height: 100px;
+            .suggestion-dual {
+                flex-direction: column;
+            }
+            .suggestion-image-box {
+                width: 100%;
+                max-width: 200px;
+                margin: 0 auto;
+            }
+            .suggestion-info-box {
+                text-align: center;
+                align-items: center;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- Header -->
     <header class="main-header">
-        <a href="newinfo.html" class="logo" id="mainLogo">
-            <i class="fas fa-store"></i> Megane Market
+        <a href="index.html" class="logo">
+            <i class="fas fa-store"></i>
+            <span>Megane Market</span>
         </a>
-        <div class="search-container">
-            <i class="fas fa-search"></i>
-            <input type="text" id="searchInput" placeholder="Rechercher un produit...">
+        <div class="header-actions">
+            <a href="market.html" class="market-btn">
+                <i class="fas fa-store"></i> Accéder au marché
+            </a>
+            <a href="profil.html" class="profile-btn" title="Mon profil">
+                <i class="fas fa-user"></i>
+            </a>
         </div>
-        <a href="profil.html" class="profile-btn" title="Mon profil">
-            <i class="fas fa-user"></i>
-        </a>
     </header>
 
-    <!-- Bannière notification -->
-    <div id="notificationBanner" style="display: none;"></div>
+    <div class="hero">
+        <h1>✨ Découvrez les nouveautés ✨</h1>
+        <p>Restez informé des dernières actualités de vos commerçants préférés</p>
+    </div>
 
-    <!-- Grille produits -->
-    <main>
-        <div id="productsGrid" class="products-grid">
-            <div class="skeleton-grid">
-                <div class="skeleton-card"><div class="skeleton-image"></div><div class="skeleton-text"></div><div class="skeleton-text short"></div></div>
-                <div class="skeleton-card"><div class="skeleton-image"></div><div class="skeleton-text"></div><div class="skeleton-text short"></div></div>
-                <div class="skeleton-card"><div class="skeleton-image"></div><div class="skeleton-text"></div><div class="skeleton-text short"></div></div>
+    <!-- Bannière suggestion - deux cadres côte à côte -->
+    <div class="suggestion-banner" id="suggestionBanner" style="display: none;">
+        <div class="suggestion-text">
+            <i class="fas fa-magic"></i>
+            <span id="suggestionMessage">✨ À tu vu ce produit ?</span>
+        </div>
+        <div class="suggestion-dual" id="suggestionDual">
+            <div class="suggestion-image-box" id="suggestionImageBox">
+                <img id="suggestionImg" src="" alt="">
+            </div>
+            <div class="suggestion-info-box">
+                <div class="product-name" id="suggestionName"></div>
+                <div class="product-price" id="suggestionPrice"></div>
+                <button id="suggestionBtn" class="suggestion-btn">Voir le produit</button>
             </div>
         </div>
-    </main>
+        <div class="suggestion-nav-container">
+            <button id="prevSuggestionBtn" class="suggestion-nav prev"><i class="fas fa-chevron-left"></i></button>
+            <button id="nextSuggestionBtn" class="suggestion-nav next"><i class="fas fa-chevron-right"></i></button>
+        </div>
+    </div>
 
-    <!-- Footer filtres -->
-    <footer class="filters-footer" id="filtersFooter">
-        <button class="filter-chip active" data-category="all">Tous</button>
-    </footer>
+    <main class="news-feed" id="newsFeed">
+        <div class="loader">
+            <div class="spinner"></div>
+            <p>Chargement des actualités...</p>
+        </div>
+    </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
@@ -595,360 +611,357 @@
             const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtY3NpZ3Zsb3BudHdiZmtramtoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4ODE5MTgsImV4cCI6MjA5NDQ1NzkxOH0.YwYoV-azL3WEFtHoh4yoF7xTLrOwZILKCzJrGPsCs6I';
 
             const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            const productsGrid = document.getElementById('productsGrid');
-            const searchInput = document.getElementById('searchInput');
-            const filtersFooter = document.getElementById('filtersFooter');
-            const notificationBanner = document.getElementById('notificationBanner');
-            const logo = document.getElementById('mainLogo');
+            const newsFeed = document.getElementById('newsFeed');
+            const suggestionBanner = document.getElementById('suggestionBanner');
 
             let allProducts = [];
-            let categories = new Set();
-            let activeCategory = 'all';
+            let allMarkets = [];
+            let allEvents = [];
+            let featuredRotationInterval = null;
+            let availableProductsForFeatured = [];
+            let orderRotationInterval = null;
+            let activeCarouselIntervals = {};
 
-            // ============ VÉRIFICATION CLIENT ============
-            async function checkClientAccess() {
-                const { data: { session } } = await supabase.auth.getSession();
-                
-                if (!session) {
-                    showAccessModal('Veuillez vous connecter pour accéder au marché', 'login.html');
-                    return false;
+            // Historique des suggestions
+            let suggestionHistory = [];
+            let suggestionCurrentIndex = -1;
+            let currentRandomProduct = null;
+            let autoSuggestionInterval = null;
+            let isAutoPlaying = true;
+
+            function animatePrice(card) {
+                const priceEl = card.querySelector('.product-price');
+                if (priceEl) {
+                    priceEl.classList.remove('pulse');
+                    setTimeout(() => {
+                        priceEl.classList.add('pulse');
+                    }, 10);
                 }
-                
-                // Vérifier si l'utilisateur est dans la table buyers
-                const { data: buyer } = await supabase
-                    .from('buyers')
-                    .select('id')
-                    .eq('id', session.user.id)
-                    .single();
-                
-                if (!buyer) {
-                    showAccessModal('Vous êtes connecté en tant que vendeur. Pour accéder au marché, connectez-vous en tant que client.', 'login.html');
-                    return false;
-                }
-                
-                return true;
             }
 
-            function showAccessModal(message, redirectUrl) {
-                // Cacher tout le contenu
-                document.querySelector('.main-header').style.display = 'none';
-                document.querySelector('main').style.display = 'none';
-                document.querySelector('.filters-footer').style.display = 'none';
+            function startProductCarousel(productId) {
+                if (activeCarouselIntervals[productId]) {
+                    clearInterval(activeCarouselIntervals[productId]);
+                    delete activeCarouselIntervals[productId];
+                    return;
+                }
                 
-                const modalHtml = `
-                    <div id="accessModal" class="access-modal">
-                        <div class="access-modal-content">
-                            <i class="fas fa-lock"></i>
-                            <h3>Accès restreint</h3>
-                            <p>${message}</p>
-                            <button id="accessModalBtn" class="access-modal-btn">Se connecter</button>
-                        </div>
-                    </div>
-                `;
-                document.body.insertAdjacentHTML('beforeend', modalHtml);
-                document.getElementById('accessModalBtn').onclick = () => {
-                    window.location.href = redirectUrl;
+                const card = document.querySelector(`.product-card[data-id="${productId}"]`);
+                const product = allProducts.find(p => p.id === productId);
+                if (!card || !product || !product.images || product.images.length <= 1) return;
+                
+                const imgElement = card.querySelector('.product-image');
+                const images = product.images.filter(Boolean);
+                let currentIndex = 0;
+                
+                const interval = setInterval(() => {
+                    currentIndex = (currentIndex + 1) % images.length;
+                    if (imgElement) imgElement.src = images[currentIndex];
+                }, 3500);
+                
+                activeCarouselIntervals[productId] = interval;
+                
+                const stopCarousel = () => {
+                    if (activeCarouselIntervals[productId]) {
+                        clearInterval(activeCarouselIntervals[productId]);
+                        delete activeCarouselIntervals[productId];
+                        // Restaurer la première image
+                        if (imgElement && product.images[0]) imgElement.src = product.images[0];
+                    }
+                    card.removeEventListener('click', stopCarousel);
                 };
+                
+                card.addEventListener('click', stopCarousel, { once: true });
             }
 
-            // ============ ENREGISTRER LE CLIC SUR PRODUIT ============
-            async function recordProductClick(productId) {
-                try {
-                    await supabase
-                        .from('product_stats')
-                        .insert({
-                            product_id: productId,
-                            view_count: 1,
-                            viewed_at: new Date().toISOString()
-                        });
-                    console.log('Clic enregistré pour le produit:', productId);
-                } catch (err) {
-                    console.error('Erreur enregistrement clic:', err);
-                }
+            function loadRandomProductToHistory() {
+                if (!allProducts.length) return;
+                const randomIndex = Math.floor(Math.random() * allProducts.length);
+                const product = allProducts[randomIndex];
+                
+                suggestionHistory.push(product);
+                suggestionCurrentIndex = suggestionHistory.length - 1;
+                
+                displaySuggestionProduct(product);
             }
 
-            // ============ DÉTECTION COMPLÈTE DEPUIS LA BASE ============
-            async function getLatestEvent() {
-                try {
-                    const { data: markets, error: marketsError } = await supabase
-                        .from('markets')
-                        .select('id, market_name, avatar_url, announcement_text, show_announcement, updated_at')
-                        .eq('market_active', true);
-
-                    if (marketsError) throw marketsError;
-
-                    if (!markets || markets.length === 0) return null;
-
-                    const activeMarketIds = markets.map(m => m.id);
-
-                    const { data: products, error: productsError } = await supabase
-                        .from('products')
-                        .select('*, user_id')
-                        .in('user_id', activeMarketIds)
-                        .order('created_at', { ascending: false });
-
-                    if (productsError) throw productsError;
-
-                    let allEvents = [];
-
-                    for (const product of products || []) {
-                        const market = markets.find(m => m.id === product.user_id);
-                        allEvents.push({
-                            id: `product_${product.id}`,
-                            date: product.created_at,
-                            type: 'product',
-                            message: `Nouveau produit ajouté : ${product.name}`,
-                            adminName: market?.market_name || 'Admin',
-                            adminAvatar: market?.avatar_url || null,
-                            link: `viewproduct.html?id=${product.id}`,
-                            isFeatured: product.featured === true
-                        });
-                    }
-
-                    for (const product of products || []) {
-                        if (product.featured === true) {
-                            const market = markets.find(m => m.id === product.user_id);
-                            allEvents.push({
-                                id: `featured_${product.id}`,
-                                date: product.updated_at || product.created_at,
-                                type: 'featured',
-                                message: `Produit à la une ⭐ : ${product.name}`,
-                                adminName: market?.market_name || 'Admin',
-                                adminAvatar: market?.avatar_url || null,
-                                link: `viewproduct.html?id=${product.id}`,
-                                isFeatured: true
-                            });
-                        }
-                    }
-
-                    for (const market of markets) {
-                        if (market.show_announcement === true && market.announcement_text) {
-                            allEvents.push({
-                                id: `message_${market.id}_${market.updated_at}`,
-                                date: market.updated_at,
-                                type: 'message',
-                                message: market.announcement_text,
-                                adminName: market.market_name || 'Admin',
-                                adminAvatar: market.avatar_url || null,
-                                link: 'newinfo.html',
-                                isFeatured: false
-                            });
-                        }
-                    }
-
-                    for (const product of products || []) {
-                        if (product.updated_at && product.updated_at !== product.created_at) {
-                            const market = markets.find(m => m.id === product.user_id);
-                            const statusText = product.active === false ? 'désactivé' : 'réactivé';
-                            allEvents.push({
-                                id: `status_${product.id}_${product.updated_at}`,
-                                date: product.updated_at,
-                                type: 'status_change',
-                                message: `Produit ${statusText} : ${product.name}`,
-                                adminName: market?.market_name || 'Admin',
-                                adminAvatar: market?.avatar_url || null,
-                                link: `viewproduct.html?id=${product.id}`,
-                                isFeatured: false,
-                                status: product.active
-                            });
-                        }
-                    }
-
-                    if (allEvents.length === 0) return null;
-
-                    allEvents.sort((a, b) => new Date(b.date) - new Date(a.date));
-                    return allEvents[0];
-
-                } catch (err) {
-                    console.error('Erreur récupération dernier événement:', err);
-                    return null;
-                }
-            }
-
-            async function checkAndDisplayNotification() {
-                const latestEvent = await getLatestEvent();
-                if (!latestEvent) return;
-
-                const lastViewedId = localStorage.getItem('last_notification_id');
-                const lastViewedDate = localStorage.getItem('last_notification_date');
-
-                const isNew = !lastViewedId || 
-                              (latestEvent.id !== lastViewedId) || 
-                              (lastViewedDate && new Date(latestEvent.date) > new Date(lastViewedDate));
-
-                if (isNew) {
-                    const avatarHtml = latestEvent.adminAvatar 
-                        ? `<img src="${latestEvent.adminAvatar}" class="notification-avatar" alt="${escapeHtml(latestEvent.adminName)}">`
-                        : `<div class="notification-avatar-placeholder"><i class="fas fa-user-circle"></i></div>`;
-
-                    notificationBanner.style.display = 'block';
-                    notificationBanner.innerHTML = `
-                        <div class="notification-banner" id="notificationBannerInner">
-                            ${avatarHtml}
-                            <div class="notification-content">
-                                <div class="notification-message">${escapeHtml(latestEvent.message)}</div>
-                                <div class="notification-sub">${escapeHtml(latestEvent.adminName)} • Appuyez pour plus d'infos</div>
-                            </div>
-                            <button class="notification-close" id="closeNotificationBtn">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                    `;
-
-                    logo.classList.add('has-new');
-
-                    const bannerElement = document.getElementById('notificationBannerInner');
-                    if (bannerElement) {
-                        bannerElement.addEventListener('click', (e) => {
-                            if (e.target.closest('.notification-close')) return;
-                            window.location.href = latestEvent.link;
-                        });
-                    }
-
-                    const closeBtn = document.getElementById('closeNotificationBtn');
-                    if (closeBtn) {
-                        closeBtn.addEventListener('click', (e) => {
-                            e.stopPropagation();
-                            notificationBanner.style.display = 'none';
-                            localStorage.setItem('last_notification_id', latestEvent.id);
-                            localStorage.setItem('last_notification_date', latestEvent.date);
-                            logo.classList.remove('has-new');
-                        });
-                    }
+            function displaySuggestionProduct(product) {
+                currentRandomProduct = product;
+                const firstImage = (product.images && product.images[0]) ? product.images[0] : null;
+                const suggestionImg = document.getElementById('suggestionImg');
+                const imageBox = document.getElementById('suggestionImageBox');
+                
+                if (firstImage) {
+                    suggestionImg.src = firstImage;
+                    suggestionImg.style.display = 'block';
+                    imageBox.querySelector('.suggestion-image-placeholder')?.remove();
                 } else {
-                    logo.classList.remove('has-new');
+                    suggestionImg.style.display = 'none';
+                    if (!imageBox.querySelector('.suggestion-image-placeholder')) {
+                        const placeholder = document.createElement('div');
+                        placeholder.className = 'suggestion-image-placeholder';
+                        placeholder.innerHTML = '<i class="fas fa-image"></i>';
+                        imageBox.appendChild(placeholder);
+                    }
+                }
+                
+                document.getElementById('suggestionName').textContent = product.name;
+                document.getElementById('suggestionPrice').textContent = formatPrice(product.price) + ' FCFA';
+                
+                const messages = [
+                    '✨ À tu vu ce produit ?',
+                    '🔥 Ne passe pas à côté !',
+                    '💬 Essaie maintenant, passe une commande !',
+                    '⭐ Coup de cœur du moment',
+                    '🎁 Tu pourrais aimer ce produit'
+                ];
+                const randomMsg = messages[Math.floor(Math.random() * messages.length)];
+                document.getElementById('suggestionMessage').innerHTML = `<i class="fas fa-magic"></i> ${randomMsg}`;
+                suggestionBanner.style.display = 'block';
+            }
+
+            function nextSuggestion() {
+                if (!isAutoPlaying) return;
+                loadRandomProductToHistory();
+            }
+
+            function prevSuggestion() {
+                if (suggestionCurrentIndex > 0) {
+                    suggestionCurrentIndex--;
+                    displaySuggestionProduct(suggestionHistory[suggestionCurrentIndex]);
                 }
             }
 
-            if (logo) {
-                logo.addEventListener('click', async () => {
-                    const latestEvent = await getLatestEvent();
-                    if (latestEvent) {
-                        localStorage.setItem('last_notification_id', latestEvent.id);
-                        localStorage.setItem('last_notification_date', latestEvent.date);
-                        logo.classList.remove('has-new');
-                        notificationBanner.style.display = 'none';
-                    }
-                });
+            function manualNextSuggestion() {
+                if (autoSuggestionInterval) {
+                    clearInterval(autoSuggestionInterval);
+                    isAutoPlaying = false;
+                    setTimeout(() => {
+                        isAutoPlaying = true;
+                        autoSuggestionInterval = setInterval(() => {
+                            if (isAutoPlaying) nextSuggestion();
+                        }, 5000);
+                    }, 10000);
+                }
+                loadRandomProductToHistory();
             }
 
-            // ============ PRODUITS ============
-            async function loadProducts() {
+            function manualPrevSuggestion() {
+                if (autoSuggestionInterval) {
+                    clearInterval(autoSuggestionInterval);
+                    isAutoPlaying = false;
+                    setTimeout(() => {
+                        isAutoPlaying = true;
+                        autoSuggestionInterval = setInterval(() => {
+                            if (isAutoPlaying) nextSuggestion();
+                        }, 5000);
+                    }, 10000);
+                }
+                prevSuggestion();
+            }
+
+            document.getElementById('prevSuggestionBtn').addEventListener('click', manualPrevSuggestion);
+            document.getElementById('nextSuggestionBtn').addEventListener('click', manualNextSuggestion);
+            document.getElementById('suggestionBtn').addEventListener('click', () => {
+                if (currentRandomProduct) {
+                    window.location.href = `viewproduct.html?id=${currentRandomProduct.id}`;
+                }
+            });
+
+            let touchStartX = 0;
+            let touchEndX = 0;
+            const suggestionDual = document.getElementById('suggestionDual');
+            suggestionDual.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+            });
+            suggestionDual.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                if (touchEndX < touchStartX - 50) manualNextSuggestion();
+                if (touchEndX > touchStartX + 50) manualPrevSuggestion();
+            });
+
+            async function rotateFeaturedProduct() {
+                if (!availableProductsForFeatured.length) return;
                 try {
-                    const { data: activeMarkets, error: marketsError } = await supabase
+                    for (const product of availableProductsForFeatured) {
+                        if (product.featured) {
+                            await supabase.from('products').update({ featured: false }).eq('id', product.id);
+                        }
+                    }
+                    const randomIndex = Math.floor(Math.random() * availableProductsForFeatured.length);
+                    const newFeatured = availableProductsForFeatured[randomIndex];
+                    await supabase.from('products').update({ featured: true }).eq('id', newFeatured.id);
+                    await loadNews();
+                } catch (err) {
+                    console.error('Erreur rotation featured:', err);
+                }
+            }
+
+            async function startFeaturedRotation() {
+                try {
+                    const { data: activeMarkets } = await supabase
                         .from('markets')
                         .select('id')
                         .eq('market_active', true);
-
-                    if (marketsError) throw marketsError;
-
                     const activeMarketIds = activeMarkets.map(m => m.id);
+                    const { data: products } = await supabase
+                        .from('products')
+                        .select('*')
+                        .eq('active', true)
+                        .in('user_id', activeMarketIds);
+                    if (products && products.length > 0) {
+                        availableProductsForFeatured = products;
+                    }
+                    if (featuredRotationInterval) clearInterval(featuredRotationInterval);
+                    featuredRotationInterval = setInterval(rotateFeaturedProduct, 30 * 60 * 1000);
+                } catch (err) {
+                    console.error('Erreur démarrage rotation:', err);
+                }
+            }
 
-                    if (activeMarketIds.length === 0) {
-                        allProducts = [];
-                        displayProducts();
+            function rotateOrder() {
+                if (allEvents.length > 0) {
+                    allEvents.sort(() => Math.random() - 0.5);
+                    renderNews();
+                }
+            }
+
+            function renderNews() {
+                let html = '';
+                for (const event of allEvents) {
+                    if (event.type === 'product' || event.type === 'featured_product') {
+                        const product = event.product;
+                        const market = event.market;
+                        const isFeatured = event.type === 'featured_product';
+                        const imageUrl = (product.images && product.images[0]) ? product.images[0] : null;
+                        const formattedDate = new Date(event.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
+                        html += `
+                            <div class="product-card ${isFeatured ? 'featured' : ''}" data-id="${product.id}">
+                                <div class="product-image-container">
+                                    ${imageUrl 
+                                        ? `<img src="${escapeHtml(imageUrl)}" class="product-image" alt="${escapeHtml(product.name)}">`
+                                        : `<div class="product-image-placeholder"><i class="fas fa-image"></i></div>`
+                                    }
+                                </div>
+                                <div class="product-info">
+                                    <div class="market-badge">
+                                        <i class="fas fa-store"></i> ${escapeHtml(market?.market_name || 'Marché')}
+                                        <i class="fas fa-map-marker-alt" style="margin-left: 8px;"></i> ${escapeHtml(market?.city || 'Localisation non précisée')}
+                                    </div>
+                                    <div class="product-name">${escapeHtml(product.name)}</div>
+                                    <div class="product-price">${formatPrice(product.price)} FCFA</div>
+                                    <div class="product-description">${escapeHtml(product.description || 'Aucune description')}</div>
+                                    <div class="product-footer">
+                                        <button class="detail-link" data-id="${product.id}">Voir détails</button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    } else if (event.type === 'message') {
+                        const market = event.market;
+                        const avatarUrl = market.avatar_url;
+                        const formattedDate = new Date(event.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
+                        html += `
+                            <div class="message-card">
+                                ${avatarUrl 
+                                    ? `<img src="${escapeHtml(avatarUrl)}" class="admin-avatar" onerror="this.src=''">`
+                                    : `<div class="admin-avatar-placeholder"><i class="fas fa-user-circle"></i></div>`
+                                }
+                                <div class="message-content">
+                                    <div class="admin-name">${escapeHtml(market.market_name || 'Administrateur')}</div>
+                                    <div class="message-text">${escapeHtml(event.message)}</div>
+                                    <div class="message-date"><i class="far fa-clock"></i> ${formattedDate}</div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+                if (allEvents.length === 0) html = '<div class="empty-state">Aucune actualité pour le moment</div>';
+                newsFeed.innerHTML = html;
+                
+                document.querySelectorAll('.product-card').forEach(card => {
+                    const productId = card.getAttribute('data-id');
+                    const product = allProducts.find(p => p.id === productId);
+                    
+                    const imageContainer = card.querySelector('.product-image-container');
+                    imageContainer.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        startProductCarousel(productId);
+                    });
+                    
+                    card.addEventListener('click', (e) => {
+                        if (e.target.classList.contains('detail-link')) return;
+                        animatePrice(card);
+                    });
+                    
+                    const detailBtn = card.querySelector('.detail-link');
+                    detailBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        window.location.href = `viewproduct.html?id=${productId}`;
+                    });
+                });
+            }
+
+            function startOrderRotation() {
+                if (orderRotationInterval) clearInterval(orderRotationInterval);
+                orderRotationInterval = setInterval(() => {
+                    rotateOrder();
+                }, 30 * 60 * 1000);
+            }
+
+            async function loadNews() {
+                newsFeed.innerHTML = `
+                    <div class="skeleton-card"><div class="skeleton-image"></div><div class="skeleton-text"></div><div class="skeleton-text short"></div></div>
+                    <div class="skeleton-card"><div class="skeleton-image"></div><div class="skeleton-text"></div><div class="skeleton-text short"></div></div>
+                `;
+                try {
+                    const { data: markets, error: marketsError } = await supabase
+                        .from('markets')
+                        .select('id, market_name, city, avatar_url, announcement_text, show_announcement, updated_at')
+                        .eq('market_active', true);
+                    if (marketsError) throw marketsError;
+                    if (!markets || markets.length === 0) {
+                        newsFeed.innerHTML = '<div class="empty-state">Aucune actualité pour le moment</div>';
                         return;
                     }
-
-                    const { data: products, error } = await supabase
+                    allMarkets = markets;
+                    const activeMarketIds = markets.map(m => m.id);
+                    const { data: products, error: productsError } = await supabase
                         .from('products')
                         .select('*')
                         .eq('active', true)
                         .in('user_id', activeMarketIds)
                         .order('created_at', { ascending: false });
-
-                    if (error) throw error;
-
+                    if (productsError) throw productsError;
                     allProducts = products || [];
-                    
-                    categories.clear();
-                    allProducts.forEach(p => {
-                        if (p.category && p.category.trim()) {
-                            categories.add(p.category);
+                    allEvents = [];
+                    for (const product of products || []) {
+                        const market = markets.find(m => m.id === product.user_id);
+                        allEvents.push({
+                            id: `product_${product.id}`,
+                            type: product.featured ? 'featured_product' : 'product',
+                            date: product.created_at,
+                            product: product,
+                            market: market
+                        });
+                    }
+                    for (const market of markets) {
+                        if (market.show_announcement === true && market.announcement_text) {
+                            allEvents.push({
+                                id: `message_${market.id}_${market.updated_at}`,
+                                type: 'message',
+                                date: market.updated_at,
+                                market: market,
+                                message: market.announcement_text
+                            });
                         }
-                    });
-
-                    buildFilters();
-                    displayProducts();
-
+                    }
+                    allEvents.sort(() => Math.random() - 0.5);
+                    renderNews();
                 } catch (err) {
                     console.error('Erreur:', err);
-                    productsGrid.innerHTML = `
-                        <div class="empty-products">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            <p>Erreur chargement des produits.</p>
-                        </div>
-                    `;
+                    newsFeed.innerHTML = '<div class="empty-state">Erreur chargement des actualités</div>';
                 }
-            }
-
-            function buildFilters() {
-                const categoriesArray = Array.from(categories).sort();
-                let filtersHtml = '<button class="filter-chip active" data-category="all">Tous</button>';
-                
-                categoriesArray.forEach(cat => {
-                    filtersHtml += `<button class="filter-chip" data-category="${escapeHtml(cat)}">${escapeHtml(cat)}</button>`;
-                });
-                
-                filtersFooter.innerHTML = filtersHtml;
-
-                document.querySelectorAll('.filter-chip').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
-                        btn.classList.add('active');
-                        activeCategory = btn.getAttribute('data-category');
-                        displayProducts();
-                    });
-                });
-            }
-
-            function displayProducts() {
-                const searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : '';
-                let filtered = [...allProducts];
-
-                if (activeCategory !== 'all') {
-                    filtered = filtered.filter(p => p.category === activeCategory);
-                }
-
-                if (searchTerm) {
-                    filtered = filtered.filter(p =>
-                        p.name.toLowerCase().includes(searchTerm)
-                    );
-                }
-
-                if (filtered.length === 0) {
-                    productsGrid.innerHTML = `
-                        <div class="empty-products">
-                            <i class="fas fa-box-open"></i>
-                            <p>Aucun produit trouvé</p>
-                        </div>
-                    `;
-                    return;
-                }
-
-                productsGrid.innerHTML = filtered.map(product => {
-                    const imageUrl = (product.images && product.images[0]) ? product.images[0] : null;
-                    return `
-                        <div class="product-card" data-id="${product.id}">
-                            ${imageUrl
-                                ? `<img src="${imageUrl}" class="product-image" alt="${escapeHtml(product.name)}">`
-                                : `<div class="product-image-placeholder"><i class="fas fa-image"></i></div>`
-                            }
-                            <div class="product-info">
-                                <div class="product-name">${escapeHtml(product.name)}</div>
-                                <div class="product-price">${formatPrice(product.price)} FCFA</div>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-
-                document.querySelectorAll('.product-card').forEach(card => {
-                    card.addEventListener('click', async () => {
-                        const productId = card.getAttribute('data-id');
-                        await recordProductClick(productId);
-                        window.location.href = `viewproduct.html?id=${productId}`;
-                    });
-                });
             }
 
             function formatPrice(price) {
@@ -962,17 +975,23 @@
                 return div.innerHTML;
             }
 
-            if (searchInput) {
-                searchInput.addEventListener('input', () => displayProducts());
+            function startAutoSuggestion() {
+                if (autoSuggestionInterval) clearInterval(autoSuggestionInterval);
+                autoSuggestionInterval = setInterval(() => {
+                    if (isAutoPlaying) nextSuggestion();
+                }, 5000);
             }
 
             async function init() {
-                // Vérifier d'abord si l'utilisateur a le droit d'accéder au marché
-                const hasAccess = await checkClientAccess();
-                if (!hasAccess) return;
-                
-                await loadProducts();
-                await checkAndDisplayNotification();
+                await loadNews();
+                setTimeout(() => {
+                    if (allProducts.length) {
+                        loadRandomProductToHistory();
+                        startAutoSuggestion();
+                    }
+                }, 500);
+                startFeaturedRotation();
+                startOrderRotation();
             }
             
             init();

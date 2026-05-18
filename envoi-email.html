@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Envoi d'e-mails - Megane Market</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #0a0f1a;
+            color: #eef2ff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .main-header {
+            background: #0e1a26;
+            border-radius: 60px;
+            border: 1px solid #2a3a4a;
+            height: 60px;
+            margin-bottom: 24px;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #5a9eff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .back-btn {
+            background: #1a2a3a;
+            border: 1px solid #2a3a4a;
+            border-radius: 40px;
+            padding: 8px 20px;
+            cursor: pointer;
+            color: #eef2ff;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            background: #5a9eff;
+            color: white;
+        }
+
+        /* Sections */
+        .section {
+            background: #0e1a26;
+            border: 1px solid #2a3a4a;
+            border-radius: 24px;
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 16px 24px;
+            background: #1a2a3a;
+            border-bottom: 1px solid #2a3a4a;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-header i {
+            font-size: 1.3rem;
+        }
+
+        .section-header h3 {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .section-body {
+            padding: 20px 24px;
+        }
+
+        .section-tip {
+            background: #1a1a2e;
+            border-left: 3px solid #5a9eff;
+            padding: 12px 16px;
+            margin-top: 16px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            color: #8a9aaa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-tip i {
+            color: #5a9eff;
+        }
+
+        /* Clients */
+        .client-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .client-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px;
+            border-bottom: 1px solid #1a2a3a;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .client-item:hover {
+            background: rgba(90, 158, 255, 0.1);
+        }
+
+        .client-item.selected {
+            background: rgba(90, 158, 255, 0.15);
+            border-left: 3px solid #5a9eff;
+        }
+
+        .client-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #1a2a3a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: #5a9eff;
+        }
+
+        .client-info {
+            flex: 1;
+        }
+
+        .client-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 2px;
+        }
+
+        .client-email {
+            font-size: 0.7rem;
+            color: #8a9aaa;
+        }
+
+        .client-check {
+            color: #4ade80;
+            font-size: 1.1rem;
+        }
+
+        .select-all-btn {
+            background: #5a9eff;
+            border: none;
+            border-radius: 30px;
+            padding: 6px 16px;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .select-all-btn:hover {
+            background: #3a7ecc;
+        }
+
+        /* Formulaires */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #8a9aaa;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            background: #1a2a3a;
+            border: 1px solid #2a3a4a;
+            border-radius: 16px;
+            color: #eef2ff;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            border-color: #5a9eff;
+        }
+
+        /* Couleurs Google */
+        .label-blue {
+            color: #5a9eff;
+        }
+        .label-green {
+            color: #4ade80;
+        }
+        .label-red {
+            color: #ff4d4d;
+        }
+
+        /* Templates */
+        .templates-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .template-btn {
+            background: #1a2a3a;
+            border: 1px solid #2a3a4a;
+            border-radius: 40px;
+            padding: 8px 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #eef2ff;
+        }
+
+        .template-btn:hover {
+            border-color: #5a9eff;
+            color: #5a9eff;
+        }
+
+        /* Image preview */
+        .image-preview {
+            margin-top: 12px;
+            max-width: 100%;
+            max-height: 150px;
+            border-radius: 12px;
+            display: none;
+            object-fit: cover;
+        }
+
+        /* Bouton envoi */
+        .btn-send {
+            width: 100%;
+            padding: 16px;
+            background: #4ade80;
+            border: none;
+            border-radius: 40px;
+            color: #1a2a3a;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-send:hover {
+            background: #22c55e;
+            transform: translateY(-2px);
+        }
+
+        .btn-send:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .selected-info {
+            margin-top: 16px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #8a9aaa;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: #1a2a3a;
+            color: #eef2ff;
+            padding: 12px 24px;
+            border-radius: 60px;
+            font-size: 0.85rem;
+            border: 1px solid #2a3a4a;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast.success {
+            border-color: #4ade80;
+            color: #4ade80;
+        }
+
+        .toast.error {
+            border-color: #ff4d4d;
+            color: #ff4d4d;
+        }
+
+        .loader {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #1a2a3a;
+            border-top-color: #5a9eff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #8a9aaa;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header class="main-header">
+        <div class="logo">
+            <i class="fas fa-envelope"></i> Envoi d'e-mails
+        </div>
+        <a href="settings.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Retour
+        </a>
+    </header>
+
+    <!-- SECTION 1 : SÉLECTION DES CLIENTS -->
+    <div class="section">
+        <div class="section-header">
+            <i class="fas fa-users" style="color: #5a9eff;"></i>
+            <h3>1. Sélection des clients</h3>
+            <div style="flex:1;"></div>
+            <button id="selectAllBtn" class="select-all-btn">Tout sélectionner</button>
+        </div>
+        <div class="section-body">
+            <div id="clientList" class="client-list">
+                <div class="empty-state">Chargement des clients...</div>
+            </div>
+            <div class="section-tip">
+                <i class="fas fa-lightbulb"></i>
+                <span>Conseil : Sélectionnez les clients qui correspondent à votre message. Une newsletter concerne tous les clients, une promotion uniquement certains.</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 2 : INFORMATIONS DE L'E-MAIL -->
+    <div class="section">
+        <div class="section-header">
+            <i class="fas fa-pen" style="color: #4ade80;"></i>
+            <h3>2. Informations de l'e-mail</h3>
+        </div>
+        <div class="section-body">
+            <div class="form-group">
+                <label class="label-blue"><i class="fas fa-user"></i> De (expéditeur)</label>
+                <input type="text" id="fromName" value="Megane Market" placeholder="Votre nom ou boutique">
+                <div class="section-tip" style="margin-top: 8px;">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Le nom qui apparaîtra dans la boîte de réception du client.</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="label-green"><i class="fas fa-tag"></i> Sujet</label>
+                <input type="text" id="emailSubject" placeholder="Ex: Nouveaux produits sur Megane Market">
+                <div class="section-tip" style="margin-top: 8px;">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Un sujet accrocheur augmente le taux d'ouverture. Ex: "🎉 Nouveautés : -20% sur toute la boutique"</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="label-red"><i class="fas fa-comment"></i> Message</label>
+                <textarea id="emailMessage" rows="4" placeholder="Écrivez votre message ici..."></textarea>
+                <div class="section-tip" style="margin-top: 8px;">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Soyez concis et engageant. 2-3 phrases maximum. Personnalisez avec le prénom du client si possible.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 3 : MÉDIA (OPTIONNEL) -->
+    <div class="section">
+        <div class="section-header">
+            <i class="fas fa-image" style="color: #ffaa44;"></i>
+            <h3>3. Média (optionnel)</h3>
+        </div>
+        <div class="section-body">
+            <div class="form-group">
+                <label>📷 URL de l'image</label>
+                <input type="text" id="imageUrl" placeholder="https://exemple.com/image.jpg">
+                <img id="imagePreview" class="image-preview" src="" alt="Aperçu">
+                <div class="section-tip" style="margin-top: 8px;">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Une image attire l'attention. Idéal : photo du produit, bannière promotionnelle.</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>🔗 URL du bouton</label>
+                <input type="text" id="buttonUrl" value="https://emcsigvlopntwbfkkjkh.supabase.co/functions/v1/market.html" placeholder="https://ton-site.com/market.html">
+                <div class="section-tip" style="margin-top: 8px;">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Redirige vers votre boutique ou une offre spécifique.</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>🔘 Texte du bouton</label>
+                <input type="text" id="buttonText" value="Découvrir les produits" placeholder="Découvrir">
+                <div class="section-tip" style="margin-top: 8px;">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Action claire : "Découvrir", "Profiter", "Voir l'offre".</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 4 : TEMPLETS RAPIDES -->
+    <div class="section">
+        <div class="section-header">
+            <i class="fas fa-copy" style="color: #5a9eff;"></i>
+            <h3>4. Templates rapides</h3>
+        </div>
+        <div class="section-body">
+            <div class="templates-row">
+                <button class="template-btn" data-template="promo">🎉 Offre promotionnelle</button>
+                <button class="template-btn" data-template="new_product">🆕 Nouveau produit</button>
+                <button class="template-btn" data-template="newsletter">📰 Newsletter</button>
+                <button class="template-btn" data-template="custom">✏️ Personnalisé</button>
+            </div>
+            <div class="section-tip">
+                <i class="fas fa-lightbulb"></i>
+                <span>Cliquez sur un template pour pré-remplir le sujet et le message. Vous pouvez ensuite les modifier.</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 5 : ENVOI -->
+    <div class="section">
+        <div class="section-header">
+            <i class="fas fa-paper-plane" style="color: #4ade80;"></i>
+            <h3>5. Envoi</h3>
+        </div>
+        <div class="section-body">
+            <button id="sendEmailBtn" class="btn-send">
+                <i class="fas fa-paper-plane"></i> ENVOYER LE MESSAGE
+            </button>
+            <div id="selectedInfo" class="selected-info">0 client sélectionné</div>
+            <div class="section-tip">
+                <i class="fas fa-shield-alt"></i>
+                <span>Les e-mails sont envoyés via EmailJS. Les clients ne verront pas votre adresse personnelle.</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+    (function() {
+        const SUPABASE_URL = 'https://emcsigvlopntwbfkkjkh.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtY3NpZ3Zsb3BudHdiZmtramtoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4ODE5MTgsImV4cCI6MjA5NDQ1NzkxOH0.YwYoV-azL3WEFtHoh4yoF7xTLrOwZILKCzJrGPsCs6I';
+
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        emailjs.init({
+            publicKey: "4TkvKRRbn9qDSIjG3",
+        });
+
+        const SERVICE_ID = "Megane_market";
+        const TEMPLATE_ID = "template_ugz1f33";
+
+        let allClients = [];
+        let selectedClients = new Set();
+
+        const clientListEl = document.getElementById('clientList');
+        const selectedInfo = document.getElementById('selectedInfo');
+        const sendBtn = document.getElementById('sendEmailBtn');
+        const subjectInput = document.getElementById('emailSubject');
+        const messageInput = document.getElementById('emailMessage');
+        const fromNameInput = document.getElementById('fromName');
+        const imageUrlInput = document.getElementById('imageUrl');
+        const imagePreview = document.getElementById('imagePreview');
+        const buttonUrlInput = document.getElementById('buttonUrl');
+        const buttonTextInput = document.getElementById('buttonText');
+        const toastEl = document.getElementById('toast');
+        const selectAllBtn = document.getElementById('selectAllBtn');
+
+        imageUrlInput.addEventListener('input', () => {
+            const url = imageUrlInput.value.trim();
+            if (url) {
+                imagePreview.src = url;
+                imagePreview.style.display = 'block';
+            } else {
+                imagePreview.style.display = 'none';
+            }
+        });
+
+        function showToast(message, type = 'info') {
+            toastEl.textContent = message;
+            toastEl.className = `toast ${type} show`;
+            setTimeout(() => toastEl.classList.remove('show'), 4000);
+        }
+
+        async function loadClients() {
+            try {
+                const { data, error } = await supabase
+                    .from('buyers')
+                    .select('id, full_name, email, city, created_at')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                allClients = data || [];
+                renderClientList();
+            } catch (err) {
+                console.error('Erreur chargement clients:', err);
+                clientListEl.innerHTML = `<div class="empty-state">Erreur chargement des clients</div>`;
+            }
+        }
+
+        function renderClientList() {
+            if (allClients.length === 0) {
+                clientListEl.innerHTML = `<div class="empty-state">Aucun client trouvé</div>`;
+                return;
+            }
+
+            clientListEl.innerHTML = allClients.map(client => `
+                <div class="client-item" data-id="${client.id}">
+                    <div class="client-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="client-info">
+                        <div class="client-name">${escapeHtml(client.full_name || 'Client')}</div>
+                        <div class="client-email">${escapeHtml(client.email || '-')}</div>
+                        <div style="font-size: 0.7rem; color: #6a8aaa;">${escapeHtml(client.city || 'Ville non renseignée')}</div>
+                    </div>
+                    <div class="client-check">
+                        ${selectedClients.has(client.id) ? '<i class="fas fa-check-circle"></i>' : '<i class="far fa-circle"></i>'}
+                    </div>
+                </div>
+            `).join('');
+
+            document.querySelectorAll('.client-item').forEach(item => {
+                const id = item.getAttribute('data-id');
+                item.addEventListener('click', () => {
+                    if (selectedClients.has(id)) {
+                        selectedClients.delete(id);
+                    } else {
+                        selectedClients.add(id);
+                    }
+                    renderClientList();
+                    updateSelectedCount();
+                });
+            });
+        }
+
+        function updateSelectedCount() {
+            const count = selectedClients.size;
+            selectedInfo.textContent = `${count} client${count > 1 ? 's' : ''} sélectionné${count > 1 ? 's' : ''}`;
+            sendBtn.disabled = count === 0;
+        }
+
+        const templates = {
+            promo: {
+                subject: "🎉 Offre spéciale sur Megane Market !",
+                message: "Profitez de nos offres promotionnelles exceptionnelles sur une sélection de produits. Livraison rapide et paiement sécurisé."
+            },
+            new_product: {
+                subject: "🆕 Nouveaux produits sont arrivés !",
+                message: "Découvrez les nouveaux produits ajoutés sur Megane Market. Qualité et prix imbattables."
+            },
+            newsletter: {
+                subject: "📰 Newsletter Megane Market",
+                message: "Restez informé des dernières actualités, promotions et nouveautés de Megane Market."
+            },
+            custom: {
+                subject: "",
+                message: ""
+            }
+        };
+
+        document.querySelectorAll('.template-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const template = templates[btn.dataset.template];
+                if (template) {
+                    if (template.subject) subjectInput.value = template.subject;
+                    if (template.message) messageInput.value = template.message;
+                    showToast(`Template "${btn.textContent}" chargé`, 'success');
+                }
+            });
+        });
+
+        async function sendEmails() {
+            if (selectedClients.size === 0) {
+                showToast('Sélectionnez au moins un client', 'error');
+                return;
+            }
+
+            const subject = subjectInput.value.trim();
+            const message = messageInput.value.trim();
+            const fromName = fromNameInput.value.trim();
+            const imageUrl = imageUrlInput.value.trim();
+            const buttonUrl = buttonUrlInput.value.trim();
+            const buttonText = buttonTextInput.value.trim() || "Découvrir";
+
+            if (!subject) {
+                showToast('Le sujet est requis', 'error');
+                return;
+            }
+
+            if (!message) {
+                showToast('Le message est requis', 'error');
+                return;
+            }
+
+            const recipients = allClients.filter(c => selectedClients.has(c.id));
+            
+            sendBtn.disabled = true;
+            const originalText = sendBtn.innerHTML;
+            sendBtn.innerHTML = '<div class="loader"></div> Envoi en cours...';
+
+            let successCount = 0;
+            let errorCount = 0;
+
+            for (const client of recipients) {
+                const clientName = client.full_name || 'Client';
+                
+                const templateParams = {
+                    to_name: clientName,
+                    message: message,
+                    from_name: fromName,
+                    image_url: imageUrl,
+                    button_url: buttonUrl,
+                    button_text: buttonText
+                };
+                
+                try {
+                    await emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams);
+                    successCount++;
+                } catch (err) {
+                    console.error(`Erreur envoi à ${client.email}:`, err);
+                    errorCount++;
+                }
+            }
+
+            sendBtn.innerHTML = originalText;
+            sendBtn.disabled = false;
+
+            if (successCount > 0) {
+                showToast(`✅ ${successCount} e-mail(s) envoyé(s) avec succès${errorCount > 0 ? `, ${errorCount} erreur(s)` : ''}`, 'success');
+            } else {
+                showToast('❌ Erreur lors de l\'envoi des e-mails', 'error');
+            }
+        }
+
+        selectAllBtn.addEventListener('click', () => {
+            if (selectedClients.size === allClients.length) {
+                selectedClients.clear();
+            } else {
+                allClients.forEach(c => selectedClients.add(c.id));
+            }
+            renderClientList();
+            updateSelectedCount();
+        });
+
+        sendBtn.addEventListener('click', sendEmails);
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        loadClients();
+        updateSelectedCount();
+    })();
+</script>
+</body>
+</html>

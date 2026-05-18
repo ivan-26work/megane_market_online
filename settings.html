@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>MonMarché - Paramètres</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/settings.css">
+    <style>
+        /* Styles supplémentaires pour la vérification WhatsApp */
+        .whatsapp-validator {
+            margin-top: 8px;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+        .whatsapp-validator.success {
+            background: #1a2a1a;
+            border-left: 3px solid #4ade80;
+            color: #4ade80;
+        }
+        .whatsapp-validator.error {
+            background: #2a1a1a;
+            border-left: 3px solid #ff4d4d;
+            color: #ff4d4d;
+        }
+        .whatsapp-validator .validator-link {
+            margin-top: 4px;
+            font-size: 0.75rem;
+            word-break: break-all;
+        }
+        .whatsapp-validator .validator-link a {
+            color: #4ade80;
+            text-decoration: none;
+        }
+        .whatsapp-validator .validator-link a:hover {
+            text-decoration: underline;
+        }
+        .input-hint {
+            font-size: 0.65rem;
+            color: #8a9aaa;
+            margin-top: 4px;
+        }
+        .required-badge {
+            color: #ffaa44;
+            font-size: 0.7rem;
+            margin-left: 8px;
+        }
+        .field-warning {
+            border-color: #ffaa44 !important;
+        }
+        .warning-text {
+            color: #ffaa44;
+            font-size: 0.65rem;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        /* Animation bouton email */
+        .email-btn {
+            background: #1a2a3a;
+            border: 1px solid #2a3a4a;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #eef2ff;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+        .email-btn:hover {
+            background: #4ade80;
+            color: white;
+            border-color: #4ade80;
+            transform: scale(1.05);
+        }
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .stats-btn, .email-btn {
+            background: #1a2a3a;
+            border: 1px solid #2a3a4a;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #eef2ff;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+        .stats-btn:hover {
+            background: #5a9eff;
+            color: white;
+            border-color: #5a9eff;
+            transform: scale(1.05);
+        }
+        .email-btn:hover {
+            background: #4ade80;
+            color: white;
+            border-color: #4ade80;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="main-header">
+        <a href="index.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Retour
+        </a>
+        <h3>Paramètres</h3>
+        <div class="header-actions">
+            <a href="stats.html" class="stats-btn" title="Statistiques">
+                <i class="fas fa-chart-bar"></i>
+            </a>
+            <a href="envoi-email.html" class="email-btn" title="Envoyer un e-mail">
+                <i class="fas fa-envelope"></i>
+            </a>
+        </div>
+    </header>
+
+    <main class="main-content">
+
+        <!-- Bannière de rappel -->
+        <div id="reminderBanner" class="reminder-banner" style="display: none;">
+            <i class="fas fa-info-circle"></i>
+            <span>Complétez toutes vos informations pour rassurer vos clients</span>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- SECTION : PHOTO DE PROFIL -->
+        <!-- ============================================ -->
+        <div class="settings-section">
+            <h4><i class="fas fa-user-circle"></i> Photo de profil</h4>
+            <div class="avatar-section">
+                <div class="avatar-wrap">
+                    <img id="adminAvatar" src="https://placehold.co/100x100?text=Admin" alt="Avatar">
+                    <div class="avatar-overlay" id="changeAvatarBtn">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                </div>
+                <input type="file" id="avatarInput" accept="image/*" style="display:none;">
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- SECTION : PROFIL ADMIN -->
+        <!-- ============================================ -->
+        <div class="settings-section">
+            <h4><i class="fas fa-id-card"></i> Informations personnelles</h4>
+            <div class="form-group" id="ownerNameGroup">
+                <label>Nom du propriétaire <span class="required-badge">requis</span></label>
+                <input type="text" id="settingsOwnerName" placeholder="Votre nom">
+                <div class="warning-text" id="ownerNameWarning" style="display: none;">
+                    <i class="fas fa-exclamation-triangle"></i> Votre nom est requis pour rassurer les clients
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Email du compte</label>
+                <input type="email" id="settingsAccountEmail" disabled>
+            </div>
+            <div class="form-group" id="phoneGroup">
+                <label>Téléphone <span class="required-badge">recommandé</span></label>
+                <input type="tel" id="settingsPhone" placeholder="Votre numéro">
+                <div class="warning-text" id="phoneWarning" style="display: none;">
+                    <i class="fas fa-exclamation-triangle"></i> Ajoutez votre numéro pour être contacté
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- SECTION : INFORMATIONS DU MARCHÉ -->
+        <!-- ============================================ -->
+        <div class="settings-section">
+            <h4><i class="fas fa-store"></i> Informations du marché</h4>
+            <div class="form-group">
+                <label>Nom du marché</label>
+                <input type="text" id="settingsMarketName" placeholder="Nom de votre marché">
+            </div>
+            <div class="form-group">
+                <label>Email public</label>
+                <input type="email" id="settingsPublicEmail" placeholder="contact@monmarche.com">
+            </div>
+            <div class="form-group" id="cityGroup">
+                <label>Ville / Localisation <span class="required-badge">recommandée</span></label>
+                <input type="text" id="settingsCity" placeholder="Votre ville">
+                <div class="warning-text" id="cityWarning" style="display: none;">
+                    <i class="fas fa-exclamation-triangle"></i> Indiquez votre ville pour la livraison
+                </div>
+            </div>
+            <div class="form-group" id="descriptionGroup">
+                <label>Description du marché <span class="required-badge">100 mots minimum</span></label>
+                <textarea id="settingsDescription" rows="3" placeholder="Décrivez votre marché..."></textarea>
+                <div class="word-counter" id="descWordCount">0 / 100 mots</div>
+                <div class="warning-text" id="descWarning" style="display: none;">
+                    <i class="fas fa-exclamation-triangle"></i> Une description complète rassure vos clients
+                </div>
+            </div>
+            <div class="form-group" id="whatsappGroup">
+                <label>WhatsApp (bouton commander) <span class="required-badge">obligatoire</span></label>
+                <input type="tel" id="settingsWhatsapp" placeholder="Ex: 0503588336 ou +2250503588336">
+                <div class="input-hint">Format officiel : +225 05 03 58 83 36</div>
+                <div id="whatsappValidator" class="whatsapp-validator">
+                    <i class="fas fa-spinner fa-pulse"></i> Vérification...
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- SECTION : MESSAGE AUX ACHETEURS -->
+        <!-- ============================================ -->
+        <div class="settings-section">
+            <h4><i class="fas fa-comment-dots"></i> Message aux acheteurs</h4>
+            <div class="form-group">
+                <label>Message</label>
+                <textarea id="announcementMessage" rows="2" maxlength="200" placeholder="Ex: Livraison gratuite ce weekend !"></textarea>
+                <div class="char-counter"><span id="charCount">0</span>/200 caractères</div>
+            </div>
+            <button id="sendMessageBtn" class="btn-send">
+                <i class="fas fa-paper-plane"></i> Envoyer le message
+            </button>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- SECTION : COMPTE -->
+        <!-- ============================================ -->
+        <div class="settings-section">
+            <h4><i class="fas fa-lock"></i> Compte</h4>
+            <button id="changePasswordBtn" class="btn-secondary">Changer le mot de passe</button>
+            <button id="logoutBtn" class="btn-danger">Se déconnecter</button>
+        </div>
+
+        <!-- Bouton sauvegarde globale -->
+        <button id="saveAllSettingsBtn" class="btn-primary save-all">
+            <i class="fas fa-save"></i> Enregistrer toutes les modifications
+        </button>
+
+    </main>
+
+    <!-- Modale chargement -->
+    <div id="loadingModal" class="modal-loading" style="display:none;">
+        <div class="modal-card">
+            <div class="spinner"></div>
+            <p id="modalStatus">Chargement...</p>
+        </div>
+    </div>
+
+    <!-- Toast notification -->
+    <div id="toast" class="toast"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/settings.js"></script>
+</body>
+</html>

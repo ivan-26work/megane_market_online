@@ -46,7 +46,6 @@
             100% { transform: scale(1); color: #5a9eff; }
         }
 
-        /* Header */
         .main-header {
             position: sticky;
             top: 0;
@@ -124,7 +123,6 @@
             transform: scale(1.05);
         }
 
-        /* Hero */
         .hero {
             text-align: center;
             padding: 60px 20px 40px;
@@ -146,7 +144,7 @@
             font-size: 0.9rem;
         }
 
-        /* Bannière suggestion - deux cadres côte à côte */
+        /* Bannière suggestion */
         .suggestion-banner {
             background: linear-gradient(135deg, #0e1a26, #0a1520);
             border: 1px solid #5a9eff;
@@ -277,7 +275,6 @@
             padding: 20px;
         }
 
-        /* Carte produit */
         .product-card {
             background: #0e1a26;
             border: 1px solid #1a2a3a;
@@ -420,7 +417,6 @@
             color: white;
         }
 
-        /* Carte message admin */
         .message-card {
             background: linear-gradient(135deg, #0e1a26, #0a1520);
             border: 1px solid #1a2a3a;
@@ -486,7 +482,6 @@
             color: #6a8aaa;
         }
 
-        /* Skeleton */
         .skeleton-card {
             background: #0e1a26;
             border-radius: 24px;
@@ -575,7 +570,6 @@
         <p>Restez informé des dernières actualités de vos commerçants préférés</p>
     </div>
 
-    <!-- Bannière suggestion - deux cadres côte à côte -->
     <div class="suggestion-banner" id="suggestionBanner" style="display: none;">
         <div class="suggestion-text">
             <i class="fas fa-magic"></i>
@@ -621,21 +615,51 @@
             let availableProductsForFeatured = [];
             let orderRotationInterval = null;
             let activeCarouselIntervals = {};
+            let currentUserId = null;
 
-            // Historique des suggestions
             let suggestionHistory = [];
             let suggestionCurrentIndex = -1;
             let currentRandomProduct = null;
             let autoSuggestionInterval = null;
             let isAutoPlaying = true;
 
+            // ============ ENREGISTREMENT DU CLIC SUR PRODUIT ============
+            async function recordProductView(productId) {
+                if (!currentUserId) return;
+                try {
+                    await supabase
+                        .from('product_stats')
+                        .insert({
+                            product_id: productId,
+                            view_count: 1,
+                            viewed_at: new Date().toISOString()
+                        });
+                    console.log('Clic enregistré pour le produit:', productId);
+                } catch (err) {
+                    console.error('Erreur enregistrement clic:', err);
+                }
+            }
+
+            async function checkSession() {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (session) {
+                    currentUserId = session.user.id;
+                    const { data: buyer } = await supabase
+                        .from('buyers')
+                        .select('id')
+                        .eq('id', currentUserId)
+                        .single();
+                    if (!buyer) {
+                        currentUserId = null;
+                    }
+                }
+            }
+
             function animatePrice(card) {
                 const priceEl = card.querySelector('.product-price');
                 if (priceEl) {
                     priceEl.classList.remove('pulse');
-                    setTimeout(() => {
-                        priceEl.classList.add('pulse');
-                    }, 10);
+                    setTimeout(() => priceEl.classList.add('pulse'), 10);
                 }
             }
 
@@ -665,7 +689,6 @@
                     if (activeCarouselIntervals[productId]) {
                         clearInterval(activeCarouselIntervals[productId]);
                         delete activeCarouselIntervals[productId];
-                        // Restaurer la première image
                         if (imgElement && product.images[0]) imgElement.src = product.images[0];
                     }
                     card.removeEventListener('click', stopCarousel);
@@ -889,14 +912,16 @@
                         startProductCarousel(productId);
                     });
                     
-                    card.addEventListener('click', (e) => {
+                    card.addEventListener('click', async (e) => {
                         if (e.target.classList.contains('detail-link')) return;
                         animatePrice(card);
+                        await recordProductView(productId);
                     });
                     
                     const detailBtn = card.querySelector('.detail-link');
-                    detailBtn.addEventListener('click', (e) => {
+                    detailBtn.addEventListener('click', async (e) => {
                         e.stopPropagation();
+                        await recordProductView(productId);
                         window.location.href = `viewproduct.html?id=${productId}`;
                     });
                 });
@@ -983,6 +1008,7 @@
             }
 
             async function init() {
+                await checkSession();
                 await loadNews();
                 setTimeout(() => {
                     if (allProducts.length) {

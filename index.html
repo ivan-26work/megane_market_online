@@ -44,6 +44,26 @@
         </div>
     </header>
 
+    <!-- MODALE DE REDIRECTION (floutée) -->
+    <div id="loginRedirectModal" class="redirect-modal" style="display: none;">
+        <div class="redirect-modal-content">
+            <div class="redirect-icon">
+                <i class="fas fa-store"></i>
+            </div>
+            <h2>🔐 Connexion requise</h2>
+            <p>Pour interagir avec le marché, découvrir les produits et contacter les vendeurs, vous devez créer un compte ou vous connecter.</p>
+            <div class="redirect-info">
+                <i class="fas fa-info-circle"></i> La redirection est automatique
+            </div>
+            <div class="redirect-timer">
+                Redirection dans <span id="redirectCountdown">5</span> seconde(s)
+            </div>
+            <div class="redirect-progress">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+        </div>
+    </div>
+
     <div id="installBanner" class="install-banner">
         <div class="install-text">
             <i class="fas fa-download"></i>
@@ -168,19 +188,6 @@
         </div>
     </div>
 
-    <!-- BANNIÈRES INFINIES (produits aléatoires) -->
-    <section class="infinite-banners-section">
-        <div class="section-header">
-            <h2><i class="fas fa-infinity"></i> Découvrez encore plus</h2>
-        </div>
-        <div id="infiniteBannersContainer" class="infinite-banners-list"></div>
-        <div id="infiniteLoadingTrigger" class="loading-trigger" style="display: none;">
-            <div class="loading-spinner-small"></div>
-            <p>Chargement de plus de produits...</p>
-        </div>
-    </section>
-
-    <!-- DERNIÈRE BANNIÈRE STATIQUE -->
     <div class="cta-banner last">
         <div class="cta-icon">
             <i class="fas fa-cart-shopping"></i>
@@ -192,12 +199,26 @@
         </div>
     </div>
 
+    <div id="toast" class="toast"></div>
+    
+    <!-- BANNIÈRES INFINIES (défilement infini) -->
+<section class="infinite-banners-section">
+    <div class="section-header">
+        <h2><i class="fas fa-infinity"></i> Découvrez encore plus</h2>
+    </div>
+    <div id="infiniteBannersContainer" class="infinite-banners-list"></div>
+    <div id="infiniteLoadingTrigger" class="loading-trigger" style="display: none;">
+        <div class="loading-spinner-small"></div>
+        <p>Chargement de plus de produits...</p>
+    </div>
+</section>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="script.js"></script>
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
+                navigator.serviceWorker.register('/megane_market_online/sw.js')
                     .then(reg => console.log('SW enregistré:', reg))
                     .catch(err => console.log('Erreur SW:', err));
             });
@@ -238,6 +259,44 @@
                 }, 200);
             });
         }
+
+        // ============ MODALE DE REDIRECTION 5 SECONDES ============
+        setTimeout(async () => {
+            if (typeof window.supabase === 'undefined') return;
+            
+            const SUPABASE_URL = 'https://emcsigvlopntwbfkkjkh.supabase.co';
+            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtY3NpZ3Zsb3BudHdiZmtramtoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4ODE5MTgsImV4cCI6MjA5NDQ1NzkxOH0.YwYoV-azL3WEFtHoh4yoF7xTLrOwZILKCzJrGPsCs6I';
+            const authClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            
+            const { data: { session } } = await authClient.auth.getSession();
+            
+            if (!session) {
+                const modal = document.getElementById('loginRedirectModal');
+                const countdownSpan = document.getElementById('redirectCountdown');
+                const progressBar = document.getElementById('progressBar');
+                
+                if (!modal) return;
+                
+                modal.style.display = 'flex';
+                
+                let countdown = 5;
+                const totalTime = 5;
+                
+                const interval = setInterval(() => {
+                    if (countdown <= 1) {
+                        clearInterval(interval);
+                        window.location.href = 'login.html';
+                    } else {
+                        countdown--;
+                        if (countdownSpan) countdownSpan.textContent = countdown;
+                        if (progressBar) {
+                            const progressPercent = ((totalTime - countdown) / totalTime) * 100;
+                            progressBar.style.width = `${progressPercent}%`;
+                        }
+                    }
+                }, 1000);
+            }
+        }, 2000);
     </script>
 </body>
 </html>

@@ -15,61 +15,47 @@
 
         body {
             font-family: 'DM Sans', sans-serif;
-            background: #0a0f1a;
-            color: #eef2ff;
+            background: #ffffff;
+            color: #1a2a3a;
             min-height: 100vh;
             padding-bottom: 90px;
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
-        @keyframes borderPulse {
-            0% { box-shadow: 0 0 0 0 rgba(90, 158, 255, 0.7), 0 0 0 0 rgba(255, 77, 77, 0.7); }
-            50% { box-shadow: 0 0 0 15px rgba(90, 158, 255, 0), 0 0 0 30px rgba(255, 77, 77, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(90, 158, 255, 0), 0 0 0 0 rgba(255, 77, 77, 0); }
-        }
-
-        @keyframes iconPulse {
-            0% { color: #5a9eff; transform: scale(1); }
-            50% { color: #ff4d4d; transform: scale(1.1); }
-            100% { color: #5a9eff; transform: scale(1); }
         }
 
         .main-header {
             position: sticky;
             top: 16px;
             z-index: 100;
-            background: #0e1a26;
+            background: #ffffff;
             border-radius: 60px;
-            border: 1px solid #2a3a4a;
             height: 60px;
+            border: 1px solid #4ade80;
             margin: 16px 16px 0 16px;
             padding: 0 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 12px;
-            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
         }
 
         .logo {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #5a9eff;
-            white-space: nowrap;
-            text-decoration: none;
             display: flex;
             align-items: center;
             gap: 8px;
+            text-decoration: none;
+        }
+
+        .logo-img {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 1rem;
+            color: #4ade80;
         }
 
         .search-container {
@@ -90,79 +76,84 @@
         .search-container input {
             width: 100%;
             padding: 8px 12px 8px 38px;
-            background: #1a2a3a;
-            border: 1px solid #2a3a4a;
+            background: #fafbfc;
+            border: 1px solid #e8ecf0;
             border-radius: 30px;
-            color: #eef2ff;
+            color: #1a2a3a;
             font-size: 0.8rem;
             outline: none;
         }
 
         .search-container input:focus {
-            border-color: #5a9eff;
+            border-color: #4ade80;
         }
 
-        .profile-btn {
-            background: #1a2a3a;
-            border: 1px solid #2a3a4a;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: #eef2ff;
-            transition: all 0.2s;
-            text-decoration: none;
-        }
-
-        .profile-btn:hover {
-            background: #5a9eff;
-            color: white;
-            transform: scale(1.1);
-        }
-
-        .loading-overlay {
+        .loading-container {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #0a0f1a;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            z-index: 1000;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
+            z-index: 50;
+            background: transparent;
+            pointer-events: none;
         }
 
-        .loading-overlay.hide {
-            opacity: 0;
-            visibility: hidden;
-        }
-
-        .loader-icon {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
+        .loading-spinner {
+            position: relative;
+            width: 80px;
+            height: 80px;
             display: flex;
             align-items: center;
             justify-content: center;
-            animation: borderPulse 2s infinite;
         }
 
-        .loader-icon i {
-            font-size: 3rem;
-            animation: iconPulse 1.5s ease-in-out infinite;
+        .loading-spinner i {
+            font-size: 2.5rem;
+            color: #4ade80;
+            z-index: 2;
+            animation: pulse 1s ease-in-out infinite;
         }
 
-        .loading-overlay p {
-            margin-top: 24px;
-            font-size: 0.9rem;
+        .loading-circle {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, #4ade80, #ffffff, #4ade80, #ffffff, #4ade80);
+            animation: spin 1s linear infinite;
+        }
+
+        .loading-circle::before {
+            content: '';
+            position: absolute;
+            inset: 4px;
+            background: #ffffff;
+            border-radius: 50%;
+        }
+
+        .loading-text {
+            margin-top: 16px;
+            font-size: 0.8rem;
             color: #8a9aaa;
-            letter-spacing: 2px;
+            font-weight: 500;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .loading-container.hide {
+            display: none;
         }
 
         .products-grid {
@@ -170,63 +161,127 @@
             grid-template-columns: repeat(3, 1fr);
             gap: 12px;
             padding: 20px;
-            animation: fadeInUp 0.5s ease;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .products-grid.visible {
+            opacity: 1;
+        }
+
+        @media (max-width: 640px) {
+            .products-grid {
+                gap: 10px;
+                padding: 12px;
+            }
         }
 
         @media (max-width: 480px) {
             .products-grid {
+                grid-template-columns: repeat(3, 1fr);
                 gap: 8px;
                 padding: 12px;
             }
-            .product-image, .product-image-placeholder {
-                height: 100px;
-            }
-            .product-name {
-                font-size: 0.7rem;
-            }
-            .product-price {
-                font-size: 0.7rem;
-            }
-            .product-info {
-                padding: 6px;
-            }
+        }
+
+        @keyframes fadeInScale {
+            0% { opacity: 0; transform: scale(0.9) translateY(10px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
         }
 
         .product-card {
-            background: #0e1a26;
-            border: 1px solid #2a3a4a;
+            background: #ffffff;
+            border: 1px solid #e8ecf0;
             border-radius: 16px;
             overflow: hidden;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s ease;
+            position: relative;
+            animation: fadeInScale 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards;
+            opacity: 0;
         }
 
         .product-card:hover {
-            transform: translateY(-6px);
-            border-color: #5a9eff;
-            box-shadow: 0 12px 30px rgba(90, 158, 255, 0.2);
+            transform: translateY(-4px);
+            border-color: #4ade80;
+            box-shadow: 0 8px 20px rgba(74, 222, 128, 0.15);
+        }
+
+        .product-card.click-animation {
+            animation: clickPulse 0.3s ease;
+        }
+
+        @keyframes clickPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(0.97); }
+            100% { transform: scale(1); }
+        }
+
+        .product-card:nth-child(1) { animation-delay: 0.02s; }
+        .product-card:nth-child(2) { animation-delay: 0.04s; }
+        .product-card:nth-child(3) { animation-delay: 0.06s; }
+        .product-card:nth-child(4) { animation-delay: 0.08s; }
+        .product-card:nth-child(5) { animation-delay: 0.10s; }
+        .product-card:nth-child(6) { animation-delay: 0.12s; }
+        .product-card:nth-child(7) { animation-delay: 0.14s; }
+        .product-card:nth-child(8) { animation-delay: 0.16s; }
+        .product-card:nth-child(9) { animation-delay: 0.18s; }
+        .product-card:nth-child(10) { animation-delay: 0.20s; }
+        .product-card:nth-child(11) { animation-delay: 0.22s; }
+        .product-card:nth-child(12) { animation-delay: 0.24s; }
+
+        .favorite-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #8a9aaa;
+            font-size: 1rem;
+            transition: all 0.2s;
+            z-index: 10;
+        }
+
+        .favorite-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .favorite-btn.active {
+            color: #ff4d4d;
+        }
+
+        .favorite-btn.like-animation {
+            animation: heartPop 0.3s ease;
+        }
+
+        @keyframes heartPop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.4); }
+            100% { transform: scale(1); }
         }
 
         .product-image {
             width: 100%;
             height: 150px;
             object-fit: cover;
-            background: #1a2a3a;
-            transition: transform 0.5s ease;
-        }
-
-        .product-card:hover .product-image {
-            transform: scale(1.08);
+            background: #fafbfc;
         }
 
         .product-image-placeholder {
             width: 100%;
             height: 150px;
-            background: #1a2a3a;
+            background: #fafbfc;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #5a9eff;
+            color: #4ade80;
             font-size: 2.5rem;
         }
 
@@ -237,7 +292,7 @@
         .product-name {
             font-weight: 600;
             font-size: 0.85rem;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -245,8 +300,17 @@
 
         .product-price {
             font-weight: 700;
-            color: #5a9eff;
-            font-size: 0.9rem;
+            color: #4ade80;
+            font-size: 0.85rem;
+        }
+
+        .product-market {
+            font-size: 0.7rem;
+            color: #8a9aaa;
+            margin-top: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .filters-footer {
@@ -254,9 +318,9 @@
             bottom: 16px;
             left: 16px;
             right: 16px;
-            background: #0e1a26;
+            background: #ffffff;
             border-radius: 60px;
-            border: 1px solid #2a3a4a;
+            border: 1px solid #4ade80;
             height: 60px;
             padding: 0 20px;
             z-index: 100;
@@ -266,7 +330,7 @@
             align-items: center;
             gap: 8px;
             scrollbar-width: none;
-            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         }
 
         .filters-footer::-webkit-scrollbar {
@@ -276,8 +340,8 @@
         .filter-chip {
             display: inline-block;
             padding: 8px 20px;
-            background: #1a2a3a;
-            border: 1px solid #2a3a4a;
+            background: #fafbfc;
+            border: 1px solid #e8ecf0;
             border-radius: 40px;
             font-size: 0.8rem;
             font-weight: 500;
@@ -288,16 +352,14 @@
         }
 
         .filter-chip:hover {
-            border-color: #5a9eff;
-            color: #5a9eff;
-            transform: translateY(-2px);
+            border-color: #4ade80;
+            color: #4ade80;
         }
 
         .filter-chip.active {
-            background: #5a9eff;
-            border-color: #5a9eff;
+            background: #4ade80;
+            border-color: #4ade80;
             color: white;
-            animation: pulse 0.5s ease;
         }
 
         .empty-products {
@@ -306,35 +368,54 @@
             color: #8a9aaa;
             grid-column: 1 / -1;
         }
+
+        @media (max-width: 600px) {
+            .logo-text {
+                display: none;
+            }
+            .filter-chip {
+                padding: 6px 16px;
+                font-size: 0.75rem;
+            }
+            .product-image, .product-image-placeholder {
+                height: 110px;
+            }
+            .product-name {
+                font-size: 0.7rem;
+            }
+            .product-price {
+                font-size: 0.7rem;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <div id="loadingOverlay" class="loading-overlay">
-        <div class="loader-icon">
+    <div id="loadingContainer" class="loading-container">
+        <div class="loading-spinner">
+            <div class="loading-circle"></div>
             <i class="fas fa-store"></i>
         </div>
-        <p>CHARGEMENT DU MARCHÉ...</p>
+        <div class="loading-text">Chargement des produits...</div>
     </div>
 
-    <header class="main-header" id="mainHeader" style="display: none;">
+    <header class="main-header">
         <a href="index.html" class="logo">
-            <i class="fas fa-store"></i> Megane Market
+            <img src="assets/logo.png" class="logo-img" alt="Megane Market">
+            <span class="logo-text">Megane Market</span>
         </a>
         <div class="search-container">
             <i class="fas fa-search"></i>
-            <input type="text" id="searchInput" placeholder="Rechercher un produit...">
+            <input type="text" id="searchInput" placeholder="Rechercher...">
         </div>
-        <a href="profil.html" class="profile-btn" title="Mon profil">
-            <i class="fas fa-user"></i>
-        </a>
+        <div style="width: 40px;"></div>
     </header>
 
-    <main id="mainContent" style="display: none;">
+    <main>
         <div id="productsGrid" class="products-grid"></div>
     </main>
 
-    <footer class="filters-footer" id="filtersFooter" style="display: none;">
+    <footer class="filters-footer">
         <button class="filter-chip active" data-category="all">Tous</button>
     </footer>
 
@@ -345,70 +426,161 @@
             const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtY3NpZ3Zsb3BudHdiZmtramtoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4ODE5MTgsImV4cCI6MjA5NDQ1NzkxOH0.YwYoV-azL3WEFtHoh4yoF7xTLrOwZILKCzJrGPsCs6I';
 
             const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            const loadingOverlay = document.getElementById('loadingOverlay');
-            const mainHeader = document.getElementById('mainHeader');
-            const mainContent = document.getElementById('mainContent');
-            const filtersFooter = document.getElementById('filtersFooter');
             const productsGrid = document.getElementById('productsGrid');
             const searchInput = document.getElementById('searchInput');
+            const loadingContainer = document.getElementById('loadingContainer');
 
             let allProducts = [];
+            let allMarkets = [];
             let categories = new Set();
-            let activeCategory = 'all';
+            let userFavorites = new Set();
             let currentUserId = null;
-            let skipAnimation = sessionStorage.getItem('market_returning') === 'true';
-
-            function saveState() {
-                sessionStorage.setItem('market_activeCategory', activeCategory);
-                sessionStorage.setItem('market_searchTerm', searchInput ? searchInput.value : '');
-            }
-
-            function restoreState() {
-                const savedCategory = sessionStorage.getItem('market_activeCategory');
-                const savedSearchTerm = sessionStorage.getItem('market_searchTerm');
-                
-                if (savedCategory && savedCategory !== 'all') {
-                    activeCategory = savedCategory;
-                }
-                
-                if (savedSearchTerm && searchInput) {
-                    searchInput.value = savedSearchTerm;
-                }
-            }
+            let activeCategory = 'all';
+            let hoverTimers = {};
 
             async function checkSession() {
                 const { data: { session } } = await supabase.auth.getSession();
                 if (session) {
                     currentUserId = session.user.id;
+                    await loadFavorites();
                 }
+            }
+
+            async function recordCardClick(productId, type = 'card') {
+                try {
+                    await supabase
+                        .from('product_stats')
+                        .insert({
+                            product_id: productId,
+                            click_count: 1,
+                            click_type: type,
+                            clicked_at: new Date().toISOString()
+                        });
+                    console.log('Clic enregistré:', productId, '(type:', type + ')');
+                } catch (err) {
+                    console.error('Erreur enregistrement:', err);
+                }
+            }
+
+            function startHoverTimer(productId) {
+                if (hoverTimers[productId]) clearTimeout(hoverTimers[productId]);
+                hoverTimers[productId] = setTimeout(() => {
+                    recordCardClick(productId, 'touch');
+                }, 500);
+            }
+
+            function cancelHoverTimer(productId) {
+                if (hoverTimers[productId]) {
+                    clearTimeout(hoverTimers[productId]);
+                    delete hoverTimers[productId];
+                }
+            }
+
+            async function loadFavorites() {
+                if (!currentUserId) return;
+                
+                const { data, error } = await supabase
+                    .from('user_favorites')
+                    .select('product_id')
+                    .eq('user_id', currentUserId);
+                
+                if (error) {
+                    console.error('Erreur chargement favoris:', error);
+                    return;
+                }
+                
+                userFavorites.clear();
+                (data || []).forEach(fav => userFavorites.add(String(fav.product_id)));
+                updateAllFavoriteButtons();
+            }
+
+            function updateAllFavoriteButtons() {
+                document.querySelectorAll('.favorite-btn').forEach(btn => {
+                    const productId = String(btn.getAttribute('data-id'));
+                    const isFav = userFavorites.has(productId);
+                    btn.innerHTML = `<i class="${isFav ? 'fas' : 'far'} fa-heart"></i>`;
+                    if (isFav) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+            }
+
+            async function toggleFavorite(productId, event) {
+                event.stopPropagation();
+                productId = String(productId);
+                
+                const btn = event.currentTarget;
+                btn.classList.add('like-animation');
+                setTimeout(() => btn.classList.remove('like-animation'), 300);
+                
+                if (!currentUserId) {
+                    alert('Connectez-vous pour ajouter des favoris');
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                const isFavorite = userFavorites.has(productId);
+                
+                if (isFavorite) {
+                    const { error } = await supabase
+                        .from('user_favorites')
+                        .delete()
+                        .eq('user_id', currentUserId)
+                        .eq('product_id', productId);
+                    
+                    if (!error) {
+                        userFavorites.delete(productId);
+                        updateAllFavoriteButtons();
+                        if (activeCategory === 'favorites') displayProducts();
+                    }
+                } else {
+                    const { error } = await supabase
+                        .from('user_favorites')
+                        .insert({ user_id: currentUserId, product_id: productId });
+                    
+                    if (!error) {
+                        userFavorites.add(productId);
+                        updateAllFavoriteButtons();
+                    }
+                }
+            }
+
+            async function loadMarkets() {
+                const { data } = await supabase
+                    .from('markets')
+                    .select('id, market_name, owner_name');
+                allMarkets = data || [];
+            }
+
+            function getMarketName(marketId) {
+                const market = allMarkets.find(m => m.id === marketId);
+                return market?.market_name || market?.owner_name || 'Vendeur';
             }
 
             async function loadProducts() {
                 try {
-                    const { data: activeMarkets, error: marketsError } = await supabase
+                    const { data: activeMarkets } = await supabase
                         .from('markets')
                         .select('id')
                         .eq('market_active', true);
 
-                    if (marketsError) throw marketsError;
-
-                    const activeMarketIds = activeMarkets.map(m => m.id);
-
+                    const activeMarketIds = (activeMarkets || []).map(m => m.id);
+                    
                     if (activeMarketIds.length === 0) {
                         allProducts = [];
                         displayProducts();
-                        hideLoadingAndShowContent();
+                        hideLoading();
                         return;
                     }
 
-                    const { data: products, error } = await supabase
+                    const { data: products } = await supabase
                         .from('products')
                         .select('*')
                         .eq('active', true)
                         .in('user_id', activeMarketIds)
                         .order('created_at', { ascending: false });
-
-                    if (error) throw error;
 
                     allProducts = products || [];
                     
@@ -418,53 +590,35 @@
                             categories.add(p.category);
                         }
                     });
-
-                    restoreState();
+                    
                     buildFilters();
                     displayProducts();
-                    hideLoadingAndShowContent();
+                    hideLoading();
 
                 } catch (err) {
                     console.error('Erreur:', err);
-                    productsGrid.innerHTML = `
-                        <div class="empty-products">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            <p>Erreur chargement des produits.</p>
-                        </div>
-                    `;
-                    hideLoadingAndShowContent();
+                    productsGrid.innerHTML = '<div class="empty-products">Erreur chargement</div>';
+                    hideLoading();
                 }
             }
 
-            function hideLoadingAndShowContent() {
-                if (skipAnimation) {
-                    loadingOverlay.style.display = 'none';
-                    mainHeader.style.display = 'flex';
-                    mainContent.style.display = 'block';
-                    filtersFooter.style.display = 'flex';
-                    sessionStorage.removeItem('market_returning');
-                    return;
+            function hideLoading() {
+                if (loadingContainer) {
+                    loadingContainer.classList.add('hide');
                 }
-                
-                setTimeout(() => {
-                    loadingOverlay.classList.add('hide');
-                    setTimeout(() => {
-                        loadingOverlay.style.display = 'none';
-                        mainHeader.style.display = 'flex';
-                        mainContent.style.display = 'block';
-                        filtersFooter.style.display = 'flex';
-                    }, 500);
-                }, 800);
+                productsGrid.classList.add('visible');
             }
 
             function buildFilters() {
                 const categoriesArray = Array.from(categories).sort();
                 let filtersHtml = '<button class="filter-chip active" data-category="all">Tous</button>';
+                filtersHtml += '<button class="filter-chip" data-category="favorites">❤️ Favoris</button>';
                 
                 categoriesArray.forEach(cat => {
                     filtersHtml += `<button class="filter-chip" data-category="${escapeHtml(cat)}">${escapeHtml(cat)}</button>`;
                 });
                 
+                const filtersFooter = document.querySelector('.filters-footer');
                 filtersFooter.innerHTML = filtersHtml;
 
                 document.querySelectorAll('.filter-chip').forEach(btn => {
@@ -473,57 +627,89 @@
                         btn.classList.add('active');
                         activeCategory = btn.getAttribute('data-category');
                         displayProducts();
-                        saveState();
                     });
                 });
             }
 
             function displayProducts() {
-                const searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : '';
+                const searchTerm = searchInput?.value.toLowerCase().trim() || '';
                 let filtered = [...allProducts];
 
-                if (activeCategory !== 'all') {
+                if (activeCategory === 'favorites' && currentUserId) {
+                    filtered = filtered.filter(p => userFavorites.has(String(p.id)));
+                } else if (activeCategory !== 'all' && activeCategory !== 'favorites') {
                     filtered = filtered.filter(p => p.category === activeCategory);
                 }
 
                 if (searchTerm) {
-                    filtered = filtered.filter(p =>
-                        p.name.toLowerCase().includes(searchTerm)
-                    );
+                    filtered = filtered.filter(p => p.name.toLowerCase().includes(searchTerm));
                 }
 
                 if (filtered.length === 0) {
-                    productsGrid.innerHTML = `
-                        <div class="empty-products">
-                            <i class="fas fa-box-open"></i>
-                            <p>Aucun produit trouvé</p>
-                        </div>
-                    `;
+                    productsGrid.innerHTML = '<div class="empty-products">Aucun produit trouvé</div>';
                     return;
                 }
 
                 productsGrid.innerHTML = filtered.map(product => {
-                    const imageUrl = (product.images && product.images[0]) ? product.images[0] : null;
+                    const imageUrl = product.images?.[0] || null;
+                    const isFavorite = currentUserId && userFavorites.has(String(product.id));
+                    const marketName = getMarketName(product.user_id);
+                    
                     return `
                         <div class="product-card" data-id="${product.id}">
+                            <button class="favorite-btn ${isFavorite ? 'active' : ''}" data-id="${product.id}">
+                                <i class="${isFavorite ? 'fas' : 'far'} fa-heart"></i>
+                            </button>
                             ${imageUrl
-                                ? `<img src="${imageUrl}" class="product-image" alt="${escapeHtml(product.name)}" onerror="this.src=''">`
+                                ? `<img src="${escapeHtml(imageUrl)}" class="product-image" alt="${escapeHtml(product.name)}" onerror="this.src=''">`
                                 : `<div class="product-image-placeholder"><i class="fas fa-image"></i></div>`
                             }
                             <div class="product-info">
                                 <div class="product-name">${escapeHtml(product.name)}</div>
                                 <div class="product-price">${formatPrice(product.price)} FCFA</div>
+                                <div class="product-market"><i class="fas fa-store"></i> ${escapeHtml(marketName)}</div>
                             </div>
                         </div>
                     `;
                 }).join('');
 
                 document.querySelectorAll('.product-card').forEach(card => {
-                    card.addEventListener('click', () => {
-                        sessionStorage.setItem('market_returning', 'true');
-                        saveState();
-                        const productId = card.getAttribute('data-id');
-                        window.location.href = `viewproduct.html?id=${productId}`;
+                    const productId = card.getAttribute('data-id');
+                    
+                    // SURVOL (0.5s) - enregistre comme clic
+                    card.addEventListener('mouseenter', () => {
+                        startHoverTimer(productId);
+                    });
+                    
+                    card.addEventListener('mouseleave', () => {
+                        cancelHoverTimer(productId);
+                    });
+                    
+                    // TOUCHER MOBILE INSTANTANÉ (sans bloquer le clic)
+                    card.addEventListener('touchstart', () => {
+                        recordCardClick(productId, 'touch');
+                    });
+                    
+                    // CLIC RÉEL - redirection + enregistrement
+                    card.addEventListener('click', async (e) => {
+                        if (e.target.closest('.favorite-btn')) return;
+                        
+                        cancelHoverTimer(productId);
+                        
+                        card.classList.add('click-animation');
+                        setTimeout(() => card.classList.remove('click-animation'), 300);
+                        
+                        if (productId) {
+                            await recordCardClick(productId, 'card');
+                            window.location.href = `viewproduct.html?id=${productId}`;
+                        }
+                    });
+                });
+
+                document.querySelectorAll('.favorite-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const productId = btn.getAttribute('data-id');
+                        if (productId) toggleFavorite(productId, e);
                     });
                 });
             }
@@ -540,14 +726,12 @@
             }
 
             if (searchInput) {
-                searchInput.addEventListener('input', () => {
-                    displayProducts();
-                    saveState();
-                });
+                searchInput.addEventListener('input', () => displayProducts());
             }
 
             async function init() {
                 await checkSession();
+                await loadMarkets();
                 await loadProducts();
             }
             

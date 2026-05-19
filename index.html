@@ -3,561 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>Megane Market - Actualités</title>
+    <title>Megane Market - Accueil</title>
+    <meta name="description" content="Restez informé des actualités de vos commerçants préférés.">
+    <meta name="theme-color" content="#4ade80">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Megane Market">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="assets/logo.png">
+    <link rel="apple-touch-icon" href="assets/logo.png">
+    
+    <meta property="og:title" content="Megane Market">
+    <meta property="og:description" content="Découvrez les actualités de vos commerçants préférés">
+    <meta property="og:image" content="https://ivan-26work.github.io/megane_market_online/assets/logo.png">
+    <meta property="og:url" content="https://ivan-26work.github.io/megane_market_online/index.html">
+    <meta property="og:type" content="website">
+    
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'DM Sans', sans-serif;
-            background: #0a0f1a;
-            color: #eef2ff;
-            min-height: 100vh;
-        }
-
-        @keyframes fadeSlideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
-
-        @keyframes fadeTransition {
-            0% { opacity: 0; transform: translateX(10px); }
-            100% { opacity: 1; transform: translateX(0); }
-        }
-
-        @keyframes pricePulse {
-            0% { transform: scale(1); color: #5a9eff; }
-            50% { transform: scale(1.15); color: #4ade80; }
-            100% { transform: scale(1); color: #5a9eff; }
-        }
-
-        .main-header {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            background: rgba(10, 15, 26, 0.95);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid #1a2a3a;
-            padding: 16px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #5a9eff;
-            text-decoration: none;
-        }
-
-        .logo i {
-            animation: float 3s ease-in-out infinite;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-
-        .market-btn {
-            background: linear-gradient(135deg, #5a9eff, #3a7ecc);
-            border: none;
-            border-radius: 40px;
-            padding: 10px 24px;
-            color: white;
-            font-weight: 600;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-        }
-
-        .market-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(90, 158, 255, 0.3);
-        }
-
-        .profile-btn {
-            background: #1a2a3a;
-            border: 1px solid #2a3a4a;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: #eef2ff;
-            transition: all 0.2s;
-            text-decoration: none;
-        }
-
-        .profile-btn:hover {
-            background: #5a9eff;
-            color: white;
-            transform: scale(1.05);
-        }
-
-        .hero {
-            text-align: center;
-            padding: 60px 20px 40px;
-            background: linear-gradient(135deg, #0a0f1a 0%, #0e1a26 100%);
-            border-bottom: 1px solid #1a2a3a;
-        }
-
-        .hero h1 {
-            font-size: 2rem;
-            margin-bottom: 12px;
-            background: linear-gradient(135deg, #5a9eff, #4ade80);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hero p {
-            color: #8a9aaa;
-            font-size: 0.9rem;
-        }
-
-        /* Bannière suggestion */
-        .suggestion-banner {
-            background: linear-gradient(135deg, #0e1a26, #0a1520);
-            border: 1px solid #5a9eff;
-            border-radius: 24px;
-            padding: 20px;
-            margin: 20px auto;
-            max-width: 800px;
-            animation: fadeSlideUp 0.5s ease;
-        }
-
-        .suggestion-text {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.9rem;
-            color: #5a9eff;
-            font-weight: 600;
-            margin-bottom: 20px;
-            text-align: center;
-            justify-content: center;
-        }
-
-        .suggestion-dual {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-
-        .suggestion-image-box {
-            flex: 1;
-            aspect-ratio: 1 / 1;
-            background: #1a2a3a;
-            border-radius: 20px;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-        }
-
-        .suggestion-image-box:hover {
-            transform: scale(1.02);
-        }
-
-        .suggestion-image-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .suggestion-image-placeholder {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            color: #2a3a4a;
-        }
-
-        .suggestion-info-box {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .suggestion-info-box .product-name {
-            font-size: 1.1rem;
-            font-weight: 700;
-        }
-
-        .suggestion-info-box .product-price {
-            font-size: 1rem;
-            font-weight: 700;
-            color: #5a9eff;
-        }
-
-        .suggestion-btn {
-            background: #5a9eff;
-            border: none;
-            border-radius: 40px;
-            padding: 10px 20px;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            width: fit-content;
-        }
-
-        .suggestion-btn:hover {
-            background: #3a7ecc;
-            transform: scale(1.02);
-        }
-
-        .suggestion-nav-container {
-            display: flex;
-            justify-content: center;
-            gap: 16px;
-            margin-top: 20px;
-        }
-
-        .suggestion-nav {
-            background: #1a2a3a;
-            border: 1px solid #2a3a4a;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: #eef2ff;
-            transition: all 0.2s;
-        }
-
-        .suggestion-nav:hover {
-            background: #5a9eff;
-            border-color: #5a9eff;
-            transform: scale(1.05);
-        }
-
-        /* Flux actualités */
-        .news-feed {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .product-card {
-            background: #0e1a26;
-            border: 1px solid #1a2a3a;
-            border-radius: 24px;
-            margin-bottom: 24px;
-            overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            animation: fadeSlideUp 0.5s ease backwards;
-            position: relative;
-        }
-
-        .product-card:hover {
-            transform: translateY(-4px);
-            border-color: #5a9eff;
-            box-shadow: 0 15px 30px rgba(90, 158, 255, 0.1);
-        }
-
-        .product-card.featured {
-            border: 2px solid #ffaa44;
-        }
-
-        .product-card.featured::before {
-            content: "⭐ À LA UNE ⭐";
-            position: absolute;
-            top: 16px;
-            right: 16px;
-            background: #ffaa44;
-            color: #1a2a3a;
-            font-size: 0.7rem;
-            font-weight: 700;
-            padding: 6px 12px;
-            border-radius: 30px;
-            z-index: 2;
-        }
-
-        .product-image-container {
-            position: relative;
-            width: 100%;
-            height: 220px;
-            overflow: hidden;
-            cursor: pointer;
-        }
-
-        .product-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-        }
-
-        .product-image-container:hover .product-image {
-            transform: scale(1.05);
-        }
-
-        .product-image-placeholder {
-            width: 100%;
-            height: 100%;
-            background: #1a2a3a;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #2a3a4a;
-            font-size: 3rem;
-        }
-
-        .product-info {
-            padding: 20px;
-            transition: all 0.3s ease;
-        }
-
-        .market-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: #1a2a3a;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            color: #5a9eff;
-            margin-bottom: 12px;
-            transition: all 0.3s ease;
-        }
-
-        .product-card:hover .market-badge {
-            background: #5a9eff;
-            color: white;
-        }
-
-        .product-name {
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-            line-height: 1.3;
-        }
-
-        .product-price {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #5a9eff;
-            margin-bottom: 16px;
-            transition: all 0.3s ease;
-        }
-
-        .product-price.pulse {
-            animation: pricePulse 0.5s ease-in-out;
-        }
-
-        .product-description {
-            font-size: 0.85rem;
-            color: #8a9aaa;
-            line-height: 1.5;
-            margin-bottom: 16px;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .product-footer {
-            display: flex;
-            justify-content: flex-end;
-            padding-top: 12px;
-            border-top: 1px solid #1a2a3a;
-        }
-
-        .detail-link {
-            background: transparent;
-            border: 1px solid #5a9eff;
-            border-radius: 40px;
-            padding: 6px 16px;
-            color: #5a9eff;
-            font-weight: 600;
-            font-size: 0.75rem;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .detail-link:hover {
-            background: #5a9eff;
-            color: white;
-        }
-
-        .message-card {
-            background: linear-gradient(135deg, #0e1a26, #0a1520);
-            border: 1px solid #1a2a3a;
-            border-radius: 24px;
-            padding: 24px;
-            margin-bottom: 24px;
-            display: flex;
-            gap: 16px;
-            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            animation: fadeSlideUp 0.5s ease;
-        }
-
-        .message-card:hover {
-            transform: translateY(-4px);
-            border-color: #5a9eff;
-            box-shadow: 0 12px 30px rgba(90, 158, 255, 0.1);
-        }
-
-        .admin-avatar {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #5a9eff;
-            transition: transform 0.3s ease;
-        }
-
-        .message-card:hover .admin-avatar {
-            transform: scale(1.05);
-        }
-
-        .admin-avatar-placeholder {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            background: #1a2a3a;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            color: #5a9eff;
-        }
-
-        .message-content {
-            flex: 1;
-        }
-
-        .admin-name {
-            font-weight: 700;
-            margin-bottom: 6px;
-            color: #5a9eff;
-        }
-
-        .message-text {
-            font-size: 0.9rem;
-            line-height: 1.5;
-            color: #eef2ff;
-            margin-bottom: 10px;
-        }
-
-        .message-date {
-            font-size: 0.7rem;
-            color: #6a8aaa;
-        }
-
-        .skeleton-card {
-            background: #0e1a26;
-            border-radius: 24px;
-            margin-bottom: 24px;
-            overflow: hidden;
-        }
-
-        .skeleton-image {
-            height: 220px;
-            background: linear-gradient(90deg, #1a2a3a 25%, #2a3a4a 50%, #1a2a3a 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-        }
-
-        .skeleton-text {
-            height: 16px;
-            background: #1a2a3a;
-            margin: 16px;
-            border-radius: 8px;
-        }
-
-        .skeleton-text.short {
-            width: 60%;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #8a9aaa;
-        }
-
-        @media (max-width: 600px) {
-            .main-header {
-                padding: 12px 16px;
-            }
-            .hero h1 {
-                font-size: 1.5rem;
-            }
-            .product-image-container {
-                height: 180px;
-            }
-            .product-name {
-                font-size: 1rem;
-            }
-            .message-card {
-                flex-direction: column;
-                text-align: center;
-            }
-            .admin-avatar, .admin-avatar-placeholder {
-                margin: 0 auto;
-            }
-            .suggestion-dual {
-                flex-direction: column;
-            }
-            .suggestion-image-box {
-                width: 100%;
-                max-width: 200px;
-                margin: 0 auto;
-            }
-            .suggestion-info-box {
-                text-align: center;
-                align-items: center;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <header class="main-header">
         <a href="index.html" class="logo">
-            <i class="fas fa-store"></i>
-            <span>Megane Market</span>
+            <img src="assets/logo.png" alt="Megane Market" class="logo-img">
         </a>
+        <div class="header-center">Megane Market</div>
         <div class="header-actions">
+            <button id="refreshBtn" class="refresh-btn" title="Mise à jour">
+                <i class="fas fa-sync-alt"></i>
+                <span id="refreshBadge" class="refresh-badge">0</span>
+            </button>
             <a href="market.html" class="market-btn">
-                <i class="fas fa-store"></i> Accéder au marché
+                <i class="fas fa-store"></i> <span>Marché</span>
             </a>
             <a href="profil.html" class="profile-btn" title="Mon profil">
                 <i class="fas fa-user"></i>
@@ -565,463 +44,200 @@
         </div>
     </header>
 
-    <div class="hero">
-        <h1>✨ Découvrez les nouveautés ✨</h1>
-        <p>Restez informé des dernières actualités de vos commerçants préférés</p>
+    <div id="installBanner" class="install-banner">
+        <div class="install-text">
+            <i class="fas fa-download"></i>
+            <span>Installer l'application</span>
+        </div>
+        <button id="installBtn" class="install-btn">Installer</button>
     </div>
 
-    <div class="suggestion-banner" id="suggestionBanner" style="display: none;">
-        <div class="suggestion-text">
-            <i class="fas fa-magic"></i>
-            <span id="suggestionMessage">✨ À tu vu ce produit ?</span>
+    <div class="cta-banner" id="searchBanner">
+        <div class="cta-icon" id="searchIcon">
+            <i class="fas fa-search"></i>
         </div>
-        <div class="suggestion-dual" id="suggestionDual">
-            <div class="suggestion-image-box" id="suggestionImageBox">
-                <img id="suggestionImg" src="" alt="">
-            </div>
-            <div class="suggestion-info-box">
-                <div class="product-name" id="suggestionName"></div>
-                <div class="product-price" id="suggestionPrice"></div>
-                <button id="suggestionBtn" class="suggestion-btn">Voir le produit</button>
-            </div>
-        </div>
-        <div class="suggestion-nav-container">
-            <button id="prevSuggestionBtn" class="suggestion-nav prev"><i class="fas fa-chevron-left"></i></button>
-            <button id="nextSuggestionBtn" class="suggestion-nav next"><i class="fas fa-chevron-right"></i></button>
+        <div class="cta-content">
+            <h3>Vous cherchez un produit ?</h3>
+            <p>Accédez au marché pour rechercher, filtrer par catégorie et trouver ce qu'il vous faut.</p>
+            <a href="market.html" class="cta-btn">Visiter le marché <i class="fas fa-arrow-right"></i></a>
         </div>
     </div>
 
-    <main class="news-feed" id="newsFeed">
-        <div class="loader">
-            <div class="spinner"></div>
-            <p>Chargement des actualités...</p>
+    <section class="welcome-section">
+        <div class="welcome-card">
+            <i class="fas fa-hand-peace"></i>
+            <h2 id="welcomeTitle">Bonjour</h2>
+            <p id="welcomeText">Bienvenue sur Megane Market</p>
         </div>
-    </main>
+    </section>
+
+    <section class="news-banners-section">
+        <div class="section-header">
+            <h2><i class="fas fa-bell"></i> Actualités</h2>
+        </div>
+        <div id="newsBanners" class="news-banners-list"></div>
+    </section>
+
+    <section class="trending-section">
+        <div class="section-header">
+            <h2><i class="fas fa-fire"></i> Produits tendances</h2>
+            <a href="market.html" class="section-link">Voir tout <i class="fas fa-chevron-right"></i></a>
+        </div>
+        <div class="trending-carousel">
+            <div class="carousel-track" id="trendingTrack"></div>
+            <button class="carousel-nav prev" id="trendingPrev"><i class="fas fa-chevron-left"></i></button>
+            <button class="carousel-nav next" id="trendingNext"><i class="fas fa-chevron-right"></i></button>
+        </div>
+    </section>
+
+    <section class="markets-section">
+        <div class="section-header">
+            <h2><i class="fas fa-store-alt"></i> Marchés disponibles</h2>
+            <a href="market.html" class="section-link">Voir tout <i class="fas fa-chevron-right"></i></a>
+        </div>
+        <div class="markets-grid" id="marketsGrid"></div>
+    </section>
+
+    <div class="cta-banner alt">
+        <div class="cta-icon">
+            <i class="fas fa-lightbulb"></i>
+        </div>
+        <div class="cta-content">
+            <h3>Besoin d'inspiration ?</h3>
+            <p>Parcourez le marché pour découvrir des produits coup de cœur et trouver l'inspiration.</p>
+            <a href="market.html" class="cta-btn">S'inspirer <i class="fas fa-arrow-right"></i></a>
+        </div>
+    </div>
+
+    <section class="top-products-section">
+        <div class="section-header">
+            <h2><i class="fas fa-star"></i> Produits top</h2>
+            <a href="market.html" class="section-link">Voir tout <i class="fas fa-chevron-right"></i></a>
+        </div>
+        <div class="top-products-carousel">
+            <div class="carousel-container">
+                <div class="carousel-slides" id="topProductsSlides"></div>
+                <button class="carousel-control prev" id="topProductsPrev"><i class="fas fa-chevron-left"></i></button>
+                <button class="carousel-control next" id="topProductsNext"><i class="fas fa-chevron-right"></i></button>
+                <div class="carousel-dots" id="topProductsDots"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="featured-section">
+        <div class="section-header">
+            <h2><i class="fas fa-heart"></i> Coup de cœur du moment</h2>
+        </div>
+        <div id="featuredProduct" class="featured-card">
+            <div class="skeleton-featured"></div>
+        </div>
+    </section>
+
+    <div id="encouragementBanner" class="encouragement-banner" style="display: none;">
+        <div class="encouragement-icon">
+            <i class="fas fa-comment-dots"></i>
+        </div>
+        <div class="encouragement-content">
+            <h3>Prêt à passer commande ?</h3>
+            <p>Discutez avec vos commerçants préférés en un clic.</p>
+            <a href="market.html" class="encouragement-btn">Explorer le marché <i class="fas fa-arrow-right"></i></a>
+        </div>
+    </div>
+
+    <div class="info-grid-section">
+        <div class="info-card">
+            <div class="info-icon">
+                <i class="fas fa-info-circle"></i>
+            </div>
+            <h3>A propos de Megane Market</h3>
+            <p>Megane Market est une plateforme de mise en relation entre commerçants et acheteurs.</p>
+        </div>
+        <div class="info-card">
+            <div class="info-icon">
+                <i class="fas fa-universal-access"></i>
+            </div>
+            <h3>Comment utiliser Megane Market</h3>
+            <p>Parcourir, Rechercher, Contacter, Installer l'application</p>
+        </div>
+        <div class="info-card">
+            <div class="info-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <h3>Confidentialité</h3>
+            <p>Données jamais partagées. Échanges via WhatsApp.</p>
+        </div>
+    </div>
+
+    <!-- BANNIÈRES INFINIES (produits aléatoires) -->
+    <section class="infinite-banners-section">
+        <div class="section-header">
+            <h2><i class="fas fa-infinity"></i> Découvrez encore plus</h2>
+        </div>
+        <div id="infiniteBannersContainer" class="infinite-banners-list"></div>
+        <div id="infiniteLoadingTrigger" class="loading-trigger" style="display: none;">
+            <div class="loading-spinner-small"></div>
+            <p>Chargement de plus de produits...</p>
+        </div>
+    </section>
+
+    <!-- DERNIÈRE BANNIÈRE STATIQUE -->
+    <div class="cta-banner last">
+        <div class="cta-icon">
+            <i class="fas fa-cart-shopping"></i>
+        </div>
+        <div class="cta-content">
+            <h3>Prêt à faire vos achats ?</h3>
+            <p>Accédez au marché complet pour voir tous les produits, catégories et vendeurs.</p>
+            <a href="market.html" class="cta-btn primary">Accéder au marché <i class="fas fa-arrow-right"></i></a>
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="script.js"></script>
     <script>
-        (function() {
-            const SUPABASE_URL = 'https://emcsigvlopntwbfkkjkh.supabase.co';
-            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtY3NpZ3Zsb3BudHdiZmtramtoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4ODE5MTgsImV4cCI6MjA5NDQ1NzkxOH0.YwYoV-azL3WEFtHoh4yoF7xTLrOwZILKCzJrGPsCs6I';
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('SW enregistré:', reg))
+                    .catch(err => console.log('Erreur SW:', err));
+            });
+        }
 
-            const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            const newsFeed = document.getElementById('newsFeed');
-            const suggestionBanner = document.getElementById('suggestionBanner');
+        (function setupPWA() {
+            let deferredPrompt;
+            const installBanner = document.getElementById('installBanner');
+            const installBtn = document.getElementById('installBtn');
 
-            let allProducts = [];
-            let allMarkets = [];
-            let allEvents = [];
-            let featuredRotationInterval = null;
-            let availableProductsForFeatured = [];
-            let orderRotationInterval = null;
-            let activeCarouselIntervals = {};
-            let currentUserId = null;
-
-            let suggestionHistory = [];
-            let suggestionCurrentIndex = -1;
-            let currentRandomProduct = null;
-            let autoSuggestionInterval = null;
-            let isAutoPlaying = true;
-
-            // ============ ENREGISTREMENT DU CLIC SUR PRODUIT ============
-            async function recordProductView(productId) {
-                if (!currentUserId) return;
-                try {
-                    await supabase
-                        .from('product_stats')
-                        .insert({
-                            product_id: productId,
-                            view_count: 1,
-                            viewed_at: new Date().toISOString()
-                        });
-                    console.log('Clic enregistré pour le produit:', productId);
-                } catch (err) {
-                    console.error('Erreur enregistrement clic:', err);
-                }
-            }
-
-            async function checkSession() {
-                const { data: { session } } = await supabase.auth.getSession();
-                if (session) {
-                    currentUserId = session.user.id;
-                    const { data: buyer } = await supabase
-                        .from('buyers')
-                        .select('id')
-                        .eq('id', currentUserId)
-                        .single();
-                    if (!buyer) {
-                        currentUserId = null;
-                    }
-                }
-            }
-
-            function animatePrice(card) {
-                const priceEl = card.querySelector('.product-price');
-                if (priceEl) {
-                    priceEl.classList.remove('pulse');
-                    setTimeout(() => priceEl.classList.add('pulse'), 10);
-                }
-            }
-
-            function startProductCarousel(productId) {
-                if (activeCarouselIntervals[productId]) {
-                    clearInterval(activeCarouselIntervals[productId]);
-                    delete activeCarouselIntervals[productId];
-                    return;
-                }
-                
-                const card = document.querySelector(`.product-card[data-id="${productId}"]`);
-                const product = allProducts.find(p => p.id === productId);
-                if (!card || !product || !product.images || product.images.length <= 1) return;
-                
-                const imgElement = card.querySelector('.product-image');
-                const images = product.images.filter(Boolean);
-                let currentIndex = 0;
-                
-                const interval = setInterval(() => {
-                    currentIndex = (currentIndex + 1) % images.length;
-                    if (imgElement) imgElement.src = images[currentIndex];
-                }, 3500);
-                
-                activeCarouselIntervals[productId] = interval;
-                
-                const stopCarousel = () => {
-                    if (activeCarouselIntervals[productId]) {
-                        clearInterval(activeCarouselIntervals[productId]);
-                        delete activeCarouselIntervals[productId];
-                        if (imgElement && product.images[0]) imgElement.src = product.images[0];
-                    }
-                    card.removeEventListener('click', stopCarousel);
-                };
-                
-                card.addEventListener('click', stopCarousel, { once: true });
-            }
-
-            function loadRandomProductToHistory() {
-                if (!allProducts.length) return;
-                const randomIndex = Math.floor(Math.random() * allProducts.length);
-                const product = allProducts[randomIndex];
-                
-                suggestionHistory.push(product);
-                suggestionCurrentIndex = suggestionHistory.length - 1;
-                
-                displaySuggestionProduct(product);
-            }
-
-            function displaySuggestionProduct(product) {
-                currentRandomProduct = product;
-                const firstImage = (product.images && product.images[0]) ? product.images[0] : null;
-                const suggestionImg = document.getElementById('suggestionImg');
-                const imageBox = document.getElementById('suggestionImageBox');
-                
-                if (firstImage) {
-                    suggestionImg.src = firstImage;
-                    suggestionImg.style.display = 'block';
-                    imageBox.querySelector('.suggestion-image-placeholder')?.remove();
-                } else {
-                    suggestionImg.style.display = 'none';
-                    if (!imageBox.querySelector('.suggestion-image-placeholder')) {
-                        const placeholder = document.createElement('div');
-                        placeholder.className = 'suggestion-image-placeholder';
-                        placeholder.innerHTML = '<i class="fas fa-image"></i>';
-                        imageBox.appendChild(placeholder);
-                    }
-                }
-                
-                document.getElementById('suggestionName').textContent = product.name;
-                document.getElementById('suggestionPrice').textContent = formatPrice(product.price) + ' FCFA';
-                
-                const messages = [
-                    '✨ À tu vu ce produit ?',
-                    '🔥 Ne passe pas à côté !',
-                    '💬 Essaie maintenant, passe une commande !',
-                    '⭐ Coup de cœur du moment',
-                    '🎁 Tu pourrais aimer ce produit'
-                ];
-                const randomMsg = messages[Math.floor(Math.random() * messages.length)];
-                document.getElementById('suggestionMessage').innerHTML = `<i class="fas fa-magic"></i> ${randomMsg}`;
-                suggestionBanner.style.display = 'block';
-            }
-
-            function nextSuggestion() {
-                if (!isAutoPlaying) return;
-                loadRandomProductToHistory();
-            }
-
-            function prevSuggestion() {
-                if (suggestionCurrentIndex > 0) {
-                    suggestionCurrentIndex--;
-                    displaySuggestionProduct(suggestionHistory[suggestionCurrentIndex]);
-                }
-            }
-
-            function manualNextSuggestion() {
-                if (autoSuggestionInterval) {
-                    clearInterval(autoSuggestionInterval);
-                    isAutoPlaying = false;
-                    setTimeout(() => {
-                        isAutoPlaying = true;
-                        autoSuggestionInterval = setInterval(() => {
-                            if (isAutoPlaying) nextSuggestion();
-                        }, 5000);
-                    }, 10000);
-                }
-                loadRandomProductToHistory();
-            }
-
-            function manualPrevSuggestion() {
-                if (autoSuggestionInterval) {
-                    clearInterval(autoSuggestionInterval);
-                    isAutoPlaying = false;
-                    setTimeout(() => {
-                        isAutoPlaying = true;
-                        autoSuggestionInterval = setInterval(() => {
-                            if (isAutoPlaying) nextSuggestion();
-                        }, 5000);
-                    }, 10000);
-                }
-                prevSuggestion();
-            }
-
-            document.getElementById('prevSuggestionBtn').addEventListener('click', manualPrevSuggestion);
-            document.getElementById('nextSuggestionBtn').addEventListener('click', manualNextSuggestion);
-            document.getElementById('suggestionBtn').addEventListener('click', () => {
-                if (currentRandomProduct) {
-                    window.location.href = `viewproduct.html?id=${currentRandomProduct.id}`;
-                }
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                if (installBanner) installBanner.classList.add('show');
             });
 
-            let touchStartX = 0;
-            let touchEndX = 0;
-            const suggestionDual = document.getElementById('suggestionDual');
-            suggestionDual.addEventListener('touchstart', (e) => {
-                touchStartX = e.changedTouches[0].screenX;
-            });
-            suggestionDual.addEventListener('touchend', (e) => {
-                touchEndX = e.changedTouches[0].screenX;
-                if (touchEndX < touchStartX - 50) manualNextSuggestion();
-                if (touchEndX > touchStartX + 50) manualPrevSuggestion();
-            });
-
-            async function rotateFeaturedProduct() {
-                if (!availableProductsForFeatured.length) return;
-                try {
-                    for (const product of availableProductsForFeatured) {
-                        if (product.featured) {
-                            await supabase.from('products').update({ featured: false }).eq('id', product.id);
+            if (installBtn) {
+                installBtn.addEventListener('click', async () => {
+                    if (deferredPrompt) {
+                        deferredPrompt.prompt();
+                        const { outcome } = await deferredPrompt.userChoice;
+                        if (outcome === 'accepted' && installBanner) {
+                            installBanner.classList.remove('show');
                         }
+                        deferredPrompt = null;
                     }
-                    const randomIndex = Math.floor(Math.random() * availableProductsForFeatured.length);
-                    const newFeatured = availableProductsForFeatured[randomIndex];
-                    await supabase.from('products').update({ featured: true }).eq('id', newFeatured.id);
-                    await loadNews();
-                } catch (err) {
-                    console.error('Erreur rotation featured:', err);
-                }
-            }
-
-            async function startFeaturedRotation() {
-                try {
-                    const { data: activeMarkets } = await supabase
-                        .from('markets')
-                        .select('id')
-                        .eq('market_active', true);
-                    const activeMarketIds = activeMarkets.map(m => m.id);
-                    const { data: products } = await supabase
-                        .from('products')
-                        .select('*')
-                        .eq('active', true)
-                        .in('user_id', activeMarketIds);
-                    if (products && products.length > 0) {
-                        availableProductsForFeatured = products;
-                    }
-                    if (featuredRotationInterval) clearInterval(featuredRotationInterval);
-                    featuredRotationInterval = setInterval(rotateFeaturedProduct, 30 * 60 * 1000);
-                } catch (err) {
-                    console.error('Erreur démarrage rotation:', err);
-                }
-            }
-
-            function rotateOrder() {
-                if (allEvents.length > 0) {
-                    allEvents.sort(() => Math.random() - 0.5);
-                    renderNews();
-                }
-            }
-
-            function renderNews() {
-                let html = '';
-                for (const event of allEvents) {
-                    if (event.type === 'product' || event.type === 'featured_product') {
-                        const product = event.product;
-                        const market = event.market;
-                        const isFeatured = event.type === 'featured_product';
-                        const imageUrl = (product.images && product.images[0]) ? product.images[0] : null;
-                        const formattedDate = new Date(event.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
-                        html += `
-                            <div class="product-card ${isFeatured ? 'featured' : ''}" data-id="${product.id}">
-                                <div class="product-image-container">
-                                    ${imageUrl 
-                                        ? `<img src="${escapeHtml(imageUrl)}" class="product-image" alt="${escapeHtml(product.name)}">`
-                                        : `<div class="product-image-placeholder"><i class="fas fa-image"></i></div>`
-                                    }
-                                </div>
-                                <div class="product-info">
-                                    <div class="market-badge">
-                                        <i class="fas fa-store"></i> ${escapeHtml(market?.market_name || 'Marché')}
-                                        <i class="fas fa-map-marker-alt" style="margin-left: 8px;"></i> ${escapeHtml(market?.city || 'Localisation non précisée')}
-                                    </div>
-                                    <div class="product-name">${escapeHtml(product.name)}</div>
-                                    <div class="product-price">${formatPrice(product.price)} FCFA</div>
-                                    <div class="product-description">${escapeHtml(product.description || 'Aucune description')}</div>
-                                    <div class="product-footer">
-                                        <button class="detail-link" data-id="${product.id}">Voir détails</button>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                    } else if (event.type === 'message') {
-                        const market = event.market;
-                        const avatarUrl = market.avatar_url;
-                        const formattedDate = new Date(event.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
-                        html += `
-                            <div class="message-card">
-                                ${avatarUrl 
-                                    ? `<img src="${escapeHtml(avatarUrl)}" class="admin-avatar" onerror="this.src=''">`
-                                    : `<div class="admin-avatar-placeholder"><i class="fas fa-user-circle"></i></div>`
-                                }
-                                <div class="message-content">
-                                    <div class="admin-name">${escapeHtml(market.market_name || 'Administrateur')}</div>
-                                    <div class="message-text">${escapeHtml(event.message)}</div>
-                                    <div class="message-date"><i class="far fa-clock"></i> ${formattedDate}</div>
-                                </div>
-                            </div>
-                        `;
-                    }
-                }
-                if (allEvents.length === 0) html = '<div class="empty-state">Aucune actualité pour le moment</div>';
-                newsFeed.innerHTML = html;
-                
-                document.querySelectorAll('.product-card').forEach(card => {
-                    const productId = card.getAttribute('data-id');
-                    const product = allProducts.find(p => p.id === productId);
-                    
-                    const imageContainer = card.querySelector('.product-image-container');
-                    imageContainer.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        startProductCarousel(productId);
-                    });
-                    
-                    card.addEventListener('click', async (e) => {
-                        if (e.target.classList.contains('detail-link')) return;
-                        animatePrice(card);
-                        await recordProductView(productId);
-                    });
-                    
-                    const detailBtn = card.querySelector('.detail-link');
-                    detailBtn.addEventListener('click', async (e) => {
-                        e.stopPropagation();
-                        await recordProductView(productId);
-                        window.location.href = `viewproduct.html?id=${productId}`;
-                    });
                 });
             }
-
-            function startOrderRotation() {
-                if (orderRotationInterval) clearInterval(orderRotationInterval);
-                orderRotationInterval = setInterval(() => {
-                    rotateOrder();
-                }, 30 * 60 * 1000);
-            }
-
-            async function loadNews() {
-                newsFeed.innerHTML = `
-                    <div class="skeleton-card"><div class="skeleton-image"></div><div class="skeleton-text"></div><div class="skeleton-text short"></div></div>
-                    <div class="skeleton-card"><div class="skeleton-image"></div><div class="skeleton-text"></div><div class="skeleton-text short"></div></div>
-                `;
-                try {
-                    const { data: markets, error: marketsError } = await supabase
-                        .from('markets')
-                        .select('id, market_name, city, avatar_url, announcement_text, show_announcement, updated_at')
-                        .eq('market_active', true);
-                    if (marketsError) throw marketsError;
-                    if (!markets || markets.length === 0) {
-                        newsFeed.innerHTML = '<div class="empty-state">Aucune actualité pour le moment</div>';
-                        return;
-                    }
-                    allMarkets = markets;
-                    const activeMarketIds = markets.map(m => m.id);
-                    const { data: products, error: productsError } = await supabase
-                        .from('products')
-                        .select('*')
-                        .eq('active', true)
-                        .in('user_id', activeMarketIds)
-                        .order('created_at', { ascending: false });
-                    if (productsError) throw productsError;
-                    allProducts = products || [];
-                    allEvents = [];
-                    for (const product of products || []) {
-                        const market = markets.find(m => m.id === product.user_id);
-                        allEvents.push({
-                            id: `product_${product.id}`,
-                            type: product.featured ? 'featured_product' : 'product',
-                            date: product.created_at,
-                            product: product,
-                            market: market
-                        });
-                    }
-                    for (const market of markets) {
-                        if (market.show_announcement === true && market.announcement_text) {
-                            allEvents.push({
-                                id: `message_${market.id}_${market.updated_at}`,
-                                type: 'message',
-                                date: market.updated_at,
-                                market: market,
-                                message: market.announcement_text
-                            });
-                        }
-                    }
-                    allEvents.sort(() => Math.random() - 0.5);
-                    renderNews();
-                } catch (err) {
-                    console.error('Erreur:', err);
-                    newsFeed.innerHTML = '<div class="empty-state">Erreur chargement des actualités</div>';
-                }
-            }
-
-            function formatPrice(price) {
-                return new Intl.NumberFormat('fr-FR').format(price);
-            }
-
-            function escapeHtml(text) {
-                if (!text) return '';
-                const div = document.createElement('div');
-                div.textContent = text;
-                return div.innerHTML;
-            }
-
-            function startAutoSuggestion() {
-                if (autoSuggestionInterval) clearInterval(autoSuggestionInterval);
-                autoSuggestionInterval = setInterval(() => {
-                    if (isAutoPlaying) nextSuggestion();
-                }, 5000);
-            }
-
-            async function init() {
-                await checkSession();
-                await loadNews();
-                setTimeout(() => {
-                    if (allProducts.length) {
-                        loadRandomProductToHistory();
-                        startAutoSuggestion();
-                    }
-                }, 500);
-                startFeaturedRotation();
-                startOrderRotation();
-            }
-            
-            init();
         })();
+
+        const searchIcon = document.getElementById('searchIcon');
+        if (searchIcon) {
+            searchIcon.addEventListener('click', () => {
+                searchIcon.style.transition = 'transform 0.3s ease';
+                searchIcon.style.transform = 'scale(1.3)';
+                setTimeout(() => {
+                    window.location.href = 'search.html';
+                }, 200);
+            });
+        }
     </script>
 </body>
 </html>

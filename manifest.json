@@ -2,15 +2,15 @@
   "name": "Megane Market",
   "short_name": "Megane Market",
   "description": "Découvrez les actualités de vos commerçants préférés",
-  "start_url": "/index.html",
+  "start_url": "/megane_market_online/index.html",
   "display": "standalone",
-  "theme_color": "#5a9eff",
-  "background_color": "#0a0f1a",
+  "theme_color": "#4ade80",
+  "background_color": "#ffffff",
   "orientation": "portrait",
-  "scope": "/",
+  "scope": "/megane_market_online/",
   "icons": [
     {
-      "src": "assets/logo.png",
+      "src": "/megane_market_online/assets/logo.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"

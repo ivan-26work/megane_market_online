@@ -6,6 +6,30 @@
     <title>Megane Market - Détail produit</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+    // Vérification de session - Redirection si non connecté
+    (async function checkSessionAndRedirect() {
+        // Attendre que Supabase soit chargé
+        const waitForSupabase = setInterval(() => {
+            if (typeof window.supabase !== 'undefined') {
+                clearInterval(waitForSupabase);
+                init();
+            }
+        }, 100);
+        
+        async function init() {
+            const SUPABASE_URL = 'https://emcsigvlopntwbfkkjkh.supabase.co';
+            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtY3NpZ3Zsb3BudHdiZmtramtoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4ODE5MTgsImV4cCI6MjA5NDQ1NzkxOH0.YwYoV-azL3WEFtHoh4yoF7xTLrOwZILKCzJrGPsCs6I';
+            const authClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            
+            const { data: { session } } = await authClient.auth.getSession();
+            
+            if (!session) {
+                window.location.href = 'login.html';
+            }
+        }
+    })();
+</script>
     <style>
         * {
             margin: 0;

@@ -281,6 +281,26 @@ function formatDate(dateStr) {
 }
 
 // ============ PRODUITS TENDANCES ============
+let productBoosts = {};
+
+async function loadProductBoosts() {
+    try {
+        const { data } = await db
+            .from('product_boosts')
+            .select('product_id, discount_percent')
+            .eq('is_active', true);
+        
+        productBoosts = {};
+        for (const boost of data || []) {
+            if (boost.discount_percent > 0) {
+                productBoosts[boost.product_id] = boost.discount_percent;
+            }
+        }
+    } catch (err) {
+        console.error('Erreur chargement boosts:', err);
+    }
+}
+
 async function loadTrendingProducts() {
     try {
         const { data: products } = await db
@@ -312,18 +332,28 @@ function renderTrendingCarousel(products) {
         return;
     }
     
-    track.innerHTML = products.map(product => `
-        <div class="trending-item" data-id="${product.id}">
-            ${product.images && product.images[0] 
-                ? `<img src="${escapeHtml(product.images[0])}" alt="${escapeHtml(product.name)}">`
-                : `<div class="image-placeholder"><i class="fas fa-image"></i></div>`
-            }
-            <div class="info">
-                <div class="name">${escapeHtml(product.name)}</div>
-                <div class="price">${formatPrice(product.price)} FCFA</div>
+    track.innerHTML = products.map(product => {
+        const discount = productBoosts[product.id];
+        const newPrice = discount ? Math.round(product.price * (1 - discount / 100)) : product.price;
+        const priceHtml = discount ? `${formatPrice(newPrice)} FCFA` : `${formatPrice(product.price)} FCFA`;
+        const oldPriceHtml = discount ? `<span class="old-price">${formatPrice(product.price)} FCFA</span>` : '';
+        
+        return `
+            <div class="trending-item" data-id="${product.id}">
+                ${product.images && product.images[0] 
+                    ? `<img src="${escapeHtml(product.images[0])}" alt="${escapeHtml(product.name)}">`
+                    : `<div class="image-placeholder"><i class="fas fa-image"></i></div>`
+                }
+                <div class="info">
+                    <div class="name">${escapeHtml(product.name)}</div>
+                    <div class="price">
+                        ${priceHtml}
+                        ${oldPriceHtml}
+                    </div>
+                </div>
             </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
     
     document.querySelectorAll('.trending-item').forEach(item => {
         item.addEventListener('click', () => {
@@ -427,19 +457,29 @@ function renderTopProductsCarousel(products) {
     
     topProductsList = products;
     
-    container.innerHTML = products.map(product => `
-        <div class="carousel-slide" data-id="${product.id}">
-            ${product.images && product.images[0] 
-                ? `<img src="${escapeHtml(product.images[0])}" alt="${escapeHtml(product.name)}">`
-                : `<div class="image-placeholder"><i class="fas fa-image"></i></div>`
-            }
-            <div class="info">
-                <div class="badge">TOP PRODUIT</div>
-                <h3>${escapeHtml(product.name)}</h3>
-                <div class="price">${formatPrice(product.price)} FCFA</div>
+    container.innerHTML = products.map(product => {
+        const discount = productBoosts[product.id];
+        const newPrice = discount ? Math.round(product.price * (1 - discount / 100)) : product.price;
+        const priceHtml = discount ? `${formatPrice(newPrice)} FCFA` : `${formatPrice(product.price)} FCFA`;
+        const oldPriceHtml = discount ? `<span class="old-price">${formatPrice(product.price)} FCFA</span>` : '';
+        
+        return `
+            <div class="carousel-slide" data-id="${product.id}">
+                ${product.images && product.images[0] 
+                    ? `<img src="${escapeHtml(product.images[0])}" alt="${escapeHtml(product.name)}">`
+                    : `<div class="image-placeholder"><i class="fas fa-image"></i></div>`
+                }
+                <div class="info">
+                    <div class="badge">TOP PRODUIT</div>
+                    <h3>${escapeHtml(product.name)}</h3>
+                    <div class="price">
+                        ${priceHtml}
+                        ${oldPriceHtml}
+                    </div>
+                </div>
             </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
     
     dotsContainer.innerHTML = products.map((_, i) => `
         <div class="carousel-dot ${i === 0 ? 'active' : ''}" data-index="${i}"></div>
@@ -549,6 +589,10 @@ async function renderFeaturedProduct() {
     }
     
     const imageUrl = product.images?.[0] || null;
+    const discount = productBoosts[product.id];
+    const newPrice = discount ? Math.round(product.price * (1 - discount / 100)) : product.price;
+    const priceHtml = discount ? `${formatPrice(newPrice)} FCFA` : `${formatPrice(product.price)} FCFA`;
+    const oldPriceHtml = discount ? `<span class="old-price">${formatPrice(product.price)} FCFA</span>` : '';
     
     container.innerHTML = `
         ${imageUrl 
@@ -558,7 +602,10 @@ async function renderFeaturedProduct() {
         <div class="info">
             <div class="badge">COUP DE COEUR</div>
             <h3>${escapeHtml(product.name)}</h3>
-            <div class="price">${formatPrice(product.price)} FCFA</div>
+            <div class="price">
+                ${priceHtml}
+                ${oldPriceHtml}
+            </div>
         </div>
     `;
     
@@ -607,7 +654,6 @@ function getRandomProducts(count) {
     return shuffled.slice(0, count);
 }
 
-// Enregistrement des touchers (comme dans market.html)
 async function recordTouch(productId) {
     try {
         await db
@@ -618,7 +664,6 @@ async function recordTouch(productId) {
                 click_type: 'touch',
                 clicked_at: new Date().toISOString()
             });
-        console.log('Toucher enregistré pour le produit:', productId);
     } catch (err) {
         console.error('Erreur enregistrement toucher:', err);
     }
@@ -626,6 +671,10 @@ async function recordTouch(productId) {
 
 function renderBanner(product) {
     const imageUrl = product.images && product.images[0] ? product.images[0] : null;
+    const discount = productBoosts[product.id];
+    const newPrice = discount ? Math.round(product.price * (1 - discount / 100)) : product.price;
+    const priceHtml = discount ? `${formatPrice(newPrice)} FCFA` : `${formatPrice(product.price)} FCFA`;
+    const oldPriceHtml = discount ? `<span class="old-price">${formatPrice(product.price)} FCFA</span>` : '';
     
     return `
         <div class="product-banner" data-id="${product.id}">
@@ -637,7 +686,10 @@ function renderBanner(product) {
             </div>
             <div class="banner-content">
                 <h3 class="banner-name">${escapeHtml(product.name)}</h3>
-                <p class="banner-price">${formatPrice(product.price)} FCFA</p>
+                <p class="banner-price">
+                    ${priceHtml}
+                    ${oldPriceHtml}
+                </p>
                 <button class="banner-btn">Voir détails <i class="fas fa-arrow-right"></i></button>
             </div>
         </div>
@@ -656,11 +708,9 @@ function renderBanners(banners, append = true) {
         container.innerHTML = bannersHtml;
     }
     
-    // Ajouter les événements
     document.querySelectorAll('.product-banner').forEach(banner => {
         const productId = banner.getAttribute('data-id');
         
-        // Clic sur la bannière
         banner.addEventListener('click', async (e) => {
             if (e.target.closest('.banner-btn')) return;
             if (productId) {
@@ -669,7 +719,6 @@ function renderBanners(banners, append = true) {
             }
         });
         
-        // Bouton "Voir détails"
         const btn = banner.querySelector('.banner-btn');
         if (btn) {
             btn.addEventListener('click', async (e) => {
@@ -681,7 +730,6 @@ function renderBanners(banners, append = true) {
             });
         }
         
-        // TOUCHER MOBILE INSTANTANÉ
         banner.addEventListener('touchstart', (e) => {
             if (productId) recordTouch(productId);
         });
@@ -701,7 +749,6 @@ function loadMoreBanners() {
         const newBanners = getRandomProducts(bannersPerLoad);
         if (newBanners.length > 0) {
             renderBanners(newBanners, true);
-            // Observer le nouveau dernier élément
             setTimeout(() => {
                 const container = document.getElementById('infiniteBannersContainer');
                 if (container && infiniteBannerObserver) {
@@ -739,7 +786,6 @@ function initInfiniteBanners() {
         rootMargin: '200px'
     });
     
-    // Observer le dernier élément
     const lastBanner = container.lastElementChild;
     if (lastBanner) {
         infiniteBannerObserver.observe(lastBanner);
@@ -768,6 +814,195 @@ async function initInfiniteBannersSection() {
     initInfiniteBanners();
 }
 
+// ============ PRODUITS BOOSTÉS (CARROUSEL) ============
+let boostedProducts = [];
+let currentBoostIndex = 0;
+let boostedCarouselInterval = null;
+let boostedPhotoIntervals = {};
+
+async function loadBoostedProducts() {
+    try {
+        const { data: boosts } = await db
+            .from('product_boosts')
+            .select('*, products!inner(*)')
+            .eq('is_active', true)
+            .eq('products.active', true);
+        
+        if (!boosts || boosts.length === 0) {
+            const container = document.getElementById('boostedTrack');
+            if (container) container.innerHTML = '<div class="empty-state">Aucune offre spéciale pour le moment</div>';
+            return;
+        }
+        
+        boostedProducts = boosts;
+        renderBoostedCarousel();
+        startBoostedCarousel();
+        
+    } catch (err) {
+        console.error('Erreur chargement produits boostés:', err);
+    }
+}
+
+function renderBoostedCarousel() {
+    const track = document.getElementById('boostedTrack');
+    if (!track) return;
+    
+    Promise.all(boostedProducts.map(async (boost) => {
+        const product = boost.products;
+        const images = product.images || [];
+        
+        let marketName = 'Vendeur';
+        try {
+            const { data: market } = await db
+                .from('markets')
+                .select('market_name, owner_name')
+                .eq('id', product.user_id)
+                .single();
+            marketName = market?.market_name || market?.owner_name || 'Vendeur';
+        } catch (err) {}
+        
+        const discountText = boost.discount_percent > 0 ? `🔥 -${boost.discount_percent}% de réduction !` : '';
+        const boostTypeText = boost.boost_type === 'promotion' ? '🎉 Promotion spéciale' :
+                              boost.boost_type === 'reduction' ? '💰 Prix réduit' :
+                              boost.boost_type === 'featured' ? '⭐ Produit à la une' : '📢 Offre personnalisée';
+        const newPrice = boost.discount_percent > 0 ? Math.round(product.price * (1 - boost.discount_percent / 100)) : product.price;
+        
+        return `
+            <div class="boosted-card" data-product-id="${product.id}" data-boost-id="${boost.id}">
+                <div class="boosted-header">
+                    <div class="boosted-photo" id="boost-photo-${product.id}">
+                        ${images.length > 0 
+                            ? `<img src="${escapeHtml(images[0])}" class="boosted-main-img" alt="${escapeHtml(product.name)}">`
+                            : `<div class="photo-placeholder"><i class="fas fa-image"></i></div>`
+                        }
+                        ${images.length > 1 ? `
+                            <button class="boosted-photo-nav prev-photo" data-id="${product.id}"><i class="fas fa-chevron-left"></i></button>
+                            <button class="boosted-photo-nav next-photo" data-id="${product.id}"><i class="fas fa-chevron-right"></i></button>
+                        ` : ''}
+                    </div>
+                    <div class="boosted-header-info">
+                        <h3>${escapeHtml(product.name)}</h3>
+                        <div class="market-name"><i class="fas fa-store"></i> ${escapeHtml(marketName)}</div>
+                    </div>
+                </div>
+                <div class="boosted-body">
+                    <div class="boosted-badge">
+                        <i class="fas fa-rocket"></i> ${boostTypeText}
+                    </div>
+                    ${discountText ? `<div class="boosted-promo">${discountText}</div>` : ''}
+                    <div class="boosted-date">
+                        <i class="fas fa-calendar-alt"></i> 
+                        ${boost.end_date ? `Valable jusqu'au ${new Date(boost.end_date).toLocaleDateString('fr-FR')}` : 'Offre sans limite de temps'}
+                    </div>
+                    ${boost.description ? `<div class="boosted-desc">${escapeHtml(boost.description)}</div>` : ''}
+                    <div class="boosted-price">
+                        <span class="new-price">${formatPrice(newPrice)} FCFA</span>
+                        ${boost.discount_percent > 0 ? `<span class="old-price">${formatPrice(product.price)} FCFA</span>` : ''}
+                    </div>
+                </div>
+                <button class="boosted-btn">Voir le produit <i class="fas fa-arrow-right"></i></button>
+            </div>
+        `;
+    })).then(html => {
+        track.innerHTML = html.join('');
+        
+        boostedProducts.forEach(boost => {
+            const product = boost.products;
+            const images = product.images || [];
+            if (images.length > 1) {
+                startBoostedPhotoCarousel(product.id, images);
+                setupBoostedPhotoControls(product.id, images);
+            }
+        });
+        
+        document.querySelectorAll('.boosted-card').forEach(card => {
+            const productId = card.getAttribute('data-product-id');
+            const btn = card.querySelector('.boosted-btn');
+            if (btn) {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    window.location.href = `viewproduct.html?id=${productId}`;
+                });
+            }
+        });
+    });
+}
+
+function startBoostedCarousel() {
+    if (boostedCarouselInterval) clearInterval(boostedCarouselInterval);
+    if (boostedProducts.length > 1) {
+        boostedCarouselInterval = setInterval(() => {
+            nextBoostedSlide();
+        }, 5000);
+    }
+}
+
+function nextBoostedSlide() {
+    if (boostedProducts.length === 0) return;
+    const track = document.getElementById('boostedTrack');
+    if (!track) return;
+    currentBoostIndex = (currentBoostIndex + 1) % boostedProducts.length;
+    track.style.transform = `translateX(-${currentBoostIndex * 100}%)`;
+}
+
+function prevBoostedSlide() {
+    if (boostedProducts.length === 0) return;
+    const track = document.getElementById('boostedTrack');
+    if (!track) return;
+    currentBoostIndex = (currentBoostIndex - 1 + boostedProducts.length) % boostedProducts.length;
+    track.style.transform = `translateX(-${currentBoostIndex * 100}%)`;
+}
+
+function resetBoostedTimer() {
+    if (boostedCarouselInterval) {
+        clearInterval(boostedCarouselInterval);
+        startBoostedCarousel();
+    }
+}
+
+function startBoostedPhotoCarousel(productId, images) {
+    if (boostedPhotoIntervals[productId]) clearInterval(boostedPhotoIntervals[productId]);
+    if (!images || images.length <= 1) return;
+    
+    let currentIndex = 0;
+    const imgElement = document.querySelector(`#boost-photo-${productId} .boosted-main-img`);
+    if (!imgElement) return;
+    
+    boostedPhotoIntervals[productId] = setInterval(() => {
+        currentIndex = (currentIndex + 1) % images.length;
+        imgElement.src = images[currentIndex];
+    }, 3500);
+}
+
+function setupBoostedPhotoControls(productId, images) {
+    const prevBtn = document.querySelector(`#boost-photo-${productId} .prev-photo`);
+    const nextBtn = document.querySelector(`#boost-photo-${productId} .next-photo`);
+    const imgElement = document.querySelector(`#boost-photo-${productId} .boosted-main-img`);
+    if (!prevBtn || !nextBtn || !imgElement) return;
+    
+    let currentIndex = 0;
+    
+    prevBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        currentIndex = (currentIndex - 1 + images.length) % images.length;
+        imgElement.src = images[currentIndex];
+        if (boostedPhotoIntervals[productId]) {
+            clearInterval(boostedPhotoIntervals[productId]);
+            startBoostedPhotoCarousel(productId, images);
+        }
+    });
+    
+    nextBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        currentIndex = (currentIndex + 1) % images.length;
+        imgElement.src = images[currentIndex];
+        if (boostedPhotoIntervals[productId]) {
+            clearInterval(boostedPhotoIntervals[productId]);
+            startBoostedPhotoCarousel(productId, images);
+        }
+    });
+}
+
 // ============ BOUTON MISE À JOUR ============
 async function refreshAllData() {
     const refreshBtn = document.getElementById('refreshBtn');
@@ -781,11 +1016,22 @@ async function refreshAllData() {
     const news = await loadNewsBanners();
     renderNewsBanners(news, true);
     
-    // Recharger les bannières infinies
     await loadAllProductsForBanners();
     const firstBanners = getRandomProducts(bannersPerLoad);
     renderBanners(firstBanners, false);
     initInfiniteBanners();
+    
+    await loadBoostedProducts();
+    await loadProductBoosts();
+    
+    // Recharger les sections qui utilisent les boosts
+    const trendingProducts = await loadTrendingProducts();
+    renderTrendingCarousel(trendingProducts);
+    
+    const topProducts = await loadTopProducts();
+    renderTopProductsCarousel(topProducts);
+    
+    await renderFeaturedProduct();
     
     showToast('Actualités mises à jour', 'info');
 }
@@ -823,9 +1069,15 @@ function showToast(message, type = 'info') {
     }, 2000);
 }
 
+// ============ CSS pour les prix réduits (à ajouter dans style.css) ==========
+// Les styles pour .old-price et .promo-badge sont déjà dans le HTML
+
 // ============ INITIALISATION ============
 async function init() {
     await showWelcome();
+    
+    // Charger les promotions
+    await loadProductBoosts();
     
     let news = loadNewsFromSession();
     if (!news) {
@@ -833,6 +1085,9 @@ async function init() {
         saveNewsToSession(news);
     }
     renderNewsBanners(news, false);
+    
+    // Charger les produits boostés en premier
+    await loadBoostedProducts();
     
     const trendingProducts = await loadTrendingProducts();
     renderTrendingCarousel(trendingProducts);
@@ -852,6 +1107,21 @@ async function init() {
     const refreshBtn = document.getElementById('refreshBtn');
     if (refreshBtn) {
         refreshBtn.addEventListener('click', refreshAllData);
+    }
+    
+    const boostedPrev = document.getElementById('boostedPrev');
+    const boostedNext = document.getElementById('boostedNext');
+    if (boostedPrev) {
+        boostedPrev.addEventListener('click', () => {
+            prevBoostedSlide();
+            resetBoostedTimer();
+        });
+    }
+    if (boostedNext) {
+        boostedNext.addEventListener('click', () => {
+            nextBoostedSlide();
+            resetBoostedTimer();
+        });
     }
 }
 

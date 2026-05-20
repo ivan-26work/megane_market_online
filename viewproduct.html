@@ -6,6 +6,29 @@
     <title>Megane Market - Détail produit</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+    // Vérification de session - Redirection si non connecté
+    (async function checkSessionAndRedirect() {
+        const waitForSupabase = setInterval(() => {
+            if (typeof window.supabase !== 'undefined') {
+                clearInterval(waitForSupabase);
+                init();
+            }
+        }, 100);
+        
+        async function init() {
+            const SUPABASE_URL = 'https://emcsigvlopntwbfkkjkh.supabase.co';
+            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtY3NpZ3Zsb3BudHdiZmtramtoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4ODE5MTgsImV4cCI6MjA5NDQ1NzkxOH0.YwYoV-azL3WEFtHoh4yoF7xTLrOwZILKCzJrGPsCs6I';
+            const authClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            
+            const { data: { session } } = await authClient.auth.getSession();
+            
+            if (!session) {
+                window.location.href = 'login.html';
+            }
+        }
+    })();
+    </script>
     <style>
         * {
             margin: 0;
@@ -36,6 +59,7 @@
             justify-content: space-between;
             gap: 12px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+            position: relative;
         }
 
         .back-btn {
@@ -71,6 +95,31 @@
             color: #4ade80;
         }
 
+        /* Badge promotion dans le header */
+        .header-promo-badge {
+            position: absolute;
+            top: -8px;
+            right: 20px;
+            background: #ff4d4d;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 2px 8px rgba(255, 77, 77, 0.3);
+            animation: promoPulse 1s ease infinite;
+            z-index: 20;
+        }
+
+        @keyframes promoPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
         .placeholder {
             width: 40px;
             opacity: 0;
@@ -85,6 +134,11 @@
         @keyframes fadeInScale {
             from { opacity: 0; transform: scale(0.95); }
             to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
         .carousel-container {
@@ -277,6 +331,13 @@
             display: inline-block;
         }
 
+        .old-price-value {
+            font-size: 0.85rem;
+            color: #8a9aaa;
+            text-decoration: line-through;
+            margin-left: 8px;
+        }
+
         .badge {
             display: inline-block;
             padding: 4px 10px;
@@ -300,6 +361,87 @@
             color: #5a9eff;
         }
 
+        /* SECTION PROMOTION (BOOSTÉ) */
+        .promo-section {
+            background: linear-gradient(135deg, #fff5f5, #ffffff);
+            border: 2px solid #ff4d4d;
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 20px;
+            animation: slideInRight 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .promo-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(45deg, rgba(255, 77, 77, 0.05), rgba(255, 77, 77, 0.05) 10px, transparent 10px, transparent 20px);
+            pointer-events: none;
+        }
+
+        .promo-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .promo-icon {
+            background: #ff4d4d;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            animation: promoPulse 1.5s infinite;
+        }
+
+        .promo-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #ff4d4d;
+        }
+
+        .promo-discount {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #ff4d4d;
+            margin: 10px 0;
+        }
+
+        .promo-discount small {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .promo-date {
+            font-size: 0.8rem;
+            color: #8a9aaa;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .promo-desc {
+            font-size: 0.85rem;
+            color: #1a2a3a;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px dashed #ff4d4d;
+            line-height: 1.5;
+        }
+
+        /* SELLER CARD AVEC 2 BOUTONS */
         .seller-card {
             background: linear-gradient(135deg, #fafbfc, #ffffff);
             border: 1px solid #e8ecf0;
@@ -345,26 +487,45 @@
             color: #8a9aaa;
         }
 
-        .whatsapp-btn {
-            width: 100%;
-            background: #25D366;
-            border: none;
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .whatsapp-btn, .call-btn {
+            flex: 1;
+            padding: 12px;
             border-radius: 40px;
-            padding: 14px;
-            color: white;
             font-weight: 700;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             cursor: pointer;
             transition: all 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
             font-family: 'DM Sans', sans-serif;
+            border: none;
+        }
+
+        .whatsapp-btn {
+            background: #25D366;
+            color: white;
         }
 
         .whatsapp-btn:hover {
             background: #128C7E;
+            transform: translateY(-2px);
+        }
+
+        .call-btn {
+            background: #5a9eff;
+            color: white;
+        }
+
+        .call-btn:hover {
+            background: #3a7ecc;
             transform: translateY(-2px);
         }
 
@@ -447,17 +608,35 @@
                 height: 40px;
                 font-size: 1.2rem;
             }
+            .promo-title {
+                font-size: 1rem;
+            }
+            .promo-discount {
+                font-size: 1.5rem;
+            }
+            .action-buttons {
+                flex-direction: column;
+            }
+            .header-promo-badge {
+                top: -6px;
+                right: 10px;
+                font-size: 0.6rem;
+                padding: 3px 8px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <header class="main-header">
+    <header class="main-header" id="mainHeader">
         <button id="backBtn" class="back-btn">
             <i class="fas fa-arrow-left"></i>
         </button>
         <div class="product-title" id="pageTitle">Chargement...</div>
         <div class="placeholder"></div>
+        <div id="headerPromoBadge" class="header-promo-badge" style="display: none;">
+            <i class="fas fa-tag"></i> <span id="headerPromoValue">-0%</span>
+        </div>
     </header>
 
     <main class="main-content" id="mainContent">
@@ -480,6 +659,8 @@
             const pageTitle = document.getElementById('pageTitle');
             const toastEl = document.getElementById('toast');
             const backBtn = document.getElementById('backBtn');
+            const headerPromoBadge = document.getElementById('headerPromoBadge');
+            const headerPromoValue = document.getElementById('headerPromoValue');
 
             let currentProduct = null;
             let currentMarket = null;
@@ -487,6 +668,7 @@
             let currentImages = [];
             let carouselInterval = null;
             let currentBuyer = null;
+            let productBoost = null;
 
             function showToast(message, type = 'info') {
                 toastEl.textContent = message;
@@ -505,18 +687,13 @@
                 return new Intl.NumberFormat('fr-FR').format(price);
             }
 
-            // ============ RETOUR INTELLIGENT ============
             function goBack() {
                 const referrer = document.referrer;
-                
                 if (referrer.includes('vendeur.html')) {
-                    // Extraire l'ID du vendeur depuis l'URL actuelle du produit
-                    const urlParams = new URLSearchParams(window.location.search);
-                    const productId = urlParams.get('id');
-                    if (productId && currentProduct) {
+                    if (currentProduct) {
                         window.location.href = `vendeur.html?id=${currentProduct.user_id}`;
                     } else {
-                        window.location.href = 'index.html';
+                        window.location.href = 'market.html';
                     }
                 } else if (referrer.includes('market.html')) {
                     window.location.href = 'market.html';
@@ -535,7 +712,6 @@
                 backBtn.addEventListener('click', goBack);
             }
 
-            // ============ ENREGISTREMENT DE LA VUE ============
             async function recordProductView(productId) {
                 try {
                     await supabase
@@ -545,35 +721,29 @@
                             view_count: 1,
                             viewed_at: new Date().toISOString()
                         });
-                    console.log('Vue enregistrée pour le produit:', productId);
                 } catch (err) {
                     console.error('Erreur enregistrement vue:', err);
                 }
             }
 
-            // ============ ENREGISTREMENT DU CLIC WHATSAPP ============
-            async function recordWhatsAppClick(productId) {
+            async function recordClick(productId, type) {
                 try {
                     await supabase
                         .from('product_stats')
                         .insert({
                             product_id: productId,
                             click_count: 1,
-                            click_type: 'whatsapp',
+                            click_type: type,
                             clicked_at: new Date().toISOString()
                         });
-                    console.log('Clic WhatsApp enregistré pour le produit:', productId);
                 } catch (err) {
-                    console.error('Erreur enregistrement clic WhatsApp:', err);
+                    console.error('Erreur enregistrement clic:', err);
                 }
             }
 
-            // ============ ENREGISTREMENT DE LA COMMANDE ============
             async function saveOrder() {
                 if (!currentUserId || !currentProduct) return false;
-                
                 const firstImage = (currentProduct.images && currentProduct.images[0]) ? currentProduct.images[0] : null;
-                
                 const { error } = await supabase
                     .from('orders')
                     .insert({
@@ -584,13 +754,34 @@
                         product_image: firstImage,
                         created_at: new Date().toISOString()
                     });
-                
                 if (error) {
                     console.error('Erreur enregistrement commande:', error);
                     return false;
                 }
-                console.log('Commande enregistrée pour le produit:', currentProduct.id);
                 return true;
+            }
+
+            async function loadProductBoost(productId) {
+                try {
+                    const { data } = await supabase
+                        .from('product_boosts')
+                        .select('*')
+                        .eq('product_id', productId)
+                        .eq('is_active', true)
+                        .single();
+                    productBoost = data;
+                    
+                    // Afficher le badge dans le header si promo
+                    if (productBoost && productBoost.discount_percent > 0) {
+                        headerPromoValue.textContent = `-${productBoost.discount_percent}%`;
+                        headerPromoBadge.style.display = 'flex';
+                    } else {
+                        headerPromoBadge.style.display = 'none';
+                    }
+                } catch (err) {
+                    productBoost = null;
+                    headerPromoBadge.style.display = 'none';
+                }
             }
 
             function getProductId() {
@@ -622,6 +813,8 @@
                     currentImages = (product.images || []).filter(Boolean);
                     pageTitle.textContent = product.name.length > 30 ? product.name.substring(0, 27) + '...' : product.name;
 
+                    await loadProductBoost(product.id);
+
                     const { data: market, error: mError } = await supabase
                         .from('markets')
                         .select('*')
@@ -644,14 +837,10 @@
                             .select('full_name, phone, city')
                             .eq('id', currentUserId)
                             .single();
-                        if (buyer) {
-                            currentBuyer = buyer;
-                        }
+                        if (buyer) currentBuyer = buyer;
                     }
 
-                    // ENREGISTREMENT DE LA VUE
                     await recordProductView(product.id);
-
                     renderProduct();
 
                 } catch (err) {
@@ -675,36 +864,19 @@
                 function goToSlide(index) {
                     currentImageIndex = (index + currentImages.length) % currentImages.length;
                     mainImg.src = currentImages[currentImageIndex];
-                    dots.forEach((dot, i) => {
-                        dot.classList.toggle('active', i === currentImageIndex);
-                    });
+                    dots.forEach((dot, i) => dot.classList.toggle('active', i === currentImageIndex));
                 }
 
-                function nextSlide() {
-                    goToSlide(currentImageIndex + 1);
-                    resetCarouselTimer();
-                }
-
-                function prevSlide() {
-                    goToSlide(currentImageIndex - 1);
-                    resetCarouselTimer();
-                }
-
+                function nextSlide() { goToSlide(currentImageIndex + 1); resetCarouselTimer(); }
+                function prevSlide() { goToSlide(currentImageIndex - 1); resetCarouselTimer(); }
                 function resetCarouselTimer() {
-                    if (carouselInterval) {
-                        clearInterval(carouselInterval);
-                        carouselInterval = setInterval(nextSlide, 3500);
-                    }
+                    if (carouselInterval) clearInterval(carouselInterval);
+                    carouselInterval = setInterval(nextSlide, 3500);
                 }
 
                 prevBtn.addEventListener('click', prevSlide);
                 nextBtn.addEventListener('click', nextSlide);
-                dots.forEach((dot, i) => {
-                    dot.addEventListener('click', () => {
-                        goToSlide(i);
-                        resetCarouselTimer();
-                    });
-                });
+                dots.forEach((dot, i) => dot.addEventListener('click', () => { goToSlide(i); resetCarouselTimer(); }));
 
                 carouselInterval = setInterval(nextSlide, 3500);
             }
@@ -717,16 +889,24 @@
                 return `https://wa.me/${clean}`;
             }
 
+            function getPhoneLink() {
+                if (!currentMarket.phone) return null;
+                let clean = currentMarket.phone.replace(/\D/g, '');
+                if (clean.startsWith('0')) clean = clean.substring(1);
+                if (!clean.startsWith('225')) clean = '225' + clean;
+                return `tel:+${clean}`;
+            }
+
             function buildWhatsAppMessage() {
                 const buyerName = currentBuyer?.full_name || 'Client';
                 const buyerPhone = currentBuyer?.phone || 'Non renseigné';
                 const buyerCity = currentBuyer?.city || 'Non renseignée';
-                
                 const productName = currentProduct.name;
-                const productPrice = formatPrice(currentProduct.price) + ' FCFA';
+                const productPrice = productBoost && productBoost.discount_percent > 0 
+                    ? formatPrice(Math.round(currentProduct.price * (1 - productBoost.discount_percent / 100))) + ' FCFA'
+                    : formatPrice(currentProduct.price) + ' FCFA';
                 const priceOption = currentProduct.price_option ? ` (${currentProduct.price_option})` : '';
                 const stock = currentProduct.stock ? `Stock: ${currentProduct.stock} unités` : '';
-                
                 const firstImage = currentImages[0] ? currentImages[0] : 'Aucune image';
                 
                 let message = `🛍️ *NOUVELLE COMMANDE* 🛍️\n\n`;
@@ -741,7 +921,6 @@
                 message += `━━━━━━━━━━━━━━━━━━━━\n\n`;
                 message += `💬 *Message du client :* \n`;
                 message += `Bonjour, je suis intéressé par ce produit. Est-il toujours disponible ?`;
-                
                 return encodeURIComponent(message);
             }
 
@@ -751,17 +930,21 @@
                     alert('Numéro WhatsApp non disponible');
                     return;
                 }
-                
-                // ENREGISTREMENT DU CLIC WHATSAPP
-                await recordWhatsAppClick(currentProduct.id);
-                
-                // ENREGISTREMENT DE LA COMMANDE (si connecté)
-                if (currentUserId) {
-                    await saveOrder();
-                }
-                
+                await recordClick(currentProduct.id, 'whatsapp');
+                if (currentUserId) await saveOrder();
                 const message = buildWhatsAppMessage();
                 window.open(`${waLink}?text=${message}`, '_blank');
+            }
+
+            async function callSeller() {
+                const phoneLink = getPhoneLink();
+                if (!phoneLink) {
+                    alert('Numéro de téléphone non disponible');
+                    return;
+                }
+                await recordClick(currentProduct.id, 'call');
+                if (currentUserId) await saveOrder();
+                window.open(phoneLink, '_self');
             }
 
             function renderProduct() {
@@ -793,24 +976,53 @@
                     `;
                 }
 
+                // Calcul des prix avec réduction
+                const hasDiscount = productBoost && productBoost.discount_percent > 0;
+                const discountPercent = hasDiscount ? productBoost.discount_percent : 0;
+                const originalPrice = currentProduct.price;
+                const discountedPrice = hasDiscount ? Math.round(originalPrice * (1 - discountPercent / 100)) : originalPrice;
+                const priceHtml = hasDiscount 
+                    ? `<span class="price-value">${formatPrice(discountedPrice)} FCFA</span>
+                       <span class="old-price-value">${formatPrice(originalPrice)} FCFA</span>
+                       <span class="price-badge">-${discountPercent}%</span>`
+                    : `<span class="price-value">${formatPrice(originalPrice)} FCFA</span>
+                       <span class="price-badge">TTC</span>`;
+
+                // SECTION PROMOTION (BOOSTÉ)
+                let promoHtml = '';
+                if (hasDiscount) {
+                    const boostTypeText = productBoost.boost_type === 'promotion' ? '🎉 Promotion spéciale' :
+                                          productBoost.boost_type === 'reduction' ? '💰 Prix réduit' :
+                                          productBoost.boost_type === 'featured' ? '⭐ Produit à la une' : '📢 Offre personnalisée';
+                    promoHtml = `
+                        <div class="promo-section">
+                            <div class="promo-header">
+                                <div class="promo-icon">
+                                    <i class="fas fa-gift"></i>
+                                </div>
+                                <div class="promo-title">${escapeHtml(boostTypeText)}</div>
+                            </div>
+                            <div class="promo-discount">
+                                -${discountPercent}% <small>de réduction</small>
+                            </div>
+                            <div class="promo-date">
+                                <i class="fas fa-calendar-alt"></i> 
+                                ${productBoost.end_date ? `Valable jusqu'au ${new Date(productBoost.end_date).toLocaleDateString('fr-FR')}` : 'Offre sans limite de temps'}
+                            </div>
+                            ${productBoost.description ? `<div class="promo-desc">${escapeHtml(productBoost.description)}</div>` : ''}
+                        </div>
+                    `;
+                }
+
                 const stock = currentProduct.stock;
                 let stockHtml = '';
                 if (stock !== null && stock !== undefined) {
-                    if (stock > 0) {
-                        stockHtml = `
-                            <div class="info-row">
-                                <div class="info-label"><i class="fas fa-boxes"></i> Stock</div>
-                                <div class="info-value"><span class="badge badge-stock">${stock} unité(s) disponible(s)</span></div>
-                            </div>
-                        `;
-                    } else {
-                        stockHtml = `
-                            <div class="info-row">
-                                <div class="info-label"><i class="fas fa-boxes"></i> Stock</div>
-                                <div class="info-value"><span class="badge badge-outofstock">Rupture de stock</span></div>
-                            </div>
-                        `;
-                    }
+                    stockHtml = `
+                        <div class="info-row">
+                            <div class="info-label"><i class="fas fa-boxes"></i> Stock</div>
+                            <div class="info-value"><span class="badge ${stock > 0 ? 'badge-stock' : 'badge-outofstock'}">${stock > 0 ? `${stock} unité(s) disponible(s)` : 'Rupture de stock'}</span></div>
+                        </div>
+                    `;
                 }
 
                 const condition = currentProduct.condition;
@@ -904,9 +1116,12 @@
 
                 const sellerName = currentMarket.market_name || currentMarket.owner_name || 'Vendeur';
                 const sellerCity = currentMarket.city || 'Localisation non précisée';
+                const hasPhone = currentMarket.phone && currentMarket.phone.trim() !== '';
 
                 mainContent.innerHTML = `
                     ${carouselHtml}
+
+                    ${promoHtml}
 
                     <div class="info-card">
                         <div class="card-header">
@@ -920,8 +1135,7 @@
                             <div class="info-row">
                                 <div class="info-label"><i class="fas fa-coins"></i> Prix</div>
                                 <div class="info-value">
-                                    <span class="price-value">${formatPrice(currentProduct.price)} FCFA</span>
-                                    <span class="price-badge">TTC</span>
+                                    ${priceHtml}
                                 </div>
                             </div>
                             ${priceOptionHtml}
@@ -950,39 +1164,27 @@
                                 <p><i class="fas fa-map-marker-alt"></i> ${escapeHtml(sellerCity)}</p>
                             </div>
                         </div>
-                        <button id="whatsappBtn" class="whatsapp-btn">
-                            <i class="fab fa-whatsapp"></i> Contacter le vendeur
-                        </button>
+                        <div class="action-buttons">
+                            <button id="whatsappBtn" class="whatsapp-btn">
+                                <i class="fab fa-whatsapp"></i> WhatsApp
+                            </button>
+                            ${hasPhone ? `
+                            <button id="callBtn" class="call-btn">
+                                <i class="fas fa-phone"></i> Appeler
+                            </button>
+                            ` : ''}
+                        </div>
                     </div>
                 `;
 
-                if (currentImages.length > 1) {
-                    initCarousel();
-                }
-
+                if (currentImages.length > 1) initCarousel();
                 document.getElementById('whatsappBtn').addEventListener('click', contactSeller);
+                if (hasPhone) {
+                    document.getElementById('callBtn').addEventListener('click', callSeller);
+                }
             }
 
-            // Vérification de session + chargement
-            (async function checkSessionAndLoad() {
-                // Attendre que Supabase soit chargé
-                const waitForSupabase = setInterval(async () => {
-                    if (typeof window.supabase !== 'undefined') {
-                        clearInterval(waitForSupabase);
-                        
-                        const SUPABASE_URL = 'https://emcsigvlopntwbfkkjkh.supabase.co';
-                        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtY3NpZ3Zsb3BudHdiZmtramtoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4ODE5MTgsImV4cCI6MjA5NDQ1NzkxOH0.YwYoV-azL3WEFtHoh4yoF7xTLrOwZILKCzJrGPsCs6I';
-                        const authClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                        const { data: { session } } = await authClient.auth.getSession();
-                        
-                        if (!session) {
-                            window.location.href = 'login.html';
-                        } else {
-                            loadProduct();
-                        }
-                    }
-                }, 100);
-            })();
+            loadProduct();
         })();
     </script>
 </body>

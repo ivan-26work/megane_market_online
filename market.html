@@ -9,7 +9,6 @@
     <script>
     // Vérification de session - Redirection si non connecté
     (async function checkSessionAndRedirect() {
-        // Attendre que Supabase soit chargé
         const waitForSupabase = setInterval(() => {
             if (typeof window.supabase !== 'undefined') {
                 clearInterval(waitForSupabase);
@@ -29,7 +28,7 @@
             }
         }
     })();
-</script>
+    </script>
     <style>
         * {
             margin: 0;
@@ -254,6 +253,40 @@
         .product-card:nth-child(11) { animation-delay: 0.22s; }
         .product-card:nth-child(12) { animation-delay: 0.24s; }
 
+        /* BADGE PROMOTION */
+        .promo-badge {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: #ff4d4d;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            z-index: 15;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            box-shadow: 0 2px 8px rgba(255, 77, 77, 0.3);
+            animation: promoPulse 1s ease infinite;
+        }
+
+        @keyframes promoPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Ancien prix barré */
+        .old-price {
+            font-size: 0.7rem;
+            color: #8a9aaa;
+            text-decoration: line-through;
+            font-weight: 400;
+            margin-left: 6px;
+        }
+
         .favorite-btn {
             position: absolute;
             top: 8px;
@@ -326,6 +359,10 @@
             font-weight: 700;
             color: #4ade80;
             font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
         }
 
         .product-market {
@@ -410,6 +447,10 @@
             .product-price {
                 font-size: 0.7rem;
             }
+            .promo-badge {
+                font-size: 0.55rem;
+                padding: 3px 8px;
+            }
         }
     </style>
 </head>
@@ -461,6 +502,26 @@
             let currentUserId = null;
             let activeCategory = 'all';
             let hoverTimers = {};
+            let productBoosts = {};
+
+            // Charger les promotions (boosts)
+            async function loadProductBoosts() {
+                try {
+                    const { data } = await supabase
+                        .from('product_boosts')
+                        .select('product_id, discount_percent')
+                        .eq('is_active', true);
+                    
+                    productBoosts = {};
+                    for (const boost of data || []) {
+                        if (boost.discount_percent > 0) {
+                            productBoosts[boost.product_id] = boost.discount_percent;
+                        }
+                    }
+                } catch (err) {
+                    console.error('Erreur chargement boosts:', err);
+                }
+            }
 
             async function checkSession() {
                 const { data: { session } } = await supabase.auth.getSession();
@@ -480,7 +541,6 @@
                             click_type: type,
                             clicked_at: new Date().toISOString()
                         });
-                    console.log('Clic enregistré:', productId, '(type:', type + ')');
                 } catch (err) {
                     console.error('Erreur enregistrement:', err);
                 }
@@ -678,9 +738,18 @@
                     const imageUrl = product.images?.[0] || null;
                     const isFavorite = currentUserId && userFavorites.has(String(product.id));
                     const marketName = getMarketName(product.user_id);
+                    const discount = productBoosts[product.id];
+                    
+                    // Badge promotion
+                    const promoBadgeHtml = discount ? `<div class="promo-badge"><i class="fas fa-tag"></i> -${discount}%</div>` : '';
+                    
+                    // Calcul du nouveau prix avec réduction
+                    const newPrice = discount ? Math.round(product.price * (1 - discount / 100)) : product.price;
+                    const oldPriceHtml = discount ? `<span class="old-price">${formatPrice(product.price)} FCFA</span>` : '';
                     
                     return `
                         <div class="product-card" data-id="${product.id}">
+                            ${promoBadgeHtml}
                             <button class="favorite-btn ${isFavorite ? 'active' : ''}" data-id="${product.id}">
                                 <i class="${isFavorite ? 'fas' : 'far'} fa-heart"></i>
                             </button>
@@ -690,7 +759,10 @@
                             }
                             <div class="product-info">
                                 <div class="product-name">${escapeHtml(product.name)}</div>
-                                <div class="product-price">${formatPrice(product.price)} FCFA</div>
+                                <div class="product-price">
+                                    ${discount ? `${formatPrice(newPrice)} FCFA` : `${formatPrice(product.price)} FCFA`}
+                                    ${oldPriceHtml}
+                                </div>
                                 <div class="product-market"><i class="fas fa-store"></i> ${escapeHtml(marketName)}</div>
                             </div>
                         </div>
@@ -700,7 +772,6 @@
                 document.querySelectorAll('.product-card').forEach(card => {
                     const productId = card.getAttribute('data-id');
                     
-                    // SURVOL (0.5s) - enregistre comme clic
                     card.addEventListener('mouseenter', () => {
                         startHoverTimer(productId);
                     });
@@ -709,12 +780,10 @@
                         cancelHoverTimer(productId);
                     });
                     
-                    // TOUCHER MOBILE INSTANTANÉ (sans bloquer le clic)
                     card.addEventListener('touchstart', () => {
                         recordCardClick(productId, 'touch');
                     });
                     
-                    // CLIC RÉEL - redirection + enregistrement
                     card.addEventListener('click', async (e) => {
                         if (e.target.closest('.favorite-btn')) return;
                         
@@ -755,6 +824,7 @@
 
             async function init() {
                 await checkSession();
+                await loadProductBoosts();
                 await loadMarkets();
                 await loadProducts();
             }

@@ -6,30 +6,6 @@
     <title>Megane Market - Détail produit</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script>
-    // Vérification de session - Redirection si non connecté
-    (async function checkSessionAndRedirect() {
-        // Attendre que Supabase soit chargé
-        const waitForSupabase = setInterval(() => {
-            if (typeof window.supabase !== 'undefined') {
-                clearInterval(waitForSupabase);
-                init();
-            }
-        }, 100);
-        
-        async function init() {
-            const SUPABASE_URL = 'https://emcsigvlopntwbfkkjkh.supabase.co';
-            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtY3NpZ3Zsb3BudHdiZmtramtoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4ODE5MTgsImV4cCI6MjA5NDQ1NzkxOH0.YwYoV-azL3WEFtHoh4yoF7xTLrOwZILKCzJrGPsCs6I';
-            const authClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            
-            const { data: { session } } = await authClient.auth.getSession();
-            
-            if (!session) {
-                window.location.href = 'login.html';
-            }
-        }
-    })();
-</script>
     <style>
         * {
             margin: 0;
@@ -423,6 +399,26 @@
             color: #e8ecf0;
         }
 
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: #1a2a3a;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1100;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
         @media (max-width: 600px) {
             .main-header {
                 margin: 12px 12px 0 12px;
@@ -457,9 +453,9 @@
 <body>
 
     <header class="main-header">
-        <a href="market.html" class="back-btn">
+        <button id="backBtn" class="back-btn">
             <i class="fas fa-arrow-left"></i>
-        </a>
+        </button>
         <div class="product-title" id="pageTitle">Chargement...</div>
         <div class="placeholder"></div>
     </header>
@@ -471,6 +467,8 @@
         </div>
     </main>
 
+    <div id="toast" class="toast"></div>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         (function() {
@@ -480,6 +478,8 @@
             const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             const mainContent = document.getElementById('mainContent');
             const pageTitle = document.getElementById('pageTitle');
+            const toastEl = document.getElementById('toast');
+            const backBtn = document.getElementById('backBtn');
 
             let currentProduct = null;
             let currentMarket = null;
@@ -487,6 +487,12 @@
             let currentImages = [];
             let carouselInterval = null;
             let currentBuyer = null;
+
+            function showToast(message, type = 'info') {
+                toastEl.textContent = message;
+                toastEl.className = `toast ${type} show`;
+                setTimeout(() => toastEl.classList.remove('show'), 3000);
+            }
 
             function escapeHtml(text) {
                 if (!text) return '';
@@ -497,6 +503,36 @@
 
             function formatPrice(price) {
                 return new Intl.NumberFormat('fr-FR').format(price);
+            }
+
+            // ============ RETOUR INTELLIGENT ============
+            function goBack() {
+                const referrer = document.referrer;
+                
+                if (referrer.includes('vendeur.html')) {
+                    // Extraire l'ID du vendeur depuis l'URL actuelle du produit
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const productId = urlParams.get('id');
+                    if (productId && currentProduct) {
+                        window.location.href = `vendeur.html?id=${currentProduct.user_id}`;
+                    } else {
+                        window.location.href = 'index.html';
+                    }
+                } else if (referrer.includes('market.html')) {
+                    window.location.href = 'market.html';
+                } else if (referrer.includes('search.html')) {
+                    window.location.href = 'search.html';
+                } else if (referrer.includes('index.html')) {
+                    window.location.href = 'index.html';
+                } else if (referrer.includes('profil.html')) {
+                    window.location.href = 'profil.html';
+                } else {
+                    window.location.href = 'market.html';
+                }
+            }
+
+            if (backBtn) {
+                backBtn.addEventListener('click', goBack);
             }
 
             // ============ ENREGISTREMENT DE LA VUE ============
@@ -530,6 +566,31 @@
                 } catch (err) {
                     console.error('Erreur enregistrement clic WhatsApp:', err);
                 }
+            }
+
+            // ============ ENREGISTREMENT DE LA COMMANDE ============
+            async function saveOrder() {
+                if (!currentUserId || !currentProduct) return false;
+                
+                const firstImage = (currentProduct.images && currentProduct.images[0]) ? currentProduct.images[0] : null;
+                
+                const { error } = await supabase
+                    .from('orders')
+                    .insert({
+                        buyer_id: currentUserId,
+                        product_id: currentProduct.id,
+                        product_name: currentProduct.name,
+                        product_price: currentProduct.price,
+                        product_image: firstImage,
+                        created_at: new Date().toISOString()
+                    });
+                
+                if (error) {
+                    console.error('Erreur enregistrement commande:', error);
+                    return false;
+                }
+                console.log('Commande enregistrée pour le produit:', currentProduct.id);
+                return true;
             }
 
             function getProductId() {
@@ -693,6 +754,11 @@
                 
                 // ENREGISTREMENT DU CLIC WHATSAPP
                 await recordWhatsAppClick(currentProduct.id);
+                
+                // ENREGISTREMENT DE LA COMMANDE (si connecté)
+                if (currentUserId) {
+                    await saveOrder();
+                }
                 
                 const message = buildWhatsAppMessage();
                 window.open(`${waLink}?text=${message}`, '_blank');
@@ -897,7 +963,26 @@
                 document.getElementById('whatsappBtn').addEventListener('click', contactSeller);
             }
 
-            loadProduct();
+            // Vérification de session + chargement
+            (async function checkSessionAndLoad() {
+                // Attendre que Supabase soit chargé
+                const waitForSupabase = setInterval(async () => {
+                    if (typeof window.supabase !== 'undefined') {
+                        clearInterval(waitForSupabase);
+                        
+                        const SUPABASE_URL = 'https://emcsigvlopntwbfkkjkh.supabase.co';
+                        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtY3NpZ3Zsb3BudHdiZmtramtoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4ODE5MTgsImV4cCI6MjA5NDQ1NzkxOH0.YwYoV-azL3WEFtHoh4yoF7xTLrOwZILKCzJrGPsCs6I';
+                        const authClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                        const { data: { session } } = await authClient.auth.getSession();
+                        
+                        if (!session) {
+                            window.location.href = 'login.html';
+                        } else {
+                            loadProduct();
+                        }
+                    }
+                }, 100);
+            })();
         })();
     </script>
 </body>

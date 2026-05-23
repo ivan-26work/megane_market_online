@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Mon panier - Megane Market</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #f0f2f5;
+            color: #1a2a3a;
+            min-height: 100vh;
+            padding-bottom: 40px;
+        }
+
+        .main-header {
+            position: sticky;
+            top: 16px;
+            z-index: 100;
+            background: #ffffff;
+            border-radius: 60px;
+            height: 60px;
+            border: 1px solid #4ade80;
+            margin: 16px 16px 0 16px;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .logo-img {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .header-center {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-weight: 700;
+            font-size: 1rem;
+            color: #4ade80;
+            white-space: nowrap;
+        }
+
+        .back-btn {
+            background: rgba(74, 222, 128, 0.1);
+            border: 1px solid #4ade80;
+            border-radius: 40px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #4ade80;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            background: #4ade80;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .main-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .cart-header h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .cart-header h2 i {
+            color: #4ade80;
+        }
+
+        .cart-count {
+            background: #4ade80;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .cart-items {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .cart-item {
+            background: #ffffff;
+            border: 1px solid #e8ecf0;
+            border-radius: 20px;
+            padding: 16px;
+            display: flex;
+            gap: 16px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .cart-item:hover {
+            border-color: #4ade80;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(74, 222, 128, 0.1);
+        }
+
+        .cart-item-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            object-fit: cover;
+            background: #fafbfc;
+            flex-shrink: 0;
+        }
+
+        .cart-item-img-placeholder {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            background: #fafbfc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #8a9aaa;
+            font-size: 1.5rem;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-name {
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+            color: #1a2a3a;
+        }
+
+        .cart-item-market {
+            font-size: 0.7rem;
+            color: #8a9aaa;
+            margin-bottom: 6px;
+        }
+
+        .cart-item-price {
+            font-weight: 700;
+            color: #4ade80;
+            font-size: 0.85rem;
+        }
+
+        .cart-item-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .quantity-btn {
+            background: #f0f2f5;
+            border: 1px solid #e8ecf0;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #1a2a3a;
+            transition: all 0.2s;
+        }
+
+        .quantity-btn:hover {
+            background: #4ade80;
+            color: white;
+            border-color: #4ade80;
+        }
+
+        .quantity-value {
+            font-weight: 600;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .remove-btn {
+            background: transparent;
+            border: none;
+            color: #ff4d4d;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+
+        .remove-btn:hover {
+            background: rgba(255, 77, 77, 0.1);
+            transform: scale(1.1);
+        }
+
+        .cart-summary {
+            background: #ffffff;
+            border: 1px solid #e8ecf0;
+            border-radius: 20px;
+            padding: 20px;
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .total-label {
+            font-weight: 600;
+            color: #8a9aaa;
+        }
+
+        .total-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #4ade80;
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 60px 20px;
+            background: #ffffff;
+            border-radius: 20px;
+            border: 1px solid #e8ecf0;
+            color: #8a9aaa;
+        }
+
+        .empty-cart i {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            color: #e8ecf0;
+        }
+
+        .loader {
+            text-align: center;
+            padding: 60px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #e8ecf0;
+            border-top-color: #4ade80;
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: #1a2a3a;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1100;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast.success {
+            background: #4ade80;
+            color: #1a2a3a;
+        }
+
+        .toast.error {
+            background: #ff4d4d;
+        }
+
+        @media (max-width: 600px) {
+            .main-header {
+                margin: 12px 12px 0 12px;
+                padding: 0 15px;
+            }
+            .back-btn {
+                width: 36px;
+                height: 36px;
+            }
+            .header-center {
+                font-size: 0.85rem;
+            }
+            .cart-item-img,
+            .cart-item-img-placeholder {
+                width: 60px;
+                height: 60px;
+            }
+            .cart-item-name {
+                font-size: 0.8rem;
+            }
+            .total-value {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <a href="market-new.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <div class="header-center">Mon panier</div>
+        <div style="width: 40px;"></div>
+    </header>
+
+    <main class="main-content" id="mainContent">
+        <div class="loader">
+            <div class="spinner"></div>
+            <p>Chargement du panier...</p>
+        </div>
+    </main>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        (function() {
+            const SUPABASE_URL = 'https://emcsigvlopntwbfkkjkh.supabase.co';
+            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtY3NpZ3Zsb3BudHdiZmtramtoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4ODE5MTgsImV4cCI6MjA5NDQ1NzkxOH0.YwYoV-azL3WEFtHoh4yoF7xTLrOwZILKCzJrGPsCs6I';
+
+            const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            const mainContent = document.getElementById('mainContent');
+            const toastEl = document.getElementById('toast');
+
+            let currentUserId = null;
+            let cartItems = [];
+            let productBoosts = {};
+
+            function showToast(message, type = 'info') {
+                toastEl.textContent = message;
+                toastEl.className = `toast ${type} show`;
+                setTimeout(() => toastEl.classList.remove('show'), 3000);
+            }
+
+            function formatPrice(price) {
+                return new Intl.NumberFormat('fr-FR').format(price);
+            }
+
+            function escapeHtml(text) {
+                if (!text) return '';
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            async function checkSession() {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (!session) {
+                    window.location.href = 'login.html';
+                    return false;
+                }
+                currentUserId = session.user.id;
+                return true;
+            }
+
+            async function loadProductBoosts() {
+                const { data } = await supabase
+                    .from('product_boosts')
+                    .select('product_id, discount_percent')
+                    .eq('is_active', true);
+                
+                productBoosts = {};
+                for (const boost of data || []) {
+                    if (boost.discount_percent > 0) {
+                        productBoosts[boost.product_id] = boost.discount_percent;
+                    }
+                }
+            }
+
+            async function loadCart() {
+                const { data: cart, error } = await supabase
+                    .from('cart')
+                    .select('*')
+                    .eq('user_id', currentUserId);
+                
+                if (error) throw error;
+                
+                if (!cart || cart.length === 0) {
+                    mainContent.innerHTML = `
+                        <div class="empty-cart">
+                            <i class="fas fa-shopping-cart"></i>
+                            <p>Votre panier est vide</p>
+                            <a href="market-new.html" style="color:#4ade80; text-decoration:none; margin-top:12px; display:inline-block;">Découvrir les offres</a>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                const productIds = cart.map(item => item.product_id);
+                const { data: products, error: productsError } = await supabase
+                    .from('products')
+                    .select('*')
+                    .in('id', productIds);
+                
+                if (productsError) throw productsError;
+                
+                const marketsMap = {};
+                for (const product of products) {
+                    if (!marketsMap[product.user_id]) {
+                        const { data: market } = await supabase
+                            .from('markets')
+                            .select('market_name, owner_name')
+                            .eq('id', product.user_id)
+                            .single();
+                        marketsMap[product.user_id] = market?.market_name || market?.owner_name || 'Vendeur';
+                    }
+                }
+                
+                cartItems = cart.map(item => {
+                    const product = products.find(p => p.id === item.product_id);
+                    return {
+                        id: item.id,
+                        product_id: item.product_id,
+                        quantity: item.quantity,
+                        product: product,
+                        market_name: marketsMap[product?.user_id] || 'Vendeur'
+                    };
+                });
+                
+                renderCart();
+            }
+
+            function renderCart() {
+                let total = 0;
+                
+                const itemsHtml = cartItems.map(item => {
+                    const product = item.product;
+                    const discount = productBoosts[product.id];
+                    const originalPrice = product.price;
+                    const discountedPrice = discount ? Math.round(originalPrice * (1 - discount / 100)) : originalPrice;
+                    const itemTotal = discountedPrice * item.quantity;
+                    total += itemTotal;
+                    
+                    const imageUrl = product.images && product.images[0] ? product.images[0] : null;
+                    
+                    return `
+                        <div class="cart-item" data-cart-id="${item.id}" data-product-id="${product.id}">
+                            ${imageUrl 
+                                ? `<img src="${escapeHtml(imageUrl)}" class="cart-item-img" onerror="this.src=''">`
+                                : `<div class="cart-item-img-placeholder"><i class="fas fa-image"></i></div>`
+                            }
+                            <div class="cart-item-info">
+                                <div class="cart-item-name">${escapeHtml(product.name)}</div>
+                                <div class="cart-item-market"><i class="fas fa-store"></i> ${escapeHtml(item.market_name)}</div>
+                                <div class="cart-item-price">
+                                    ${discount 
+                                        ? `<span>${formatPrice(discountedPrice)} FCFA</span> <span style="text-decoration:line-through; color:#8a9aaa; font-size:0.7rem;">${formatPrice(originalPrice)} FCFA</span>`
+                                        : `${formatPrice(originalPrice)} FCFA`
+                                    }
+                                </div>
+                                <div class="cart-item-actions">
+                                    <button class="quantity-btn" data-action="decr"><i class="fas fa-minus"></i></button>
+                                    <span class="quantity-value">${item.quantity}</span>
+                                    <button class="quantity-btn" data-action="incr"><i class="fas fa-plus"></i></button>
+                                    <button class="remove-btn" data-action="remove"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+                mainContent.innerHTML = `
+                    <div class="cart-header">
+                        <h2><i class="fas fa-shopping-cart"></i> Mon panier</h2>
+                        <span class="cart-count">${cartItems.length} article(s)</span>
+                    </div>
+                    <div class="cart-items">
+                        ${itemsHtml}
+                    </div>
+                    <div class="cart-summary">
+                        <span class="total-label">Total</span>
+                        <span class="total-value">${formatPrice(total)} FCFA</span>
+                    </div>
+                `;
+                
+                document.querySelectorAll('.cart-item').forEach(item => {
+                    const cartId = item.getAttribute('data-cart-id');
+                    const productId = item.getAttribute('data-product-id');
+                    const quantitySpan = item.querySelector('.quantity-value');
+                    
+                    item.querySelector('[data-action="incr"]')?.addEventListener('click', () => updateQuantity(cartId, productId, 1));
+                    item.querySelector('[data-action="decr"]')?.addEventListener('click', () => updateQuantity(cartId, productId, -1));
+                    item.querySelector('[data-action="remove"]')?.addEventListener('click', () => removeItem(cartId));
+                });
+            }
+
+            async function updateQuantity(cartId, productId, delta) {
+                const item = cartItems.find(i => i.id === cartId);
+                if (!item) return;
+                
+                const newQuantity = item.quantity + delta;
+                
+                if (newQuantity <= 0) {
+                    await removeItem(cartId);
+                    return;
+                }
+                
+                const { error } = await supabase
+                    .from('cart')
+                    .update({ quantity: newQuantity })
+                    .eq('id', cartId);
+                
+                if (error) {
+                    showToast('Erreur', 'error');
+                    return;
+                }
+                
+                item.quantity = newQuantity;
+                await loadCart();
+            }
+
+            async function removeItem(cartId) {
+                const { error } = await supabase
+                    .from('cart')
+                    .delete()
+                    .eq('id', cartId);
+                
+                if (error) {
+                    showToast('Erreur lors de la suppression', 'error');
+                    return;
+                }
+                
+                cartItems = cartItems.filter(i => i.id !== cartId);
+                if (cartItems.length === 0) {
+                    mainContent.innerHTML = `
+                        <div class="empty-cart">
+                            <i class="fas fa-shopping-cart"></i>
+                            <p>Votre panier est vide</p>
+                            <a href="market-new.html" style="color:#4ade80; text-decoration:none; margin-top:12px; display:inline-block;">Découvrir les offres</a>
+                        </div>
+                    `;
+                } else {
+                    await loadCart();
+                }
+                showToast('Produit supprimé', 'success');
+            }
+
+            async function init() {
+                const ok = await checkSession();
+                if (ok) {
+                    await loadProductBoosts();
+                    await loadCart();
+                }
+            }
+            
+            init();
+        })();
+    </script>
+</body>
+</html>

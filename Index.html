@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Megane Market - Votre marché de confiance</title>
+    <meta name="theme-color" content="#4ade80">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #f0f2f5;
+            color: #1a2a3a;
+            min-height: 100vh;
+            padding-bottom: 40px;
+        }
+
+        /* HEADER NÉOMORPHIQUE VERT */
+        .main-header {
+            position: sticky;
+            top: 16px;
+            z-index: 100;
+            background: linear-gradient(135deg, #d4efdf, #b8e0c2);
+            border-radius: 60px;
+            height: 70px;
+            border: none;
+            margin: 16px 16px 0 16px;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 9px 9px 16px #9bb8a8, -9px -9px 16px #f0fff4;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 3px 3px 6px #9bb8a8, -3px -3px 6px #f0fff4;
+        }
+
+        .header-center {
+            font-weight: 800;
+            font-size: 1.3rem;
+            font-family: 'Poppins', sans-serif;
+            color: #2e7d32;
+            letter-spacing: 0.5px;
+            text-align: center;
+            flex: 1;
+        }
+
+        .status-badge {
+            background: #e0e5ec;
+            border-radius: 40px;
+            padding: 8px 16px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 5px 5px 10px #9bb8a8, -5px -5px 10px #f0fff4;
+        }
+
+        .status-badge.complet {
+            background: #4ade80;
+            color: #1a2a3a;
+        }
+
+        .status-badge.incomplet {
+            background: #ffaa44;
+            color: #1a2a3a;
+        }
+
+        /* CARROUSEL BIENVENUE */
+        .welcome-carousel {
+            margin: 20px 16px;
+            position: relative;
+        }
+
+        .carousel-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 24px;
+        }
+
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+
+        .welcome-card {
+            flex: 0 0 100%;
+            background: linear-gradient(135deg, #d4efdf, #b8e0c2);
+            border-radius: 24px;
+            padding: 24px;
+            text-align: center;
+            box-shadow: 9px 9px 16px #9bb8a8, -9px -9px 16px #f0fff4;
+        }
+
+        .welcome-icon {
+            width: 70px;
+            height: 70px;
+            background: rgba(255,255,255,0.4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 2rem;
+            color: #2e7d32;
+        }
+
+        .welcome-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #1a3a1a;
+            margin-bottom: 8px;
+        }
+
+        .welcome-message {
+            font-size: 0.85rem;
+            color: #2e7d32;
+            line-height: 1.5;
+        }
+
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.2s;
+            z-index: 10;
+        }
+
+        .carousel-nav:hover {
+            background: #4ade80;
+        }
+
+        .carousel-nav.prev {
+            left: 12px;
+        }
+
+        .carousel-nav.next {
+            right: 12px;
+        }
+
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            padding: 16px 0 4px;
+        }
+
+        .carousel-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(46, 125, 50, 0.3);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .carousel-dot.active {
+            background: #4ade80;
+            width: 24px;
+            border-radius: 4px;
+        }
+
+        /* SECTION PRODUITS EN PROMO - CARTE 6 ADAPTÉE NÉOMORPHIQUE */
+        .promo-products-section {
+            margin: 24px 16px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .section-header h2 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #1a2a3a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-header h2 i {
+            color: #ff4d4d;
+        }
+
+        .promo-scroll {
+            overflow-x: auto;
+            overflow-y: hidden;
+            scrollbar-width: thin;
+            padding-bottom: 8px;
+        }
+
+        .promo-scroll::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .promo-scroll::-webkit-scrollbar-track {
+            background: #e8ecf0;
+            border-radius: 4px;
+        }
+
+        .promo-scroll::-webkit-scrollbar-thumb {
+            background: #4ade80;
+            border-radius: 4px;
+        }
+
+        .promo-track {
+            display: flex;
+            gap: 16px;
+        }
+
+        /* CARTE 6 STYLE NÉOMORPHIQUE VERT */
+        .promo-product-card {
+            flex: 0 0 320px;
+            background: linear-gradient(135deg, #d4efdf, #b8e0c2);
+            border-radius: 24px;
+            padding: 16px;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            box-shadow: 9px 9px 16px #9bb8a8, -9px -9px 16px #f0fff4;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .promo-product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 4px 4px 8px #9bb8a8, -4px -4px 8px #f0fff4;
+        }
+
+        .promo-img-wrap {
+            width: 100px;
+            height: 100px;
+            flex-shrink: 0;
+            background: rgba(255,255,255,0.4);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .promo-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .promo-img-wrap .image-placeholder {
+            font-size: 2rem;
+            color: #2e7d32;
+        }
+
+        .promo-badge {
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            background: #ff4d4d;
+            color: white;
+            font-size: 0.6rem;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 20px;
+            z-index: 2;
+        }
+
+        .promo-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .promo-name {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #1a3a1a;
+        }
+
+        .promo-shop {
+            font-size: 0.65rem;
+            color: #2e7d32;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .promo-price-row {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .promo-original-price {
+            font-size: 0.7rem;
+            color: #6a8a6a;
+            text-decoration: line-through;
+        }
+
+        .promo-current-price {
+            font-size: 0.9rem;
+            font-weight: 800;
+            color: #ff4d4d;
+        }
+
+        .promo-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .promo-btn {
+            flex: 1;
+            padding: 6px;
+            border-radius: 40px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.2s;
+            background: #ffffff;
+            color: #2e7d32;
+            box-shadow: 5px 5px 10px #9bb8a8, -5px -5px 10px #f0fff4;
+        }
+
+        .promo-btn.cart {
+            background: #4ade80;
+            color: #1a2a3a;
+        }
+
+        .promo-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .empty-promo {
+            text-align: center;
+            padding: 40px;
+            color: #8a9aaa;
+            background: #e0e5ec;
+            border-radius: 20px;
+        }
+
+        /* CARTE COMPTE VÉRIFIÉ */
+        .verified-card {
+            background: linear-gradient(135deg, #d4efdf, #b8e0c2);
+            border-radius: 24px;
+            margin: 20px 16px;
+            padding: 24px;
+            text-align: center;
+            box-shadow: 9px 9px 16px #9bb8a8, -9px -9px 16px #f0fff4;
+            display: none;
+        }
+
+        .verified-icon {
+            width: 70px;
+            height: 70px;
+            background: #4ade80;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .verified-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #1a3a1a;
+            margin-bottom: 8px;
+        }
+
+        .verified-message {
+            font-size: 0.85rem;
+            color: #2e7d32;
+            margin-bottom: 20px;
+        }
+
+        .verified-btn {
+            background: #4ade80;
+            border: none;
+            border-radius: 40px;
+            padding: 12px 28px;
+            color: #1a2a3a;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            box-shadow: 5px 5px 10px #9bb8a8, -5px -5px 10px #f0fff4;
+        }
+
+        .verified-btn:hover {
+            background: #22c55e;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 600px) {
+            .main-header {
+                margin: 12px 12px 0 12px;
+                padding: 0 16px;
+                height: 60px;
+            }
+            .logo-img {
+                width: 32px;
+                height: 32px;
+            }
+            .header-center {
+                font-size: 1rem;
+            }
+            .status-badge {
+                padding: 5px 10px;
+                font-size: 0.6rem;
+            }
+            .status-badge span {
+                display: none;
+            }
+            .welcome-card {
+                padding: 20px;
+            }
+            .welcome-icon {
+                width: 55px;
+                height: 55px;
+                font-size: 1.5rem;
+            }
+            .welcome-title {
+                font-size: 0.9rem;
+            }
+            .welcome-message {
+                font-size: 0.75rem;
+            }
+            .carousel-nav {
+                width: 30px;
+                height: 30px;
+                font-size: 0.8rem;
+            }
+            .promo-product-card {
+                flex: 0 0 280px;
+                padding: 12px;
+                gap: 12px;
+            }
+            .promo-img-wrap {
+                width: 80px;
+                height: 80px;
+            }
+            .promo-name {
+                font-size: 0.75rem;
+            }
+            .promo-current-price {
+                font-size: 0.8rem;
+            }
+            .verified-card {
+                padding: 20px;
+            }
+            .verified-icon {
+                width: 55px;
+                height: 55px;
+                font-size: 1.5rem;
+            }
+            .verified-title {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <a href="index.html" class="logo">
+            <img src="assets/logo.png" alt="Megane Market" class="logo-img" onerror="this.src='https://placehold.co/40x40?text=MM'">
+        </a>
+        <div class="header-center">Megane Market</div>
+        <div id="statusBtn" class="status-badge incomplet">
+            <i class="fas fa-spinner fa-pulse"></i>
+            <span>Chargement...</span>
+        </div>
+    </header>
+
+    <main>
+        <!-- CARROUSEL BIENVENUE -->
+        <div class="welcome-carousel">
+            <div class="carousel-container">
+                <div class="carousel-track" id="welcomeTrack">
+                    <div class="welcome-card">
+                        <div class="welcome-icon"><i class="fas fa-hand-peace"></i></div>
+                        <div class="welcome-title">Bienvenue sur Megane Market</div>
+                        <div class="welcome-message">La plateforme qui connecte acheteurs et vendeurs de confiance. Découvrez des produits variés et faites de bonnes affaires.</div>
+                    </div>
+                    <div class="welcome-card">
+                        <div class="welcome-icon"><i class="fas fa-shield-alt"></i></div>
+                        <div class="welcome-title">Achats sécurisés</div>
+                        <div class="welcome-message">Vos données sont protégées. Les échanges se font directement avec les vendeurs via WhatsApp. Megane Market ne stocke aucune information bancaire.</div>
+                    </div>
+                    <div class="welcome-card">
+                        <div class="welcome-icon"><i class="fas fa-smile"></i></div>
+                        <div class="welcome-title">100% satisfait ou remboursé</div>
+                        <div class="welcome-message">Nous travaillons avec des vendeurs vérifiés pour vous garantir une expérience d'achat sereine et fiable.</div>
+                    </div>
+                    <div class="welcome-card">
+                        <div class="welcome-icon"><i class="fas fa-handshake"></i></div>
+                        <div class="welcome-title">Rejoignez notre communauté</div>
+                        <div class="welcome-message">Des milliers d'acheteurs et vendeurs nous font déjà confiance. Créez votre compte et commencez dès maintenant.</div>
+                    </div>
+                </div>
+                <button class="carousel-nav prev" id="welcomePrev"><i class="fas fa-chevron-left"></i></button>
+                <button class="carousel-nav next" id="welcomeNext"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            <div class="carousel-dots" id="welcomeDots"></div>
+        </div>
+
+        <!-- SECTION PRODUITS EN PROMO -->
+        <div class="promo-products-section">
+            <div class="section-header">
+                <h2><i class="fas fa-fire"></i> Offres du moment</h2>
+            </div>
+            <div class="promo-scroll">
+                <div class="promo-track" id="promoTrack">
+                    <div style="padding: 20px; text-align: center;">Chargement...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARTE COMPTE VÉRIFIÉ (affichée uniquement si connecté et email vérifié) -->
+        <div id="verifiedCard" class="verified-card">
+            <div class="verified-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="verified-title">Compte vérifié</div>
+            <div class="verified-message">Bienvenue sur Megane Market. Vous êtes prêt à commencer vos achats.</div>
+            <a href="market-new.html" class="verified-btn" id="startShoppingBtn">
+                <i class="fas fa-store"></i> Commencer mes achats
+            </a>
+        </div>
+
+        <!-- ZONE DE VÉRIFICATION (affichée pendant la vérification) -->
+        <div id="verificationZone">
+            <div style="text-align: center; padding: 60px 20px;">
+                <i class="fas fa-spinner fa-pulse" style="font-size: 3rem; color: #4ade80; margin-bottom: 16px; display: block;"></i>
+                <p>Vérification en cours...</p>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        (function() {
+            const SUPABASE_URL = 'https://emcsigvlopntwbfkkjkh.supabase.co';
+            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtY3NpZ3Zsb3BudHdiZmtramtoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4ODE5MTgsImV4cCI6MjA5NDQ1NzkxOH0.YwYoV-azL3WEFtHoh4yoF7xTLrOwZILKCzJrGPsCs6I';
+
+            const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            const statusBtn = document.getElementById('statusBtn');
+            const verificationZone = document.getElementById('verificationZone');
+            const verifiedCard = document.getElementById('verifiedCard');
+            const welcomeTrack = document.getElementById('welcomeTrack');
+            const welcomePrev = document.getElementById('welcomePrev');
+            const welcomeNext = document.getElementById('welcomeNext');
+            const welcomeDots = document.getElementById('welcomeDots');
+            const promoTrack = document.getElementById('promoTrack');
+
+            let redirectTimer = null;
+            let isRedirecting = false;
+            let currentSlide = 0;
+            let carouselInterval = null;
+            const totalSlides = 4;
+            let productBoosts = {};
+            let currentUserId = null;
+            let sessionChecked = false;
+
+            // CACHE KEYS
+            const CACHE_VERIFIED_KEY = 'megane_verified_status';
+            const CACHE_COMPLETE_KEY = 'megane_complete_status';
+            const CACHE_USER_ID_KEY = 'megane_user_id';
+            const CACHE_TIMESTAMP_KEY = 'megane_cache_timestamp';
+
+            function saveToCache(isVerified, isComplete, userId) {
+                sessionStorage.setItem(CACHE_VERIFIED_KEY, isVerified ? 'true' : 'false');
+                sessionStorage.setItem(CACHE_COMPLETE_KEY, isComplete ? 'true' : 'false');
+                sessionStorage.setItem(CACHE_USER_ID_KEY, userId || '');
+                sessionStorage.setItem(CACHE_TIMESTAMP_KEY, Date.now().toString());
+            }
+
+            function loadFromCache() {
+                const cached = sessionStorage.getItem(CACHE_VERIFIED_KEY);
+                const timestamp = sessionStorage.getItem(CACHE_TIMESTAMP_KEY);
+                if (cached !== null && timestamp && (Date.now() - parseInt(timestamp)) < 300000) {
+                    const isVerified = sessionStorage.getItem(CACHE_VERIFIED_KEY) === 'true';
+                    const isComplete = sessionStorage.getItem(CACHE_COMPLETE_KEY) === 'true';
+                    const userId = sessionStorage.getItem(CACHE_USER_ID_KEY);
+                    return { isVerified, isComplete, userId, hasCache: true };
+                }
+                return { hasCache: false };
+            }
+
+            function initCarousel() {
+                if (!welcomeTrack) return;
+                
+                welcomeDots.innerHTML = '';
+                for (let i = 0; i < totalSlides; i++) {
+                    const dot = document.createElement('div');
+                    dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+                    dot.addEventListener('click', () => goToSlide(i));
+                    welcomeDots.appendChild(dot);
+                }
+                
+                function goToSlide(index) {
+                    currentSlide = (index + totalSlides) % totalSlides;
+                    welcomeTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
+                    document.querySelectorAll('.carousel-dot').forEach((dot, i) => {
+                        dot.classList.toggle('active', i === currentSlide);
+                    });
+                }
+                
+                function nextSlide() { goToSlide(currentSlide + 1); resetTimer(); }
+                function prevSlide() { goToSlide(currentSlide - 1); resetTimer(); }
+                function resetTimer() {
+                    if (carouselInterval) clearInterval(carouselInterval);
+                    if (totalSlides > 1) {
+                        carouselInterval = setInterval(nextSlide, 5000);
+                    }
+                }
+                
+                welcomePrev.addEventListener('click', prevSlide);
+                welcomeNext.addEventListener('click', nextSlide);
+                resetTimer();
+            }
+
+            function startRedirect(url, seconds = 5) {
+                if (isRedirecting) return;
+                isRedirecting = true;
+                
+                if (redirectTimer) clearTimeout(redirectTimer);
+                
+                redirectTimer = setTimeout(() => {
+                    window.location.href = url;
+                }, seconds * 1000);
+            }
+
+            function updateStatusBadge(isComplete) {
+                if (isComplete) {
+                    statusBtn.className = 'status-badge complet';
+                    statusBtn.innerHTML = '<i class="fas fa-check-circle"></i> <span>Compte complet</span>';
+                } else {
+                    statusBtn.className = 'status-badge incomplet';
+                    statusBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> <span>Compte incomplet</span>';
+                }
+            }
+
+            function showVerifiedUI(isComplete) {
+                updateStatusBadge(isComplete);
+                verifiedCard.style.display = 'block';
+                verificationZone.innerHTML = '';
+            }
+
+            function showNotConnectedUI() {
+                updateStatusBadge(false);
+                verifiedCard.style.display = 'none';
+                verificationZone.innerHTML = `
+                    <div style="text-align: center; padding: 60px 20px;">
+                        <i class="fas fa-sign-in-alt" style="font-size: 3rem; color: #4ade80; margin-bottom: 16px; display: block;"></i>
+                        <h3>Vous n'êtes pas connecté</h3>
+                        <p>Redirection vers la page de connexion dans 5 secondes...</p>
+                    </div>
+                `;
+                startRedirect('login.html', 5);
+            }
+
+            function showEmailNotVerifiedUI() {
+                updateStatusBadge(false);
+                verifiedCard.style.display = 'none';
+                verificationZone.innerHTML = `
+                    <div style="text-align: center; padding: 60px 20px;">
+                        <i class="fas fa-envelope" style="font-size: 3rem; color: #4ade80; margin-bottom: 16px; display: block;"></i>
+                        <h3>Email non vérifié</h3>
+                        <p>Redirection vers la page de vérification dans 5 secondes...</p>
+                    </div>
+                `;
+                startRedirect('email-verify.html', 5);
+            }
+
+            async function checkProfileCompleteness(userId) {
+                const { data: buyer, error } = await supabase
+                    .from('buyers')
+                    .select('full_name, phone, city, address')
+                    .eq('id', userId)
+                    .single();
+                
+                if (error || !buyer) return false;
+                
+                const hasFullName = buyer.full_name && buyer.full_name.trim() !== '';
+                const hasPhone = buyer.phone && buyer.phone.trim() !== '';
+                const hasCity = buyer.city && buyer.city.trim() !== '';
+                
+                return hasFullName && hasPhone && hasCity;
+            }
+
+            async function loadProductBoosts() {
+                const { data } = await supabase
+                    .from('product_boosts')
+                    .select('product_id, discount_percent')
+                    .eq('is_active', true);
+                productBoosts = {};
+                for (const boost of data || []) {
+                    if (boost.discount_percent > 0) {
+                        productBoosts[boost.product_id] = boost.discount_percent;
+                    }
+                }
+            }
+
+            async function loadPromoProducts() {
+                const { data: boosts } = await supabase
+                    .from('product_boosts')
+                    .select('*, products!inner(*)')
+                    .eq('is_active', true)
+                    .eq('products.active', true);
+                
+                if (!boosts || boosts.length === 0) {
+                    promoTrack.innerHTML = '<div class="empty-promo">Aucune offre promotionnelle pour le moment</div>';
+                    return;
+                }
+                
+                const productsWithBoost = [];
+                for (const boost of boosts) {
+                    const product = boost.products;
+                    let marketName = 'Vendeur';
+                    if (product.user_id) {
+                        const { data: market } = await supabase
+                            .from('markets')
+                            .select('market_name, owner_name')
+                            .eq('id', product.user_id)
+                            .single();
+                        marketName = market?.market_name || market?.owner_name || 'Vendeur';
+                    }
+                    productsWithBoost.push({
+                        ...product,
+                        discount: boost.discount_percent,
+                        market_name: marketName
+                    });
+                }
+                
+                promoTrack.innerHTML = productsWithBoost.map(product => {
+                    const discount = product.discount;
+                    const originalPrice = product.price;
+                    const discountedPrice = Math.round(originalPrice * (1 - discount / 100));
+                    const imageUrl = product.images && product.images[0] ? product.images[0] : null;
+                    
+                    return `
+                        <div class="promo-product-card" data-id="${product.id}">
+                            <div class="promo-img-wrap">
+                                ${imageUrl 
+                                    ? `<img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(product.name)}" onerror="this.src=''">`
+                                    : `<div class="image-placeholder"><i class="fas fa-image"></i></div>`
+                                }
+                                <div class="promo-badge">-${discount}%</div>
+                            </div>
+                            <div class="promo-info">
+                                <div class="promo-name">${escapeHtml(product.name)}</div>
+                                <div class="promo-shop"><i class="fas fa-store"></i> ${escapeHtml(product.market_name)}</div>
+                                <div class="promo-price-row">
+                                    <span class="promo-original-price">${formatPrice(originalPrice)} FCFA</span>
+                                    <span class="promo-current-price">${formatPrice(discountedPrice)} FCFA</span>
+                                </div>
+                                <div class="promo-actions">
+                                    <button class="promo-btn view">Voir</button>
+                                    <button class="promo-btn cart">Ajouter</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+                document.querySelectorAll('.promo-product-card').forEach(card => {
+                    const productId = card.getAttribute('data-id');
+                    
+                    card.querySelector('.view')?.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        if (productId) window.location.href = `viewproduct.html?id=${productId}`;
+                    });
+                    
+                    card.querySelector('.cart')?.addEventListener('click', async (e) => {
+                        e.stopPropagation();
+                        if (productId && currentUserId) {
+                            await addToCart(productId);
+                        } else if (!currentUserId) {
+                            showToast('Connectez-vous', 'error');
+                            window.location.href = 'login.html';
+                        }
+                    });
+                    
+                    card.addEventListener('click', (e) => {
+                        if (e.target.classList.contains('promo-btn')) return;
+                        if (productId) window.location.href = `viewproduct.html?id=${productId}`;
+                    });
+                });
+            }
+
+            async function addToCart(productId) {
+                try {
+                    const { data: existing } = await supabase
+                        .from('cart')
+                        .select('id, quantity')
+                        .eq('user_id', currentUserId)
+                        .eq('product_id', productId)
+                        .maybeSingle();
+                    
+                    if (existing) {
+                        await supabase.from('cart').update({ quantity: existing.quantity + 1 }).eq('id', existing.id);
+                        showToast('Quantité augmentée', 'success');
+                    } else {
+                        await supabase.from('cart').insert({ user_id: currentUserId, product_id: productId, quantity: 1 });
+                        showToast('Produit ajouté au panier', 'success');
+                    }
+                } catch (err) {
+                    showToast('Erreur', 'error');
+                }
+            }
+
+            function showToast(message, type = 'info') {
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                toast.textContent = message;
+                toast.style.position = 'fixed';
+                toast.style.bottom = '30px';
+                toast.style.left = '50%';
+                toast.style.transform = 'translateX(-50%)';
+                toast.style.background = type === 'success' ? '#4ade80' : '#1a2a3a';
+                toast.style.color = 'white';
+                toast.style.padding = '10px 20px';
+                toast.style.borderRadius = '40px';
+                toast.style.fontSize = '0.8rem';
+                toast.style.zIndex = '1100';
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.3s ease';
+                document.body.appendChild(toast);
+                
+                setTimeout(() => toast.style.opacity = '1', 10);
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    setTimeout(() => toast.remove(), 300);
+                }, 3000);
+            }
+
+            function formatPrice(price) {
+                return new Intl.NumberFormat('fr-FR').format(price);
+            }
+
+            function escapeHtml(text) {
+                if (!text) return '';
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            async function checkAndRedirect() {
+                // Vérifier le cache d'abord
+                const cache = loadFromCache();
+                if (cache.hasCache && cache.userId) {
+                    currentUserId = cache.userId;
+                    showVerifiedUI(cache.isComplete);
+                    // Charger les produits en arrière-plan sans bloquer
+                    loadProductBoosts().then(() => loadPromoProducts());
+                    return;
+                }
+                
+                // Pas de cache, vérification normale
+                const { data: { session } } = await supabase.auth.getSession();
+                
+                if (!session) {
+                    currentUserId = null;
+                    showNotConnectedUI();
+                    return;
+                }
+                
+                currentUserId = session.user.id;
+                
+                const { data: verifData } = await supabase
+                    .from('email_verifications')
+                    .select('is_verified')
+                    .eq('user_id', session.user.id)
+                    .single();
+                
+                const isVerified = verifData?.is_verified === true;
+                
+                if (!isVerified) {
+                    showEmailNotVerifiedUI();
+                    return;
+                }
+                
+                const isComplete = await checkProfileCompleteness(session.user.id);
+                saveToCache(true, isComplete, session.user.id);
+                showVerifiedUI(isComplete);
+            }
+            
+            async function init() {
+                initCarousel();
+                await loadProductBoosts();
+                await loadPromoProducts();
+                await checkAndRedirect();
+            }
+            
+            init();
+        })();
+    </script>
+</body>
+</html>

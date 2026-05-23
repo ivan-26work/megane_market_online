@@ -5,30 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <title>Vendeur - Megane Market</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script>
-    // Vérification de session - Redirection si non connecté
-    (async function checkSessionAndRedirect() {
-        const waitForSupabase = setInterval(() => {
-            if (typeof window.supabase !== 'undefined') {
-                clearInterval(waitForSupabase);
-                init();
-            }
-        }, 100);
-        
-        async function init() {
-            const SUPABASE_URL = 'https://emcsigvlopntwbfkkjkh.supabase.co';
-            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtY3NpZ3Zsb3BudHdiZmtramtoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4ODE5MTgsImV4cCI6MjA5NDQ1NzkxOH0.YwYoV-azL3WEFtHoh4yoF7xTLrOwZILKCzJrGPsCs6I';
-            const authClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            
-            const { data: { session } } = await authClient.auth.getSession();
-            
-            if (!session) {
-                window.location.href = 'login.html';
-            }
-        }
-    })();
-    </script>
     <style>
         * {
             margin: 0;
@@ -38,43 +16,44 @@
 
         body {
             font-family: 'DM Sans', sans-serif;
-            background: #ffffff;
+            background: #f0f2f5;
             color: #1a2a3a;
             min-height: 100vh;
             padding-bottom: 40px;
         }
 
+        /* HEADER NÉOMORPHIQUE VERT - simplifié */
         .main-header {
             position: sticky;
             top: 16px;
             z-index: 100;
-            background: #ffffff;
+            background: linear-gradient(135deg, #d4efdf, #b8e0c2);
             border-radius: 60px;
             height: 60px;
-            border: 1px solid #4ade80;
+            border: none;
             margin: 16px 16px 0 16px;
             padding: 0 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 12px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+            box-shadow: 9px 9px 16px #9bb8a8, -9px -9px 16px #f0fff4;
         }
 
         .back-btn {
-            background: rgba(74, 222, 128, 0.1);
-            border: 1px solid #4ade80;
-            border-radius: 40px;
+            background: #e0e5ec;
+            border: none;
+            border-radius: 50%;
             width: 40px;
             height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            color: #4ade80;
-            text-decoration: none;
+            color: #2e7d32;
+            box-shadow: 5px 5px 10px #9bb8a8, -5px -5px 10px #f0fff4;
             transition: all 0.2s;
-            flex-shrink: 0;
+            text-decoration: none;
         }
 
         .back-btn:hover {
@@ -83,66 +62,29 @@
             transform: scale(1.05);
         }
 
-        .header-center {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
+        .header-title {
             font-weight: 700;
             font-size: 0.9rem;
-            color: #4ade80;
-            white-space: nowrap;
+            color: #2e7d32;
+            text-align: center;
+            flex: 1;
         }
 
-        .placeholder {
+        .placeholder-right {
             width: 40px;
-            opacity: 0;
         }
 
-        .main-content {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes fadeInScale {
-            0% { opacity: 0; transform: scale(0.95) translateY(10px); }
-            100% { opacity: 1; transform: scale(1) translateY(0); }
-        }
-
-        @keyframes clickPulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(0.98); }
-            100% { transform: scale(1); }
-        }
-
-        @keyframes shine {
-            0% { background-position: -100% 0; }
-            100% { background-position: 200% 0; }
-        }
-
+        /* CARTE PROFIL VENDEUR NÉOMORPHIQUE */
         .profile-card {
-            background: linear-gradient(135deg, #fafbfc, #ffffff);
-            border: 1px solid #e8ecf0;
-            border-radius: 28px;
-            padding: 24px;
-            margin-bottom: 20px;
+            background: linear-gradient(135deg, #d4efdf, #b8e0c2);
+            border-radius: 24px;
+            margin: 20px 16px;
+            padding: 20px;
+            box-shadow: 9px 9px 16px #9bb8a8, -9px -9px 16px #f0fff4;
             display: flex;
             align-items: center;
-            gap: 24px;
+            gap: 20px;
             flex-wrap: wrap;
-            animation: fadeInUp 0.4s ease;
-            transition: all 0.3s ease;
-        }
-
-        .profile-card:hover {
-            border-color: #4ade80;
-            box-shadow: 0 8px 25px rgba(74, 222, 128, 0.12);
-            transform: translateY(-2px);
         }
 
         .profile-avatar {
@@ -150,307 +92,418 @@
             height: 80px;
             border-radius: 50%;
             object-fit: cover;
-            border: 3px solid #4ade80;
-            transition: transform 0.3s ease;
-        }
-
-        .profile-avatar:hover {
-            transform: scale(1.05);
+            box-shadow: 5px 5px 10px #9bb8a8, -5px -5px 10px #f0fff4;
         }
 
         .profile-avatar-placeholder {
             width: 80px;
             height: 80px;
             border-radius: 50%;
-            background: #e8ecf0;
+            background: rgba(255,255,255,0.4);
             display: flex;
             align-items: center;
             justify-content: center;
+            color: #2e7d32;
             font-size: 2rem;
-            color: #4ade80;
-            border: 3px solid #4ade80;
+            box-shadow: 5px 5px 10px #9bb8a8, -5px -5px 10px #f0fff4;
         }
 
-        .profile-info h2 {
-            font-size: 1.2rem;
-            margin-bottom: 6px;
-            color: #1a2a3a;
-        }
-
-        .profile-info p {
-            font-size: 0.85rem;
-            color: #8a9aaa;
-        }
-
-        .info-card {
-            background: #ffffff;
-            border: 1px solid #e8ecf0;
-            border-radius: 24px;
-            padding: 20px;
-            margin-bottom: 20px;
-            animation: fadeInUp 0.4s ease;
-            transition: all 0.3s ease;
-        }
-
-        .info-card:hover {
-            border-color: #4ade80;
-            box-shadow: 0 4px 12px rgba(74, 222, 128, 0.1);
-        }
-
-        .info-card h3 {
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: #4ade80;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .info-row {
-            display: flex;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid #f0f2f5;
-            gap: 12px;
-            transition: background 0.2s ease;
-        }
-
-        .info-row:last-child {
-            border-bottom: none;
-        }
-
-        .info-row:hover {
-            background: #fafbfc;
-            transform: translateX(4px);
-        }
-
-        .info-icon {
-            width: 36px;
-            color: #4ade80;
-            font-size: 1rem;
-        }
-
-        .info-label {
-            width: 100px;
-            font-size: 0.75rem;
-            color: #8a9aaa;
-            font-weight: 600;
-        }
-
-        .info-value {
+        .profile-info {
             flex: 1;
-            font-size: 0.85rem;
-            color: #1a2a3a;
-            word-break: break-word;
         }
 
-        .info-value a {
-            color: #4ade80;
-            text-decoration: none;
-        }
-
-        .info-value a:hover {
-            text-decoration: underline;
-        }
-
-        /* SECTION PRODUITS STYLÉS */
-        .products-section {
-            margin-top: 24px;
-        }
-
-        .section-header {
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .section-header h3 {
-            font-size: 1rem;
-            font-weight: 700;
-            color: #1a2a3a;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .section-header h3 i {
-            color: #4ade80;
+        .profile-market-name {
             font-size: 1.1rem;
+            font-weight: 800;
+            color: #1a3a1a;
+            margin-bottom: 4px;
         }
 
-        .products-count {
-            background: #f0f2f5;
-            padding: 4px 12px;
-            border-radius: 30px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            color: #8a9aaa;
-        }
-
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-        }
-
-        @media (max-width: 600px) {
-            .products-grid {
-                grid-template-columns: 1fr;
-                gap: 16px;
-            }
-        }
-
-        .product-card {
-            background: #ffffff;
-            border: 1px solid #e8ecf0;
-            border-radius: 20px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            animation: fadeInScale 0.4s ease forwards;
-            opacity: 0;
-            position: relative;
-        }
-
-        .product-card:hover {
-            transform: translateY(-6px);
-            border-color: #4ade80;
-            box-shadow: 0 15px 35px rgba(74, 222, 128, 0.15);
-        }
-
-        .product-card.click-animation {
-            animation: clickPulse 0.3s ease;
-        }
-
-        .product-img-wrapper {
-            position: relative;
-            overflow: hidden;
-            background: #fafbfc;
-        }
-
-        .product-img-wrapper img {
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            object-fit: cover;
-            transition: transform 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-        }
-
-        .product-card:hover .product-img-wrapper img {
-            transform: scale(1.08);
-        }
-
-        .product-img-wrapper .image-placeholder {
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            background: #fafbfc;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5rem;
-            color: #8a9aaa;
-        }
-
-        /* Badge promotion */
-        .promo-badge {
-            position: absolute;
-            top: 12px;
-            left: 12px;
-            background: #ff4d4d;
-            color: white;
-            padding: 5px 12px;
-            border-radius: 30px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            z-index: 10;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            box-shadow: 0 2px 8px rgba(255, 77, 77, 0.3);
-            animation: pulseRed 1s ease infinite;
-        }
-
-        @keyframes pulseRed {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
-        /* Overlay au survol */
-        .product-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: 5;
-        }
-
-        .product-card:hover .product-overlay {
-            opacity: 1;
-        }
-
-        .product-overlay i {
-            font-size: 2rem;
-            color: white;
-            background: rgba(0, 0, 0, 0.6);
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-
-        .product-overlay i:hover {
-            background: #4ade80;
-            transform: scale(1.1);
-        }
-
-        .product-info {
-            padding: 14px;
-        }
-
-        .product-name {
-            font-weight: 700;
+        .profile-owner-name {
             font-size: 0.85rem;
-            margin-bottom: 6px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            color: #1a2a3a;
-        }
-
-        .product-price {
-            font-weight: 700;
-            color: #4ade80;
-            font-size: 0.85rem;
+            color: #2e7d32;
             display: flex;
             align-items: center;
             gap: 6px;
         }
 
-        .old-price {
+        .profile-owner-name i {
             font-size: 0.7rem;
-            color: #8a9aaa;
-            text-decoration: line-through;
-            font-weight: 400;
         }
 
-        .empty-state {
+        /* CARTE DESCRIPTION DÉPLIABLE */
+        .description-card {
+            background: linear-gradient(135deg, #d4efdf, #b8e0c2);
+            border-radius: 24px;
+            margin: 20px 16px;
+            padding: 16px;
+            box-shadow: 9px 9px 16px #9bb8a8, -9px -9px 16px #f0fff4;
+        }
+
+        .description-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            padding: 4px 0;
+        }
+
+        .description-header h3 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #1a3a1a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .description-header i {
+            font-size: 0.9rem;
+            color: #2e7d32;
+            transition: transform 0.3s ease;
+        }
+
+        .description-header i.rotated {
+            transform: rotate(180deg);
+        }
+
+        .description-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, margin-top 0.3s ease;
+            margin-top: 0;
+        }
+
+        .description-content.open {
+            max-height: 300px;
+            margin-top: 12px;
+        }
+
+        .description-text {
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: #1a3a1a;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 16px;
+        }
+
+        .description-close-btn {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .close-desc-btn {
+            background: rgba(255, 255, 255, 0.6);
+            border: none;
+            border-radius: 40px;
+            padding: 6px 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #2e7d32;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .close-desc-btn:hover {
+            background: #4ade80;
+            color: white;
+        }
+
+        .empty-description {
+            color: #8a9aaa;
+            font-style: italic;
+        }
+
+        /* CARTE COORDONNÉES DÉPLIABLE */
+        .contact-card {
+            background: linear-gradient(135deg, #d4efdf, #b8e0c2);
+            border-radius: 24px;
+            margin: 20px 16px;
+            padding: 16px;
+            box-shadow: 9px 9px 16px #9bb8a8, -9px -9px 16px #f0fff4;
+        }
+
+        .contact-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            padding: 4px 0;
+        }
+
+        .contact-header h3 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #1a3a1a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .contact-header i {
+            font-size: 0.9rem;
+            color: #2e7d32;
+            transition: transform 0.3s ease;
+        }
+
+        .contact-header i.rotated {
+            transform: rotate(180deg);
+        }
+
+        .contact-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, margin-top 0.3s ease;
+            margin-top: 0;
+        }
+
+        .contact-content.open {
+            max-height: 500px;
+            margin-top: 12px;
+        }
+
+        .contact-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 8px 0;
+        }
+
+        .contact-item {
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 16px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .contact-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2e7d32;
+            font-size: 1.1rem;
+        }
+
+        .contact-info {
+            flex: 1;
+        }
+
+        .contact-label {
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: #2e7d32;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .contact-value {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #1a3a1a;
+            word-break: break-all;
+        }
+
+        .contact-value a {
+            color: #1a3a1a;
+            text-decoration: none;
+        }
+
+        .contact-value a:hover {
+            color: #4ade80;
+            text-decoration: underline;
+        }
+
+        .contact-close-btn {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .close-contact-btn {
+            background: rgba(255, 255, 255, 0.6);
+            border: none;
+            border-radius: 40px;
+            padding: 6px 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #2e7d32;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .close-contact-btn:hover {
+            background: #4ade80;
+            color: white;
+        }
+
+        /* GRILLE PRODUITS - CARTE 4 (Dark premium violet) */
+        .products-section {
+            margin: 20px 16px;
+        }
+
+        .products-header {
+            margin-bottom: 16px;
+        }
+
+        .products-header h3 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #1a3a1a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        /* CARTE 4 - Dark premium violet */
+        .product-card {
+            background: linear-gradient(145deg, #1a0a2e, #2d1b4e);
+            border-radius: 20px;
+            padding: 12px;
+            border: 1px solid rgba(167,139,250,0.2);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(167,139,250,0.2);
+        }
+
+        .product-img-wrap {
+            background: rgba(167,139,250,0.1);
+            border-radius: 14px;
+            height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(167,139,250,0.15);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .product-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-img-wrap .image-placeholder {
+            font-size: 2.5rem;
+            color: #a78bfa;
+        }
+
+        .product-img-wrap::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, rgba(167,139,250,0.4), transparent);
+            border-radius: 50%;
+        }
+
+        .product-name {
+            color: #f0e8ff;
+            font-weight: 700;
+            font-size: 0.82rem;
+            margin-bottom: 4px;
+        }
+
+        .product-shop {
+            color: #a78bfa;
+            font-size: 0.65rem;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 6px;
+        }
+
+        .product-price-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .product-original-price {
+            font-size: 0.7rem;
+            color: #8a6aaa;
+            text-decoration: line-through;
+        }
+
+        .product-promo-price {
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: #c4b5fd;
+        }
+
+        .product-normal-price {
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: #c4b5fd;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .product-btn {
+            flex: 1;
+            padding: 8px;
+            border-radius: 10px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .product-btn.view {
+            background: rgba(255,255,255,0.08);
+            color: #c4b5fd;
+            border: 1px solid rgba(167,139,250,0.3);
+        }
+
+        .product-btn.cart {
+            background: linear-gradient(135deg, #7c3aed, #a78bfa);
+            color: #fff;
+        }
+
+        .product-btn.cart:hover {
+            background: linear-gradient(135deg, #6d28d9, #7c3aed);
+            transform: translateY(-2px);
+        }
+
+        .product-btn.view:hover {
+            background: rgba(255,255,255,0.15);
+            transform: translateY(-2px);
+        }
+
+        .empty-products {
             text-align: center;
             padding: 40px;
             color: #8a9aaa;
-            background: #fafbfc;
+            background: linear-gradient(135deg, #d4efdf, #b8e0c2);
             border-radius: 20px;
+            grid-column: 1 / -1;
         }
 
         .loader {
@@ -472,6 +525,26 @@
             to { transform: rotate(360deg); }
         }
 
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: #1a2a3a;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1100;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
         @media (max-width: 600px) {
             .main-header {
                 margin: 12px 12px 0 12px;
@@ -481,29 +554,49 @@
                 width: 36px;
                 height: 36px;
             }
-            .header-center {
+            .header-title {
                 font-size: 0.8rem;
             }
-            .placeholder {
-                width: 36px;
-            }
             .profile-card {
-                flex-direction: column;
-                text-align: center;
+                padding: 16px;
+                gap: 14px;
             }
-            .info-row {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 4px;
+            .profile-avatar,
+            .profile-avatar-placeholder {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
             }
-            .info-label {
-                width: auto;
+            .profile-market-name {
+                font-size: 0.9rem;
             }
-            .promo-badge {
+            .profile-owner-name {
+                font-size: 0.75rem;
+            }
+            .contact-item {
+                padding: 10px;
+                gap: 10px;
+            }
+            .contact-icon {
+                width: 35px;
+                height: 35px;
+                font-size: 0.9rem;
+            }
+            .contact-value {
+                font-size: 0.75rem;
+            }
+            .products-grid {
+                gap: 12px;
+            }
+            .product-img-wrap {
+                height: 120px;
+            }
+            .product-name {
+                font-size: 0.75rem;
+            }
+            .product-btn {
+                padding: 6px;
                 font-size: 0.6rem;
-                padding: 3px 8px;
-                top: 8px;
-                left: 8px;
             }
         }
     </style>
@@ -511,17 +604,17 @@
 <body>
 
     <header class="main-header">
-        <a href="index.html" class="back-btn">
+        <a href="market-new.html" class="back-btn">
             <i class="fas fa-arrow-left"></i>
         </a>
-        <div class="header-center">Info vendeur</div>
-        <div class="placeholder"></div>
+        <div class="header-title">Informations sur le marché</div>
+        <div class="placeholder-right"></div>
     </header>
 
-    <main class="main-content" id="mainContent">
+    <main id="mainContent">
         <div class="loader">
             <div class="spinner"></div>
-            <p>Chargement...</p>
+            <p>Chargement du vendeur...</p>
         </div>
     </main>
 
@@ -537,45 +630,80 @@
             const mainContent = document.getElementById('mainContent');
             const toastEl = document.getElementById('toast');
 
-            let allProducts = [];
+            let currentVendeur = null;
             let productBoosts = {};
+            let currentUserId = null;
 
-            async function recordCardClick(productId, type = 'card') {
-                try {
-                    await supabase
-                        .from('product_stats')
-                        .insert({
-                            product_id: productId,
-                            click_count: 1,
-                            click_type: type,
-                            clicked_at: new Date().toISOString()
-                        });
-                } catch (err) {
-                    console.error('Erreur enregistrement:', err);
-                }
-            }
-
-            async function loadProductBoosts() {
-                try {
-                    const { data } = await supabase
-                        .from('product_boosts')
-                        .select('product_id, discount_percent')
-                        .eq('is_active', true);
-                    
-                    productBoosts = {};
-                    for (const boost of data || []) {
-                        if (boost.discount_percent > 0) {
-                            productBoosts[boost.product_id] = boost.discount_percent;
-                        }
-                    }
-                } catch (err) {
-                    console.error('Erreur chargement boosts:', err);
-                }
+            function showToast(message, type = 'info') {
+                toastEl.textContent = message;
+                toastEl.className = `toast ${type} show`;
+                setTimeout(() => toastEl.classList.remove('show'), 3000);
             }
 
             function getVendeurId() {
                 const params = new URLSearchParams(window.location.search);
                 return params.get('id');
+            }
+
+            async function checkSession() {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (!session) {
+                    window.location.href = 'login.html';
+                    return false;
+                }
+                currentUserId = session.user.id;
+                return true;
+            }
+
+            async function loadProductBoosts() {
+                const { data } = await supabase
+                    .from('product_boosts')
+                    .select('product_id, discount_percent')
+                    .eq('is_active', true);
+                productBoosts = {};
+                for (const boost of data || []) {
+                    if (boost.discount_percent > 0) {
+                        productBoosts[boost.product_id] = boost.discount_percent;
+                    }
+                }
+            }
+
+            function formatPhoneForDisplay(phone) {
+                if (!phone) return null;
+                let clean = phone.replace(/\D/g, '');
+                if (clean.startsWith('225')) {
+                    clean = clean.substring(3);
+                }
+                if (!clean.startsWith('0')) {
+                    clean = '0' + clean;
+                }
+                return clean;
+            }
+
+            function formatWhatsappNumber(whatsapp) {
+                if (!whatsapp) return null;
+                let clean = whatsapp.replace(/\D/g, '');
+                if (clean.startsWith('0')) clean = clean.substring(1);
+                if (!clean.startsWith('225')) clean = '225' + clean;
+                return clean;
+            }
+
+            function getWhatsAppLink(whatsapp) {
+                const clean = formatWhatsappNumber(whatsapp);
+                if (!clean) return '#';
+                return `https://wa.me/${clean}`;
+            }
+
+            function getPhoneLink(phone) {
+                if (!phone) return '#';
+                let clean = phone.replace(/\D/g, '');
+                if (clean.startsWith('0')) clean = clean.substring(1);
+                if (!clean.startsWith('225')) clean = '225' + clean;
+                return `tel:+${clean}`;
+            }
+
+            function formatPrice(price) {
+                return new Intl.NumberFormat('fr-FR').format(price);
             }
 
             function escapeHtml(text) {
@@ -585,14 +713,292 @@
                 return div.innerHTML;
             }
 
-            function formatPrice(price) {
-                return new Intl.NumberFormat('fr-FR').format(price);
+            function renderProfileCard(vendeur) {
+                const avatarUrl = vendeur.avatar_url;
+                const marketName = vendeur.market_name || 'Nom non renseigné';
+                const ownerName = vendeur.owner_name || 'Propriétaire';
+                
+                return `
+                    <div class="profile-card">
+                        ${avatarUrl 
+                            ? `<img src="${escapeHtml(avatarUrl)}" class="profile-avatar" alt="${escapeHtml(marketName)}" onerror="this.src=''">`
+                            : `<div class="profile-avatar-placeholder"><i class="fas fa-store"></i></div>`
+                        }
+                        <div class="profile-info">
+                            <div class="profile-market-name">${escapeHtml(marketName)}</div>
+                            <div class="profile-owner-name"><i class="fas fa-user"></i> ${escapeHtml(ownerName)}</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            function renderDescriptionCard(vendeur) {
+                const description = vendeur.description;
+                
+                return `
+                    <div class="description-card" id="descriptionCard">
+                        <div class="description-header" id="descriptionHeader">
+                            <h3><i class="fas fa-align-left"></i> Description du marché</h3>
+                            <i class="fas fa-chevron-down" id="descArrow"></i>
+                        </div>
+                        <div class="description-content" id="descriptionContent">
+                            <div class="description-text">${description && description.trim() ? escapeHtml(description) : '<span class="empty-description">Aucune description disponible</span>'}</div>
+                            <div class="description-close-btn">
+                                <button class="close-desc-btn" id="closeDescBtn">Fermer</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            function renderContactCard(vendeur) {
+                const whatsapp = vendeur.whatsapp;
+                const phone = vendeur.phone;
+                const publicEmail = vendeur.public_email;
+                const city = vendeur.city;
+                
+                const whatsappLink = getWhatsAppLink(whatsapp);
+                const phoneLink = getPhoneLink(phone);
+                const phoneDisplay = formatPhoneForDisplay(phone);
+                const whatsappDisplay = formatPhoneForDisplay(whatsapp);
+                
+                return `
+                    <div class="contact-card" id="contactCard">
+                        <div class="contact-header" id="contactHeader">
+                            <h3><i class="fas fa-address-card"></i> Coordonnées</h3>
+                            <i class="fas fa-chevron-down" id="contactArrow"></i>
+                        </div>
+                        <div class="contact-content" id="contactContent">
+                            <div class="contact-list">
+                                ${whatsapp ? `
+                                <div class="contact-item">
+                                    <div class="contact-icon"><i class="fab fa-whatsapp"></i></div>
+                                    <div class="contact-info">
+                                        <div class="contact-label">WhatsApp</div>
+                                        <div class="contact-value"><a href="${whatsappLink}" target="_blank">${escapeHtml(whatsappDisplay)}</a></div>
+                                    </div>
+                                </div>
+                                ` : ''}
+                                ${phone ? `
+                                <div class="contact-item">
+                                    <div class="contact-icon"><i class="fas fa-phone"></i></div>
+                                    <div class="contact-info">
+                                        <div class="contact-label">Téléphone</div>
+                                        <div class="contact-value"><a href="${phoneLink}">${escapeHtml(phoneDisplay)}</a></div>
+                                    </div>
+                                </div>
+                                ` : ''}
+                                ${publicEmail ? `
+                                <div class="contact-item">
+                                    <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+                                    <div class="contact-info">
+                                        <div class="contact-label">Email public</div>
+                                        <div class="contact-value"><a href="mailto:${escapeHtml(publicEmail)}">${escapeHtml(publicEmail)}</a></div>
+                                    </div>
+                                </div>
+                                ` : ''}
+                                ${city ? `
+                                <div class="contact-item">
+                                    <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+                                    <div class="contact-info">
+                                        <div class="contact-label">Ville / Localisation</div>
+                                        <div class="contact-value">${escapeHtml(city)}</div>
+                                    </div>
+                                </div>
+                                ` : ''}
+                            </div>
+                            <div class="contact-close-btn">
+                                <button class="close-contact-btn" id="closeContactBtn">Fermer</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            async function renderProductsSection(vendeurId) {
+                const { data: products } = await supabase
+                    .from('products')
+                    .select('*')
+                    .eq('user_id', vendeurId)
+                    .eq('active', true)
+                    .order('created_at', { ascending: false });
+                
+                if (!products || products.length === 0) {
+                    return `
+                        <div class="products-section">
+                            <div class="products-header">
+                                <h3><i class="fas fa-boxes"></i> Produits disponibles</h3>
+                            </div>
+                            <div class="empty-products">Aucun produit disponible pour le moment</div>
+                        </div>
+                    `;
+                }
+                
+                const productsHtml = products.map(product => {
+                    const discount = productBoosts[product.id] || 0;
+                    const originalPrice = product.price;
+                    const discountedPrice = discount > 0 ? Math.round(originalPrice * (1 - discount / 100)) : originalPrice;
+                    const imageUrl = product.images && product.images[0] ? product.images[0] : null;
+                    
+                    return `
+                        <div class="product-card" data-id="${product.id}">
+                            <div class="product-img-wrap">
+                                ${imageUrl 
+                                    ? `<img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(product.name)}" onerror="this.src=''">`
+                                    : `<div class="image-placeholder"><i class="fas fa-image"></i></div>`
+                                }
+                            </div>
+                            <div class="product-name">${escapeHtml(product.name)}</div>
+                            <div class="product-shop"><i class="fas fa-store"></i> ${escapeHtml(currentVendeur?.market_name || 'Vendeur')}</div>
+                            <div class="product-price-row">
+                                ${discount > 0 ? `
+                                    <span class="product-original-price">${formatPrice(originalPrice)} FCFA</span>
+                                    <span class="product-promo-price">${formatPrice(discountedPrice)} FCFA</span>
+                                ` : `
+                                    <span class="product-normal-price">${formatPrice(originalPrice)} FCFA</span>
+                                `}
+                            </div>
+                            <div class="product-actions">
+                                <button class="product-btn view">Voir</button>
+                                <button class="product-btn cart">Ajouter</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+                return `
+                    <div class="products-section">
+                        <div class="products-header">
+                            <h3><i class="fas fa-boxes"></i> Produits disponibles</h3>
+                        </div>
+                        <div class="products-grid" id="productsGrid">
+                            ${productsHtml}
+                        </div>
+                    </div>
+                `;
+            }
+
+            function initProductsEvents() {
+                document.querySelectorAll('.product-card').forEach(card => {
+                    const productId = card.getAttribute('data-id');
+                    
+                    card.querySelector('.btn.view')?.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        if (productId) window.location.href = `viewproduct.html?id=${productId}`;
+                    });
+                    
+                    card.querySelector('.btn.cart')?.addEventListener('click', async (e) => {
+                        e.stopPropagation();
+                        if (productId && currentUserId) {
+                            await addToCart(productId);
+                        } else if (!currentUserId) {
+                            showToast('Connectez-vous', 'error');
+                            window.location.href = 'login.html';
+                        }
+                    });
+                    
+                    card.addEventListener('click', (e) => {
+                        if (e.target.classList.contains('btn')) return;
+                        if (productId) window.location.href = `viewproduct.html?id=${productId}`;
+                    });
+                });
+            }
+
+            async function addToCart(productId) {
+                try {
+                    const { data: existing } = await supabase
+                        .from('cart')
+                        .select('id, quantity')
+                        .eq('user_id', currentUserId)
+                        .eq('product_id', productId)
+                        .maybeSingle();
+                    
+                    if (existing) {
+                        await supabase.from('cart').update({ quantity: existing.quantity + 1 }).eq('id', existing.id);
+                        showToast('Quantité augmentée', 'success');
+                    } else {
+                        await supabase.from('cart').insert({ user_id: currentUserId, product_id: productId, quantity: 1 });
+                        showToast('Produit ajouté au panier', 'success');
+                    }
+                } catch (err) {
+                    showToast('Erreur', 'error');
+                }
+            }
+
+            function initDescriptionToggle() {
+                const header = document.getElementById('descriptionHeader');
+                const content = document.getElementById('descriptionContent');
+                const arrow = document.getElementById('descArrow');
+                const closeBtn = document.getElementById('closeDescBtn');
+                
+                if (!header || !content) return;
+                
+                function openDesc() {
+                    content.classList.add('open');
+                    if (arrow) arrow.classList.add('rotated');
+                }
+                
+                function closeDesc() {
+                    content.classList.remove('open');
+                    if (arrow) arrow.classList.remove('rotated');
+                }
+                
+                header.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (content.classList.contains('open')) {
+                        closeDesc();
+                    } else {
+                        openDesc();
+                    }
+                });
+                
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        closeDesc();
+                    });
+                }
+            }
+
+            function initContactToggle() {
+                const header = document.getElementById('contactHeader');
+                const content = document.getElementById('contactContent');
+                const arrow = document.getElementById('contactArrow');
+                const closeBtn = document.getElementById('closeContactBtn');
+                
+                if (!header || !content) return;
+                
+                function openContact() {
+                    content.classList.add('open');
+                    if (arrow) arrow.classList.add('rotated');
+                }
+                
+                function closeContact() {
+                    content.classList.remove('open');
+                    if (arrow) arrow.classList.remove('rotated');
+                }
+                
+                header.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (content.classList.contains('open')) {
+                        closeContact();
+                    } else {
+                        openContact();
+                    }
+                });
+                
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        closeContact();
+                    });
+                }
             }
 
             async function loadVendeur() {
                 const id = getVendeurId();
                 if (!id) {
-                    mainContent.innerHTML = '<div class="empty-state">Vendeur non trouvé</div>';
+                    mainContent.innerHTML = '<div class="loader"><p>Vendeur non trouvé</p></div>';
                     return;
                 }
 
@@ -605,149 +1011,33 @@
 
                     if (error || !vendeur) throw new Error('Vendeur non trouvé');
 
-                    const { data: produits, error: produitsError } = await supabase
-                        .from('products')
-                        .select('id, name, images, price')
-                        .eq('user_id', id)
-                        .eq('active', true)
-                        .order('created_at', { ascending: false });
+                    currentVendeur = vendeur;
 
-                    if (produitsError) throw produitsError;
-                    allProducts = produits || [];
+                    const productsHtml = await renderProductsSection(id);
 
-                    await loadProductBoosts();
+                    mainContent.innerHTML = renderProfileCard(vendeur) + renderDescriptionCard(vendeur) + renderContactCard(vendeur) + productsHtml;
 
-                    const avatarUrl = vendeur.avatar_url;
-                    const marketName = vendeur.market_name || 'Nom non renseigné';
-                    const ownerName = vendeur.owner_name || 'Propriétaire';
-                    const phone = vendeur.phone || 'Non renseigné';
-                    const city = vendeur.city || 'Non renseigné';
-                    const whatsapp = vendeur.whatsapp || null;
-                    const email = vendeur.public_email || vendeur.email || null;
-
-                    let whatsappLink = '#';
-                    if (whatsapp) {
-                        let clean = whatsapp.replace(/\D/g, '');
-                        if (clean.startsWith('0')) clean = clean.substring(1);
-                        if (!clean.startsWith('225')) clean = '225' + clean;
-                        whatsappLink = `https://wa.me/${clean}`;
-                    }
-
-                    let produitsHtml = '';
-                    if (produits && produits.length > 0) {
-                        produitsHtml = `
-                            <div class="products-grid">
-                                ${produits.map(product => {
-                                    const imageUrl = (product.images && product.images[0]) ? product.images[0] : null;
-                                    const discount = productBoosts[product.id];
-                                    const promoBadgeHtml = discount ? `<div class="promo-badge"><i class="fas fa-tag"></i> -${discount}%</div>` : '';
-                                    const oldPriceHtml = discount ? `<span class="old-price">${formatPrice(product.price)} FCFA</span>` : '';
-                                    const newPrice = discount ? Math.round(product.price * (1 - discount / 100)) : product.price;
-                                    
-                                    return `
-                                        <div class="product-card" data-id="${product.id}">
-                                            <div class="product-img-wrapper">
-                                                ${imageUrl 
-                                                    ? `<img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(product.name)}" onerror="this.src=''">`
-                                                    : `<div class="image-placeholder"><i class="fas fa-image"></i></div>`
-                                                }
-                                                ${promoBadgeHtml}
-                                                <div class="product-overlay">
-                                                    <i class="fas fa-eye"></i>
-                                                </div>
-                                            </div>
-                                            <div class="product-info">
-                                                <div class="product-name">${escapeHtml(product.name)}</div>
-                                                <div class="product-price">
-                                                    ${discount ? `${formatPrice(newPrice)} FCFA` : `${formatPrice(product.price)} FCFA`}
-                                                    ${oldPriceHtml}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    `;
-                                }).join('')}
-                            </div>
-                        `;
-                    } else {
-                        produitsHtml = '<div class="empty-state">Aucun produit disponible</div>';
-                    }
-
-                    mainContent.innerHTML = `
-                        <div class="profile-card">
-                            ${avatarUrl 
-                                ? `<img src="${escapeHtml(avatarUrl)}" class="profile-avatar" onerror="this.src=''">`
-                                : `<div class="profile-avatar-placeholder"><i class="fas fa-store"></i></div>`
-                            }
-                            <div class="profile-info">
-                                <h2>${escapeHtml(marketName)}</h2>
-                                <p><i class="fas fa-user"></i> ${escapeHtml(ownerName)}</p>
-                            </div>
-                        </div>
-
-                        <div class="info-card">
-                            <h3><i class="fas fa-info-circle"></i> Coordonnées</h3>
-                            <div class="info-row">
-                                <div class="info-icon"><i class="fas fa-phone"></i></div>
-                                <div class="info-label">Téléphone</div>
-                                <div class="info-value">${escapeHtml(phone)}</div>
-                            </div>
-                            <div class="info-row">
-                                <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
-                                <div class="info-label">Localisation</div>
-                                <div class="info-value">${escapeHtml(city)}</div>
-                            </div>
-                            ${whatsapp ? `
-                            <div class="info-row">
-                                <div class="info-icon"><i class="fab fa-whatsapp"></i></div>
-                                <div class="info-label">WhatsApp</div>
-                                <div class="info-value">
-                                    <a href="${whatsappLink}" target="_blank">${escapeHtml(whatsapp)}</a>
-                                </div>
-                            </div>
-                            ` : ''}
-                            ${email ? `
-                            <div class="info-row">
-                                <div class="info-icon"><i class="fas fa-envelope"></i></div>
-                                <div class="info-label">Email</div>
-                                <div class="info-value">${escapeHtml(email)}</div>
-                            </div>
-                            ` : ''}
-                        </div>
-
-                        <div class="products-section">
-                            <div class="section-header">
-                                <h3><i class="fas fa-boxes"></i> Produits disponibles</h3>
-                                <div class="products-count">${produits?.length || 0} produit(s)</div>
-                            </div>
-                            ${produitsHtml}
-                        </div>
-                    `;
-
-                    document.querySelectorAll('.product-card').forEach(card => {
-                        const productId = card.getAttribute('data-id');
-                        
-                        card.addEventListener('touchstart', () => {
-                            recordCardClick(productId, 'touch');
-                        });
-                        
-                        card.addEventListener('click', async (e) => {
-                            if (e.target.closest('.product-overlay')) return;
-                            card.classList.add('click-animation');
-                            setTimeout(() => card.classList.remove('click-animation'), 300);
-                            if (productId) {
-                                await recordCardClick(productId, 'card');
-                                window.location.href = `viewproduct.html?id=${productId}`;
-                            }
-                        });
-                    });
+                    setTimeout(() => {
+                        initDescriptionToggle();
+                        initContactToggle();
+                        initProductsEvents();
+                    }, 100);
 
                 } catch (err) {
                     console.error(err);
-                    mainContent.innerHTML = `<div class="empty-state">Erreur: ${err.message}</div>`;
+                    mainContent.innerHTML = `<div class="loader"><p>Erreur: ${err.message}</p></div>`;
+                    showToast('Erreur chargement', 'error');
                 }
             }
 
-            loadVendeur();
+            async function init() {
+                const allowed = await checkSession();
+                if (allowed) {
+                    await loadProductBoosts();
+                    await loadVendeur();
+                }
+            }
+            init();
         })();
     </script>
 </body>

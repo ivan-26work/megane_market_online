@@ -26,7 +26,6 @@
             margin: 0 auto;
         }
 
-        /* Header */
         .logo-header {
             text-align: center;
             margin-bottom: 32px;
@@ -52,7 +51,6 @@
             color: #8a9aaa;
         }
 
-        /* Onglets */
         .tab-container {
             display: flex;
             gap: 8px;
@@ -80,7 +78,6 @@
             color: white;
         }
 
-        /* Formulaires */
         .form-card {
             background: white;
             border: 1px solid #e8ecf0;
@@ -106,7 +103,6 @@
             text-align: center;
         }
 
-        /* Inputs */
         .input-group {
             position: relative;
             margin-bottom: 20px;
@@ -143,7 +139,6 @@
             color: #b0b8c5;
         }
 
-        /* Toggle password */
         .toggle-password {
             position: absolute;
             right: 16px;
@@ -156,7 +151,6 @@
             font-size: 1rem;
         }
 
-        /* Boutons */
         .btn-primary {
             width: 100%;
             padding: 14px;
@@ -205,7 +199,6 @@
             color: #4ade80;
         }
 
-        /* Step navigation */
         .step-nav {
             display: flex;
             gap: 12px;
@@ -255,7 +248,6 @@
             color: #ffaa44;
         }
 
-        /* Toast */
         .toast {
             position: fixed;
             bottom: 30px;
@@ -285,7 +277,6 @@
             background: #ff4d4d;
         }
 
-        /* Modal loading */
         .modal-loading {
             position: fixed;
             top: 0;
@@ -368,7 +359,7 @@
         <button id="doLoginBtn" class="btn-primary">Se connecter</button>
     </div>
 
-    <!-- FORMULAIRE INSCRIPTION (3 étapes) -->
+    <!-- FORMULAIRE INSCRIPTION (4 étapes) -->
     <div id="registerForm" class="form-card">
         <div id="step1" class="step active">
             <h2>Email</h2>
@@ -408,7 +399,7 @@
         </div>
     </div>
 
-    <!-- FORMULAIRE MOT DE PASSE OUBLIÉ -->
+    <!-- MOT DE PASSE OUBLIÉ -->
     <div id="forgotForm" class="form-card">
         <h2>Réinitialisation</h2>
         <div class="input-group">
@@ -442,7 +433,6 @@
         let userPassword = '';
         let userFullName = '';
 
-        // DOM elements
         const loginTab = document.querySelector('[data-tab="login"]');
         const registerTab = document.querySelector('[data-tab="register"]');
         const loginForm = document.getElementById('loginForm');
@@ -491,7 +481,6 @@
                 const el = document.getElementById(`step${i}`);
                 if (el) el.classList.toggle('active', i === step);
             }
-            
             if (prevBtn) prevBtn.style.display = step > 1 ? 'block' : 'none';
             if (nextBtn) nextBtn.textContent = step === 3 ? 'Créer' : 'Suivant';
         }
@@ -587,7 +576,6 @@
                 if (error) throw error;
                 
                 if (data.user) {
-                    // Créer le profil dans buyers
                     const { error: buyerError } = await supabase
                         .from('buyers')
                         .insert({
@@ -598,13 +586,30 @@
                         });
                     
                     if (buyerError) console.error('Erreur création profil:', buyerError);
+                    
+                    // Créer l'entrée dans email_verifications
+                    const token = crypto.randomUUID();
+                    const expiresAt = new Date();
+                    expiresAt.setHours(expiresAt.getHours() + 24);
+                    
+                    await supabase
+                        .from('email_verifications')
+                        .insert({
+                            user_id: data.user.id,
+                            email: userEmail,
+                            token: token,
+                            expires_at: expiresAt.toISOString(),
+                            is_verified: false
+                        });
                 }
                 
                 showToast('✅ Compte créé avec succès !', 'success');
                 
                 setTimeout(() => {
                     hideLoading();
-                    window.location.href = 'index.html';
+                    switchTab('login');
+                    document.getElementById('loginEmail').value = userEmail;
+                    showToast('Connectez-vous pour commencer', 'success');
                 }, 1500);
                 
             } catch (error) {
@@ -629,6 +634,20 @@
                 if (error) throw error;
                 
                 if (data.user) {
+                    // Vérifier si email est vérifié
+                    const { data: verifData, error: verifError } = await supabase
+                        .from('email_verifications')
+                        .select('is_verified')
+                        .eq('user_id', data.user.id)
+                        .single();
+                    
+                    if (verifError || !verifData || verifData.is_verified === false) {
+                        hideLoading();
+                        showToast('⚠️ Vérifiez votre email avant de continuer', 'error');
+                        window.location.href = 'email-verify.html';
+                        return;
+                    }
+                    
                     showToast('✅ Connexion réussie !', 'success');
                     setTimeout(() => {
                         hideLoading();

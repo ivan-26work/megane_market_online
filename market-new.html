@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Marché - Megane Market</title>
+    <meta name="theme-color" content="#4ade80">
+    <meta name="description" content="Le marché de confiance pour vos achats en ligne">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="assets/logo.png">
+    <link rel="apple-touch-icon" href="assets/logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="market-new.css">
+    <style>
+        /* Styles supplémentaires pour la bannière PWA */
+        .pwa-install-banner {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #d4efdf, #b8e0c2);
+            border-radius: 60px;
+            padding: 12px 20px;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1000;
+            box-shadow: 9px 9px 16px #9bb8a8, -9px -9px 16px #f0fff4;
+            animation: slideUp 0.4s ease;
+        }
+        .pwa-install-banner.show {
+            display: flex;
+        }
+        .pwa-install-banner-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #2e7d32;
+        }
+        .pwa-install-banner-content img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+        .pwa-install-banner-content span {
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .pwa-install-btn {
+            background: #4ade80;
+            border: none;
+            border-radius: 40px;
+            padding: 8px 20px;
+            color: #1a2a3a;
+            font-weight: 700;
+            font-size: 0.8rem;
+            cursor: pointer;
+            box-shadow: 5px 5px 10px #9bb8a8, -5px -5px 10px #f0fff4;
+            transition: all 0.2s;
+        }
+        .pwa-install-btn:hover {
+            background: #22c55e;
+            transform: scale(1.02);
+        }
+        @keyframes slideUp {
+            from { transform: translateY(100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @media (max-width: 600px) {
+            .pwa-install-banner-content span {
+                font-size: 0.7rem;
+            }
+            .pwa-install-btn {
+                padding: 6px 12px;
+                font-size: 0.7rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <a href="index.html" class="logo">
+            <img src="assets/logo.png" alt="Megane Market" class="logo-img" onerror="this.src='https://placehold.co/36x36?text=MM'">
+        </a>
+        <div class="search-container" id="searchContainer">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Rechercher..." readonly>
+        </div>
+        <div class="header-actions">
+            <a href="mes-notifications.html" class="icon-btn" title="Notifications">
+                <i class="fas fa-bell"></i>
+                <span id="notifBadge" class="cart-badge" style="display: none;">0</span>
+            </a>
+            <a href="panier.html" class="icon-btn" title="Panier" id="cartBtn">
+                <i class="fas fa-shopping-cart"></i>
+                <span id="cartBadge" class="cart-badge" style="display: none;">0</span>
+            </a>
+            <a href="profil.html" class="icon-btn" title="Mon profil">
+                <i class="fas fa-user"></i>
+            </a>
+        </div>
+    </header>
+
+    <!-- Bannière d'installation PWA -->
+    <div id="pwaInstallBanner" class="pwa-install-banner">
+        <div class="pwa-install-banner-content">
+            <img src="assets/logo.png" alt="Megane Market">
+            <span>Installer Megane Market sur votre appareil</span>
+        </div>
+        <button id="pwaInstallBtn" class="pwa-install-btn">Installer</button>
+    </div>
+
+    <main id="mainContent">
+        <div class="loader">
+            <div class="spinner"></div>
+            <p>Chargement du marché...</p>
+        </div>
+    </main>
+
+    <!-- Template caché pour les images carrousel -->
+    <template id="imageCarouselTemplate">
+        <div class="product-carousel">
+            <div class="carousel-images-container">
+                <img class="carousel-img" alt="">
+            </div>
+            <button class="carousel-nav-prev"><i class="fas fa-chevron-left"></i></button>
+            <button class="carousel-nav-next"><i class="fas fa-chevron-right"></i></button>
+            <div class="carousel-dots-container"></div>
+        </div>
+    </template>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="market-new.js"></script>
+    <script>
+        // Cache les produits dans sessionStorage pour chargement instantané
+        (function() {
+            // Récupérer le cache
+            const cachedHTML = sessionStorage.getItem('market_products_cache');
+            const cachedTimestamp = sessionStorage.getItem('market_cache_timestamp');
+            const now = Date.now();
+            
+            // Si cache existe et a moins de 5 minutes, l'utiliser
+            if (cachedHTML && cachedTimestamp && (now - parseInt(cachedTimestamp)) < 300000) {
+                // Afficher directement le contenu mis en cache
+                const mainContent = document.getElementById('mainContent');
+                if (mainContent) {
+                    mainContent.innerHTML = cachedHTML;
+                    // Recharger les scripts dynamiques après affichage
+                    setTimeout(() => {
+                        if (typeof window.initAfterCache === 'function') {
+                            window.initAfterCache();
+                        } else {
+                            // Attendre que le JS principal soit chargé
+                            const checkInterval = setInterval(() => {
+                                if (typeof window.initAfterCache === 'function') {
+                                    window.initAfterCache();
+                                    clearInterval(checkInterval);
+                                }
+                            }, 100);
+                        }
+                    }, 100);
+                }
+            }
+            
+            // PWA Installation
+            let deferredPrompt;
+            const pwaBanner = document.getElementById('pwaInstallBanner');
+            const pwaInstallBtn = document.getElementById('pwaInstallBtn');
+            
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                if (pwaBanner) pwaBanner.classList.add('show');
+            });
+            
+            if (pwaInstallBtn) {
+                pwaInstallBtn.addEventListener('click', async () => {
+                    if (deferredPrompt) {
+                        deferredPrompt.prompt();
+                        const { outcome } = await deferredPrompt.userChoice;
+                        if (outcome === 'accepted' && pwaBanner) {
+                            pwaBanner.classList.remove('show');
+                        }
+                        deferredPrompt = null;
+                    }
+                });
+            }
+        })();
+    </script>
+</body>
+</html>

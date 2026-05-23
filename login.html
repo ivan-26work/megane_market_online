@@ -15,7 +15,7 @@
 
         body {
             font-family: 'DM Sans', sans-serif;
-            background: #ffffff;
+            background: #f0f2f5;
             color: #1a2a3a;
             min-height: 100vh;
             padding: 20px;
@@ -79,11 +79,12 @@
         }
 
         .form-card {
-            background: white;
+            background: linear-gradient(135deg, #ffffff, #fafbfc);
             border: 1px solid #e8ecf0;
             border-radius: 24px;
             padding: 28px 24px;
             display: none;
+            box-shadow: 9px 9px 16px #a3b1c6, -9px -9px 16px #ffffff;
         }
 
         .form-card.active {
@@ -163,6 +164,7 @@
             cursor: pointer;
             transition: all 0.2s;
             font-family: 'DM Sans', sans-serif;
+            box-shadow: 5px 5px 10px #a3b1c6, -5px -5px 10px #ffffff;
         }
 
         .btn-primary:hover {
@@ -284,6 +286,7 @@
             width: 100%;
             height: 100%;
             background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(4px);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -576,6 +579,7 @@
                 if (error) throw error;
                 
                 if (data.user) {
+                    // 1. Créer le profil dans buyers
                     const { error: buyerError } = await supabase
                         .from('buyers')
                         .insert({
@@ -585,14 +589,17 @@
                             created_at: new Date().toISOString()
                         });
                     
-                    if (buyerError) console.error('Erreur création profil:', buyerError);
+                    if (buyerError) {
+                        console.error('Erreur création profil buyer:', buyerError);
+                        showToast('Erreur création profil', 'error');
+                    }
                     
-                    // Créer l'entrée dans email_verifications
+                    // 2. Créer l'entrée dans email_verifications
                     const token = crypto.randomUUID();
                     const expiresAt = new Date();
                     expiresAt.setHours(expiresAt.getHours() + 24);
                     
-                    await supabase
+                    const { error: verifError } = await supabase
                         .from('email_verifications')
                         .insert({
                             user_id: data.user.id,
@@ -601,6 +608,10 @@
                             expires_at: expiresAt.toISOString(),
                             is_verified: false
                         });
+                    
+                    if (verifError) {
+                        console.error('Erreur création email_verifications:', verifError);
+                    }
                 }
                 
                 showToast('✅ Compte créé avec succès !', 'success');
@@ -634,6 +645,25 @@
                 if (error) throw error;
                 
                 if (data.user) {
+                    // Vérifier si l'utilisateur existe dans buyers, sinon le créer
+                    const { data: buyer, error: buyerError } = await supabase
+                        .from('buyers')
+                        .select('id')
+                        .eq('id', data.user.id)
+                        .single();
+                    
+                    if (buyerError || !buyer) {
+                        // Créer le profil buyer manquant
+                        await supabase
+                            .from('buyers')
+                            .insert({
+                                id: data.user.id,
+                                email: data.user.email,
+                                full_name: data.user.user_metadata?.full_name || '',
+                                created_at: new Date().toISOString()
+                            });
+                    }
+                    
                     // Vérifier si email est vérifié
                     const { data: verifData, error: verifError } = await supabase
                         .from('email_verifications')
@@ -642,16 +672,31 @@
                         .single();
                     
                     if (verifError || !verifData || verifData.is_verified === false) {
+                        // Créer une entrée email_verifications si elle n'existe pas
+                        if (verifError && verifError.code === 'PGRST116') {
+                            const token = crypto.randomUUID();
+                            const expiresAt = new Date();
+                            expiresAt.setHours(expiresAt.getHours() + 24);
+                            await supabase
+                                .from('email_verifications')
+                                .insert({
+                                    user_id: data.user.id,
+                                    email: data.user.email,
+                                    token: token,
+                                    expires_at: expiresAt.toISOString(),
+                                    is_verified: false
+                                });
+                        }
                         hideLoading();
                         showToast('⚠️ Vérifiez votre email avant de continuer', 'error');
-                        window.location.href = 'email-verify.html';
+                        window.location.href = 'https://megane-market.online/email-verify.html';
                         return;
                     }
                     
                     showToast('✅ Connexion réussie !', 'success');
                     setTimeout(() => {
                         hideLoading();
-                        window.location.href = 'index.html';
+                        window.location.href = 'https://megane-market.online/index.html';
                     }, 1000);
                 }
             } catch (error) {

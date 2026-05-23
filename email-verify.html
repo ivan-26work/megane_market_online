@@ -22,21 +22,20 @@
             flex-direction: column;
         }
 
-        /* HEADER */
         .main-header {
             position: sticky;
             top: 16px;
             z-index: 100;
-            background: #ffffff;
+            background: linear-gradient(135deg, #d4efdf, #b8e0c2);
             border-radius: 60px;
             height: 60px;
-            border: 1px solid #4ade80;
+            border: none;
             margin: 16px 16px 0 16px;
             padding: 0 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+            box-shadow: 9px 9px 16px #9bb8a8, -9px -9px 16px #f0fff4;
         }
 
         .logo {
@@ -56,16 +55,15 @@
         .logo-text {
             font-weight: 700;
             font-size: 1rem;
-            color: #4ade80;
+            color: #2e7d32;
         }
 
         .header-center {
             font-weight: 600;
             font-size: 0.85rem;
-            color: #8a9aaa;
+            color: #2e7d32;
         }
 
-        /* MAIN */
         .main-content {
             flex: 1;
             max-width: 600px;
@@ -74,15 +72,13 @@
             width: 100%;
         }
 
-        /* CARTE VÉRIFICATION */
         .verify-card {
-            background: #ffffff;
+            background: linear-gradient(135deg, #d4efdf, #b8e0c2);
             border-radius: 32px;
-            border: 1px solid #e8ecf0;
             padding: 32px;
             text-align: center;
             animation: fadeIn 0.4s ease;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            box-shadow: 9px 9px 16px #9bb8a8, -9px -9px 16px #f0fff4;
         }
 
         @keyframes fadeIn {
@@ -117,18 +113,18 @@
         h2 {
             font-size: 1.3rem;
             margin-bottom: 12px;
-            color: #1a2a3a;
+            color: #1a3a1a;
         }
 
         .message {
             font-size: 0.9rem;
-            color: #8a9aaa;
+            color: #2e7d32;
             margin-bottom: 24px;
             line-height: 1.5;
         }
 
         .info-box {
-            background: #e8f4e8;
+            background: rgba(255,255,255,0.4);
             border-radius: 16px;
             padding: 16px;
             margin: 20px 0;
@@ -138,7 +134,7 @@
         .info-box h4 {
             font-size: 0.85rem;
             font-weight: 700;
-            color: #2e7d32;
+            color: #1a3a1a;
             margin-bottom: 12px;
             display: flex;
             align-items: center;
@@ -152,7 +148,7 @@
 
         .info-box li {
             font-size: 0.8rem;
-            color: #1a2a3a;
+            color: #1a3a1a;
             margin-bottom: 10px;
             display: flex;
             align-items: center;
@@ -166,14 +162,13 @@
         }
 
         .email-display {
-            background: #fafbfc;
+            background: rgba(255,255,255,0.4);
             padding: 12px 16px;
             border-radius: 16px;
             font-weight: 600;
             margin: 20px 0;
             word-break: break-all;
-            color: #1a2a3a;
-            border: 1px solid #e8ecf0;
+            color: #1a3a1a;
         }
 
         .btn {
@@ -192,6 +187,7 @@
         .btn-primary {
             background: #4ade80;
             color: #1a2a3a;
+            box-shadow: 5px 5px 10px #9bb8a8, -5px -5px 10px #f0fff4;
         }
 
         .btn-primary:hover {
@@ -200,13 +196,14 @@
         }
 
         .btn-secondary {
-            background: #f0f2f5;
-            color: #1a2a3a;
-            border: 1px solid #e8ecf0;
+            background: rgba(255,255,255,0.6);
+            color: #1a3a1a;
+            box-shadow: 5px 5px 10px #9bb8a8, -5px -5px 10px #f0fff4;
         }
 
         .btn-secondary:hover {
-            background: #e8ecf0;
+            background: #ffffff;
+            transform: translateY(-2px);
         }
 
         .loader {
@@ -225,10 +222,9 @@
             to { transform: rotate(360deg); }
         }
 
-        /* FOOTER */
         .main-footer {
-            background: #ffffff;
-            border-top: 1px solid #e8ecf0;
+            background: linear-gradient(135deg, #d4efdf, #b8e0c2);
+            border-top: 1px solid rgba(46,125,50,0.2);
             padding: 20px;
             text-align: center;
             margin-top: 40px;
@@ -243,7 +239,7 @@
         }
 
         .footer-links a {
-            color: #8a9aaa;
+            color: #2e7d32;
             text-decoration: none;
             font-size: 0.75rem;
         }
@@ -254,7 +250,7 @@
 
         .copyright {
             font-size: 0.7rem;
-            color: #b0b8c5;
+            color: #5a7a5a;
         }
 
         .toast {
@@ -337,7 +333,7 @@
     <footer class="main-footer">
         <div class="footer-links">
             <a href="index.html">Accueil</a>
-            <a href="market.html">Marché</a>
+            <a href="market-new.html">Marché</a>
             <a href="#">Aide</a>
             <a href="#">Confidentialité</a>
             <a href="#">Contact</a>
@@ -359,7 +355,7 @@
             emailjs.init({ publicKey: "4TkvKRRbn9qDSIjG3" });
             
             const SERVICE_ID = "Megane_market";
-            const TEMPLATE_ID = "template_hh5v53r";
+            const TEMPLATE_ID = "template_ugz1f33";
 
             const iconArea = document.getElementById('iconArea');
             const titleEl = document.getElementById('title');
@@ -391,7 +387,7 @@
                 messageEl.textContent = message;
                 buttonArea.innerHTML = '<button id="redirectBtn" class="btn btn-primary">Accéder au marché</button>';
                 document.getElementById('redirectBtn')?.addEventListener('click', () => {
-                    window.location.href = redirectUrl || 'index.html';
+                    window.location.href = redirectUrl || 'https://megane-market.online/market-new.html';
                 });
             }
 
@@ -409,14 +405,14 @@
                     `;
                     document.getElementById('resendBtn')?.addEventListener('click', () => resendVerification(email));
                     document.getElementById('backBtn')?.addEventListener('click', () => {
-                        window.location.href = 'index.html';
+                        window.location.href = 'https://megane-market.online/index.html';
                     });
                 } else if (showResend) {
                     buttonArea.innerHTML = `
                         <button id="backBtn" class="btn btn-primary">Retour à l'accueil</button>
                     `;
                     document.getElementById('backBtn')?.addEventListener('click', () => {
-                        window.location.href = 'index.html';
+                        window.location.href = 'https://megane-market.online/index.html';
                     });
                 }
             }
@@ -443,7 +439,7 @@
                 });
                 document.getElementById('logoutBtn')?.addEventListener('click', async () => {
                     await supabase.auth.signOut();
-                    window.location.href = 'login.html';
+                    window.location.href = 'https://megane-market.online/login.html';
                 });
             }
 
@@ -486,12 +482,18 @@
                     
                     if (insertError) throw insertError;
                     
-                    const verificationLink = `${window.location.origin}${window.location.pathname}?token=${token}`;
+                    const verificationLink = `https://megane-market.online/email-verify.html?token=${token}`;
                     
                     await emailjs.send(SERVICE_ID, TEMPLATE_ID, {
                         to_email: userEmail,
                         to_name: userEmail.split('@')[0],
-                        verification_link: verificationLink
+                        message: `Bienvenue sur Megane Market !\n\nPour activer votre compte et accéder à toutes les fonctionnalités, veuillez vérifier votre adresse email en cliquant sur le lien ci-dessous :\n\n${verificationLink}\n\nCe lien expire dans 24 heures.\n\nÀ bientôt sur Megane Market !`,
+                        subject: "Vérifiez votre email - Megane Market",
+                        from_name: "Megane Market",
+                        reply_to: "no-reply@megane-market.online",
+                        image_url: "https://emcsigvlopntwbfkkjkh.supabase.co/storage/v1/object/public/buyers-avatars/20260518_150104.jpg",
+                        button_url: verificationLink,
+                        button_text: "Vérifier mon email"
                     });
                     
                     showToast('Email de vérification envoyé ! Vérifiez votre boîte', 'success');
@@ -502,7 +504,7 @@
                     messageEl.innerHTML = `Un nouveau lien a été envoyé à <strong>${userEmail}</strong>. N'oubliez pas de vérifier vos spams.`;
                     buttonArea.innerHTML = '<button id="backBtn" class="btn btn-secondary">Retour à l\'accueil</button>';
                     document.getElementById('backBtn')?.addEventListener('click', () => {
-                        window.location.href = 'index.html';
+                        window.location.href = 'https://megane-market.online/index.html';
                     });
                     
                 } catch (err) {
@@ -535,7 +537,7 @@
                     }
                     
                     if (data.is_verified === true) {
-                        showSuccess('Votre email est déjà vérifié. Bienvenue !', 'index.html');
+                        showSuccess('Votre email est déjà vérifié. Bienvenue !', 'https://megane-market.online/market-new.html');
                         return true;
                     }
                     
@@ -546,7 +548,7 @@
                     
                     if (updateError) throw updateError;
                     
-                    showSuccess('Email vérifié avec succès ! Vous allez être redirigé.', 'index.html');
+                    showSuccess('Email vérifié avec succès ! Vous allez être redirigé.', 'https://megane-market.online/market-new.html');
                     return true;
                     
                 } catch (err) {
@@ -586,7 +588,7 @@
                 
                 const alreadyVerified = await checkIfAlreadyVerified();
                 if (alreadyVerified) {
-                    showSuccess('Votre email est déjà vérifié. Bienvenue !', 'index.html');
+                    showSuccess('Votre email est déjà vérifié. Bienvenue !', 'https://megane-market.online/market-new.html');
                     return;
                 }
                 

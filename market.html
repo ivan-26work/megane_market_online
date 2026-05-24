@@ -693,6 +693,7 @@
             const favoritesBtn = document.getElementById('favoritesBtn');
 
             let currentUserId = null;
+            let currentUserVerified = false;
             let allProducts = [];
             let categories = [];
             let currentCategory = null;
@@ -719,10 +720,12 @@
                 return div.innerHTML;
             }
 
+            // NOUVELLE FONCTION : Vérifie la session sans rediriger
             async function checkSession() {
                 const { data: { session } } = await supabase.auth.getSession();
                 if (!session) {
-                    window.location.href = 'login.html';
+                    currentUserId = null;
+                    currentUserVerified = false;
                     return false;
                 }
                 currentUserId = session.user.id;
@@ -731,10 +734,7 @@
                     .select('is_verified')
                     .eq('user_id', currentUserId)
                     .single();
-                if (!verifData || verifData.is_verified !== true) {
-                    window.location.href = 'email-verify.html';
-                    return false;
-                }
+                currentUserVerified = verifData?.is_verified === true;
                 return true;
             }
 
@@ -779,6 +779,11 @@
                 if (!currentUserId) {
                     showToast('Connectez-vous pour ajouter aux favoris', 'error');
                     window.location.href = 'login.html';
+                    return;
+                }
+                if (!currentUserVerified) {
+                    showToast('Vérifiez votre email pour ajouter aux favoris', 'error');
+                    window.location.href = 'email-verify.html';
                     return;
                 }
                 const isFavorite = userFavorites.has(productId);
@@ -953,7 +958,6 @@
             }
 
             async function renderProducts() {
-                // Récupérer les noms des marchés pour chaque produit
                 const marketNames = {};
                 for (const product of allProducts) {
                     if (product.user_id && !marketNames[product.user_id]) {
@@ -972,7 +976,6 @@
                     const marketName = marketNames[product.user_id] || 'Vendeur';
                     
                     if (discount > 0) {
-                        // Carte promotionnelle (style Carte 1)
                         return `
                             <div class="product-card promo" data-product-id="${product.id}">
                                 <div class="img-wrap">
@@ -995,7 +998,6 @@
                             </div>
                         `;
                     } else {
-                        // Carte ordinaire (style Carte 18)
                         return `
                             <div class="product-card normal" data-product-id="${product.id}">
                                 <div class="img-circle">
@@ -1016,7 +1018,6 @@
                 
                 productsGrid.innerHTML = productsHtml.join('');
                 
-                // Initialiser les carrousels
                 for (const product of allProducts) {
                     const carousel = document.querySelector(`.product-card[data-product-id="${product.id}"] .product-carousel`);
                     if (carousel && product.images && product.images.length > 1) {
@@ -1024,18 +1025,23 @@
                     }
                 }
                 
-                // Boutons ajouter au panier
                 document.querySelectorAll('.btn.cart').forEach(btn => {
                     btn.addEventListener('click', async (e) => {
                         e.stopPropagation();
                         const productCard = btn.closest('.product-card');
                         const productId = productCard.getAttribute('data-product-id');
-                        if (productId && currentUserId) await addToCart(productId);
-                        else if (!currentUserId) { showToast('Connectez-vous', 'error'); window.location.href = 'login.html'; }
+                        if (productId && currentUserId && currentUserVerified) {
+                            await addToCart(productId);
+                        } else if (!currentUserId) {
+                            showToast('Connectez-vous pour ajouter au panier', 'error');
+                            window.location.href = 'login.html';
+                        } else if (!currentUserVerified) {
+                            showToast('Vérifiez votre email pour ajouter au panier', 'error');
+                            window.location.href = 'email-verify.html';
+                        }
                     });
                 });
                 
-                // Clic sur carte
                 document.querySelectorAll('.product-card').forEach(card => {
                     card.addEventListener('click', (e) => {
                         if (e.target.closest('.btn')) return;
@@ -1044,7 +1050,6 @@
                     });
                 });
                 
-                // Boutons favoris
                 document.querySelectorAll('.favorite-icon').forEach(icon => {
                     icon.addEventListener('click', async (e) => {
                         e.stopPropagation();
@@ -1068,6 +1073,16 @@
             }
 
             favoritesBtn.addEventListener('click', () => {
+                if (!currentUserId) {
+                    showToast('Connectez-vous pour voir vos favoris', 'error');
+                    window.location.href = 'login.html';
+                    return;
+                }
+                if (!currentUserVerified) {
+                    showToast('Vérifiez votre email pour voir vos favoris', 'error');
+                    window.location.href = 'email-verify.html';
+                    return;
+                }
                 showFavorites = !showFavorites;
                 updateFavoritesButton();
                 if (showFavorites) {
@@ -1094,16 +1109,14 @@
             }
 
             async function init() {
-                const allowed = await checkSession();
-                if (allowed) {
-                    await loadProductBoosts();
-                    await loadProductViews();
-                    await loadUserFavorites();
-                    await loadCategories();
-                    const hasCategory = await getUrlCategory();
-                    if (hasCategory !== false) {
-                        await loadProducts();
-                    }
+                await checkSession();
+                await loadProductBoosts();
+                await loadProductViews();
+                await loadUserFavorites();
+                await loadCategories();
+                const hasCategory = await getUrlCategory();
+                if (hasCategory !== false) {
+                    await loadProducts();
                 }
             }
             init();

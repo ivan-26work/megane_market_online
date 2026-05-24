@@ -781,6 +781,7 @@
             let productViews = {};
             let searchHistory = [];
             let currentUserId = null;
+            let currentUserVerified = false;
             let isDataLoaded = false;
             const STORAGE_KEY = 'megane_search_history';
             const CACHE_KEY = 'megane_search_cache';
@@ -792,13 +793,21 @@
                 setTimeout(() => toastEl.classList.remove('show'), 3000);
             }
 
+            // NOUVELLE FONCTION : Vérifie la session sans rediriger
             async function checkSession() {
                 const { data: { session } } = await supabase.auth.getSession();
                 if (!session) {
-                    window.location.href = 'login.html';
+                    currentUserId = null;
+                    currentUserVerified = false;
                     return false;
                 }
                 currentUserId = session.user.id;
+                const { data: verifData } = await supabase
+                    .from('email_verifications')
+                    .select('is_verified')
+                    .eq('user_id', currentUserId)
+                    .single();
+                currentUserVerified = verifData?.is_verified === true;
                 return true;
             }
 
@@ -1123,11 +1132,14 @@
                         e.stopPropagation();
                         const card = btn.closest('[data-id]');
                         const productId = card.getAttribute('data-id');
-                        if (productId && currentUserId) {
+                        if (productId && currentUserId && currentUserVerified) {
                             await addToCart(productId);
                         } else if (!currentUserId) {
-                            showToast('Connectez-vous', 'error');
+                            showToast('Connectez-vous pour ajouter au panier', 'error');
                             window.location.href = 'login.html';
+                        } else if (!currentUserVerified) {
+                            showToast('Vérifiez votre email pour ajouter au panier', 'error');
+                            window.location.href = 'email-verify.html';
                         }
                     });
                 });
@@ -1218,11 +1230,9 @@
             });
 
             async function init() {
-                const allowed = await checkSession();
-                if (allowed) {
-                    await loadAllData();
-                    loadHistory();
-                }
+                await checkSession();
+                await loadAllData();
+                loadHistory();
             }
             init();
         })();

@@ -1,4 +1,4 @@
-// market-new.js - Version complète avec cache sessionStorage
+// market-new.js - Version modifiée (plus de redirection automatique)
 (function() {
     const SUPABASE_URL = 'https://emcsigvlopntwbfkkjkh.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtY3NpZ3Zsb3BudHdiZmtramtoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4ODE5MTgsImV4cCI6MjA5NDQ1NzkxOH0.YwYoV-azL3WEFtHoh4yoF7xTLrOwZILKCzJrGPsCs6I';
@@ -11,6 +11,7 @@
     const notifBadge = document.getElementById('notifBadge');
 
     let currentUserId = null;
+    let currentUserVerified = false;
     let promoProducts = [];
     let allVendors = [];
     let allNews = [];
@@ -25,120 +26,45 @@
     
     // Section FAQ
     const faqCards = [
-        {
-            id: 1,
-            icon: 'fa-search',
-            question: 'Vous ne trouvez pas un produit ?',
-            answer: 'Tapez le nom du produit dans la barre de recherche en haut de la page.'
-        },
-        {
-            id: 2,
-            icon: 'fa-comment',
-            question: 'Comment contacter un vendeur ?',
-            answer: 'Cliquez sur le bouton WhatsApp ou Appeler sur la fiche produit.'
-        },
-        {
-            id: 3,
-            icon: 'fa-truck',
-            question: 'Les livraisons sont-elles gratuites ?',
-            answer: 'Cela dépend du vendeur. Les frais de livraison sont indiqués sur chaque produit.'
-        },
-        {
-            id: 4,
-            icon: 'fa-undo-alt',
-            question: 'Puis-je retourner un produit ?',
-            answer: 'Oui, consultez la politique de retour du vendeur sur la fiche produit.'
-        },
-        {
-            id: 5,
-            icon: 'fa-user-plus',
-            question: 'Comment créer un compte ?',
-            answer: 'Cliquez sur "Mon profil" puis "Créer un compte" et suivez les étapes.'
-        },
-        {
-            id: 6,
-            icon: 'fa-shield-alt',
-            question: 'Les paiements sont-ils sécurisés ?',
-            answer: 'Les échanges se font directement avec les vendeurs via WhatsApp. Megane Market ne stocke aucune donnée bancaire.'
-        }
+        { id: 1, icon: 'fa-search', question: 'Vous ne trouvez pas un produit ?', answer: 'Tapez le nom du produit dans la barre de recherche en haut de la page.' },
+        { id: 2, icon: 'fa-comment', question: 'Comment contacter un vendeur ?', answer: 'Cliquez sur le bouton WhatsApp ou Appeler sur la fiche produit.' },
+        { id: 3, icon: 'fa-truck', question: 'Les livraisons sont-elles gratuites ?', answer: 'Cela dépend du vendeur. Les frais de livraison sont indiqués sur chaque produit.' },
+        { id: 4, icon: 'fa-undo-alt', question: 'Puis-je retourner un produit ?', answer: 'Oui, consultez la politique de retour du vendeur sur la fiche produit.' },
+        { id: 5, icon: 'fa-user-plus', question: 'Comment créer un compte ?', answer: 'Cliquez sur "Mon profil" puis "Créer un compte" et suivez les étapes.' },
+        { id: 6, icon: 'fa-shield-alt', question: 'Les paiements sont-ils sécurisés ?', answer: 'Les échanges se font directement avec les vendeurs via WhatsApp. Megane Market ne stocke aucune donnée bancaire.' }
     ];
     
-    // Défilement infini
     let infiniteProductsList = [];
     let infiniteCurrentOffset = 0;
     let infiniteIsLoading = false;
     let infiniteHasMoreData = true;
     let infiniteObserver = null;
     
-    // Cartes informatives
     let infoCards = [
-        {
-            id: 1,
-            type: 'green',
-            icon: 'fa-shield-alt',
-            title: 'Sécurité et confiance',
-            message: 'Megane Market protège vos données et vos échanges. Toutes les transactions sont sécurisées et vos informations personnelles ne sont jamais partagées.',
-            footer: 'Merci de comprendre les messages'
-        },
-        {
-            id: 2,
-            type: 'orange',
-            icon: 'fa-exclamation-triangle',
-            title: 'Méfiez-vous des arnaques',
-            message: 'Ne partagez jamais vos codes confidentiels. Les vendeurs officiels Megane Market ne vous demanderont jamais votre mot de passe ou vos identifiants bancaires.',
-            footer: 'Merci de comprendre les messages'
-        },
-        {
-            id: 3,
-            type: 'red',
-            icon: 'fa-sync-alt',
-            title: 'Nouveautés à venir',
-            message: 'Megane Market prépare de nouvelles fonctionnalités : suivi de commande en temps réel, messagerie instantanée et programme de fidélité. Restez connectés !',
-            footer: 'Merci de comprendre les messages'
-        }
+        { id: 1, type: 'green', icon: 'fa-shield-alt', title: 'Sécurité et confiance', message: 'Megane Market protège vos données et vos échanges. Toutes les transactions sont sécurisées et vos informations personnelles ne sont jamais partagées.', footer: 'Merci de comprendre les messages' },
+        { id: 2, type: 'orange', icon: 'fa-exclamation-triangle', title: 'Méfiez-vous des arnaques', message: 'Ne partagez jamais vos codes confidentiels. Les vendeurs officiels Megane Market ne vous demanderont jamais votre mot de passe ou vos identifiants bancaires.', footer: 'Merci de comprendre les messages' },
+        { id: 3, type: 'red', icon: 'fa-sync-alt', title: 'Nouveautés à venir', message: 'Megane Market prépare de nouvelles fonctionnalités : suivi de commande en temps réel, messagerie instantanée et programme de fidélité. Restez connectés !', footer: 'Merci de comprendre les messages' }
     ];
     
-    // Cartes informations supplémentaires
     const extraInfoCards = [
-        {
-            id: 1,
-            icon: 'fa-lock',
-            title: 'Vos données sont protégées',
-            message: 'Megane Market ne partage jamais vos informations personnelles. Vos échanges sont sécurisés.',
-            buttons: []
-        },
-        {
-            id: 2,
-            icon: 'fa-share-alt',
-            title: 'Partagez vos trouvailles',
-            message: 'Partagez vos produits préférés avec vos amis sur WhatsApp, Facebook ou Messenger.',
-            buttons: [
-                { text: 'WhatsApp', action: 'share', platform: 'whatsapp', color: 'green' },
-                { text: 'Facebook', action: 'share', platform: 'facebook', color: 'blue' },
-                { text: 'Copier le lien', action: 'copy', color: 'green' }
-            ]
-        },
-        {
-            id: 3,
-            icon: 'fa-link',
-            title: 'Liens rapides',
-            message: 'Accédez directement aux pages importantes de Megane Market.',
-            buttons: [
-                { text: 'Aide', action: 'link', url: 'aide.html', color: 'blue' },
-                { text: 'CGU', action: 'link', url: 'cgu.html', color: 'green' },
-                { text: 'Contact', action: 'link', url: 'contact.html', color: 'blue' }
-            ]
-        }
+        { id: 1, icon: 'fa-lock', title: 'Vos données sont protégées', message: 'Megane Market ne partage jamais vos informations personnelles. Vos échanges sont sécurisés.', buttons: [] },
+        { id: 2, icon: 'fa-share-alt', title: 'Partagez vos trouvailles', message: 'Partagez vos produits préférés avec vos amis sur WhatsApp, Facebook ou Messenger.', buttons: [
+            { text: 'WhatsApp', action: 'share', platform: 'whatsapp', color: 'green' },
+            { text: 'Facebook', action: 'share', platform: 'facebook', color: 'blue' },
+            { text: 'Copier le lien', action: 'copy', color: 'green' }
+        ] },
+        { id: 3, icon: 'fa-link', title: 'Liens rapides', message: 'Accédez directement aux pages importantes de Megane Market.', buttons: [
+            { text: 'Aide', action: 'link', url: 'aide.html', color: 'blue' },
+            { text: 'CGU', action: 'link', url: 'cgu.html', color: 'green' },
+            { text: 'Contact', action: 'link', url: 'contact.html', color: 'blue' }
+        ] }
     ];
     
     let currentInfoIndex = 0;
     let infoCarouselInterval = null;
-
     const cardColors = ['color-green', 'color-orange', 'color-red', 'color-blue', 'color-purple', 'color-yellow'];
 
-    function getRandomColor() {
-        return cardColors[Math.floor(Math.random() * cardColors.length)];
-    }
+    function getRandomColor() { return cardColors[Math.floor(Math.random() * cardColors.length)]; }
 
     function showToast(message, type = 'info') {
         toastEl.textContent = message;
@@ -146,10 +72,12 @@
         setTimeout(() => toastEl.classList.remove('show'), 3000);
     }
 
-    async function checkSessionAndRedirect() {
+    // NOUVELLE FONCTION : Vérifie la session sans rediriger
+    async function checkSession() {
         const { data: { session } } = await supabase.auth.getSession();
         if (!session) {
-            window.location.href = 'login.html';
+            currentUserId = null;
+            currentUserVerified = false;
             return false;
         }
         currentUserId = session.user.id;
@@ -158,23 +86,15 @@
             .select('is_verified')
             .eq('user_id', currentUserId)
             .single();
-        if (!verifData || verifData.is_verified !== true) {
-            window.location.href = 'email-verify.html';
-            return false;
-        }
+        currentUserVerified = verifData?.is_verified === true;
         return true;
     }
 
-    searchContainer.addEventListener('click', () => {
-        window.location.href = 'search.html';
-    });
+    searchContainer.addEventListener('click', () => { window.location.href = 'search.html'; });
 
     async function loadCartCount() {
-        if (!currentUserId) return;
-        const { data, error } = await supabase
-            .from('cart')
-            .select('id', { count: 'exact', head: true })
-            .eq('user_id', currentUserId);
+        if (!currentUserId) { cartBadge.style.display = 'none'; return; }
+        const { data, error } = await supabase.from('cart').select('id', { count: 'exact', head: true }).eq('user_id', currentUserId);
         if (!error && data !== null) {
             const count = data.length || 0;
             cartBadge.style.display = count > 0 ? 'flex' : 'none';
@@ -182,38 +102,20 @@
         }
     }
 
-    async function loadNotificationsCount() {
-        if (notifBadge) notifBadge.style.display = 'none';
-    }
+    async function loadNotificationsCount() { if (notifBadge) notifBadge.style.display = 'none'; }
 
     async function loadProductBoosts() {
-        const { data } = await supabase
-            .from('product_boosts')
-            .select('product_id, discount_percent')
-            .eq('is_active', true);
+        const { data } = await supabase.from('product_boosts').select('product_id, discount_percent').eq('is_active', true);
         productBoosts = {};
-        for (const boost of data || []) {
-            if (boost.discount_percent > 0) {
-                productBoosts[boost.product_id] = boost.discount_percent;
-            }
-        }
+        for (const boost of data || []) { if (boost.discount_percent > 0) productBoosts[boost.product_id] = boost.discount_percent; }
     }
 
-    function formatPrice(price) {
-        return new Intl.NumberFormat('fr-FR').format(price);
-    }
-
-    function escapeHtml(text) {
-        if (!text) return '';
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
+    function formatPrice(price) { return new Intl.NumberFormat('fr-FR').format(price); }
+    function escapeHtml(text) { if (!text) return ''; const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
 
     function formatDate(dateStr) {
         const date = new Date(dateStr);
-        const now = new Date();
-        const diffMs = now - date;
+        const diffMs = Date.now() - date;
         const diffMins = Math.floor(diffMs / 60000);
         const diffHours = Math.floor(diffMs / 3600000);
         const diffDays = Math.floor(diffMs / 86400000);
@@ -226,186 +128,79 @@
     function filterNewsByDate(news, filter) {
         const now = new Date();
         const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        const startOfWeek = new Date(today);
-        startOfWeek.setDate(today.getDate() - today.getDay());
+        const startOfWeek = new Date(today); startOfWeek.setDate(today.getDate() - today.getDay());
         const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
         return news.filter(item => {
             const itemDate = new Date(item.date);
-            switch(filter) {
-                case 'today': return itemDate >= today;
-                case 'week': return itemDate >= startOfWeek;
-                case 'month': return itemDate >= startOfMonth;
-                default: return true;
-            }
+            if (filter === 'today') return itemDate >= today;
+            if (filter === 'week') return itemDate >= startOfWeek;
+            if (filter === 'month') return itemDate >= startOfMonth;
+            return true;
         });
     }
 
     async function loadNews() {
         const news = [];
-        const { data: markets } = await supabase
-            .from('markets')
-            .select('id, market_name, owner_name, city, avatar_url, announcement_text, show_announcement, updated_at')
-            .eq('market_active', true);
+        const { data: markets } = await supabase.from('markets').select('id, market_name, owner_name, city, avatar_url, announcement_text, show_announcement, updated_at').eq('market_active', true);
         if (markets) {
             for (const market of markets) {
                 if (market.show_announcement && market.announcement_text) {
-                    news.push({
-                        id: `announcement_${market.id}_${market.updated_at}`,
-                        type: 'announcement',
-                        typeLabel: 'Annonce',
-                        typeIcon: 'fa-bullhorn',
-                        marketId: market.id,
-                        marketName: market.market_name || market.owner_name,
-                        marketCity: market.city || '',
-                        marketAvatar: market.avatar_url,
-                        message: market.announcement_text,
-                        date: market.updated_at
-                    });
+                    news.push({ id: `announcement_${market.id}_${market.updated_at}`, type: 'announcement', typeLabel: 'Annonce', typeIcon: 'fa-bullhorn', marketId: market.id, marketName: market.market_name || market.owner_name, marketCity: market.city || '', marketAvatar: market.avatar_url, message: market.announcement_text, date: market.updated_at });
                 }
             }
         }
-        const twoDaysAgo = new Date();
-        twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
-        const { data: newProductsData } = await supabase
-            .from('products')
-            .select('id, name, user_id, created_at, images')
-            .eq('active', true)
-            .gte('created_at', twoDaysAgo.toISOString());
+        const twoDaysAgo = new Date(); twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+        const { data: newProductsData } = await supabase.from('products').select('id, name, user_id, created_at, images').eq('active', true).gte('created_at', twoDaysAgo.toISOString());
         if (newProductsData) {
             for (const product of newProductsData) {
-                const { data: market } = await supabase
-                    .from('markets')
-                    .select('market_name, owner_name, city, avatar_url')
-                    .eq('id', product.user_id)
-                    .single();
-                news.push({
-                    id: `newproduct_${product.id}`,
-                    type: 'newproduct',
-                    typeLabel: 'Nouveau produit',
-                    typeIcon: 'fa-plus-circle',
-                    marketId: product.user_id,
-                    marketName: market?.market_name || market?.owner_name || 'Vendeur',
-                    marketCity: market?.city || '',
-                    marketAvatar: market?.avatar_url,
-                    message: `a ajouté le produit`,
-                    productId: product.id,
-                    productName: product.name,
-                    productImage: product.images?.[0] || null,
-                    date: product.created_at
-                });
+                const { data: market } = await supabase.from('markets').select('market_name, owner_name, city, avatar_url').eq('id', product.user_id).single();
+                news.push({ id: `newproduct_${product.id}`, type: 'newproduct', typeLabel: 'Nouveau produit', typeIcon: 'fa-plus-circle', marketId: product.user_id, marketName: market?.market_name || market?.owner_name || 'Vendeur', marketCity: market?.city || '', marketAvatar: market?.avatar_url, message: `a ajouté le produit`, productId: product.id, productName: product.name, productImage: product.images?.[0] || null, date: product.created_at });
             }
         }
-        const { data: disabledProducts } = await supabase
-            .from('products')
-            .select('id, name, user_id, updated_at, images')
-            .eq('active', false)
-            .gte('updated_at', twoDaysAgo.toISOString());
+        const { data: disabledProducts } = await supabase.from('products').select('id, name, user_id, updated_at, images').eq('active', false).gte('updated_at', twoDaysAgo.toISOString());
         if (disabledProducts) {
             for (const product of disabledProducts) {
-                const { data: market } = await supabase
-                    .from('markets')
-                    .select('market_name, owner_name, city, avatar_url')
-                    .eq('id', product.user_id)
-                    .single();
-                news.push({
-                    id: `disabled_${product.id}`,
-                    type: 'disabled',
-                    typeLabel: 'Produit retiré',
-                    typeIcon: 'fa-eye-slash',
-                    marketId: product.user_id,
-                    marketName: market?.market_name || market?.owner_name || 'Vendeur',
-                    marketCity: market?.city || '',
-                    marketAvatar: market?.avatar_url,
-                    message: `a retiré le produit`,
-                    productId: product.id,
-                    productName: product.name,
-                    productImage: product.images?.[0] || null,
-                    date: product.updated_at
-                });
+                const { data: market } = await supabase.from('markets').select('market_name, owner_name, city, avatar_url').eq('id', product.user_id).single();
+                news.push({ id: `disabled_${product.id}`, type: 'disabled', typeLabel: 'Produit retiré', typeIcon: 'fa-eye-slash', marketId: product.user_id, marketName: market?.market_name || market?.owner_name || 'Vendeur', marketCity: market?.city || '', marketAvatar: market?.avatar_url, message: `a retiré le produit`, productId: product.id, productName: product.name, productImage: product.images?.[0] || null, date: product.updated_at });
             }
         }
         news.sort((a, b) => new Date(b.date) - new Date(a.date));
         return news;
     }
 
-    async function loadAllProducts() {
-        const { data: products } = await supabase
-            .from('products')
-            .select('*')
-            .eq('active', true);
-        allProducts = products || [];
-    }
+    async function loadAllProducts() { const { data: products } = await supabase.from('products').select('*').eq('active', true); allProducts = products || []; }
 
     async function loadNewProducts() {
-        const { data: products } = await supabase
-            .from('products')
-            .select('*')
-            .eq('active', true)
-            .order('created_at', { ascending: false })
-            .limit(10);
+        const { data: products } = await supabase.from('products').select('*').eq('active', true).order('created_at', { ascending: false }).limit(10);
         if (!products || products.length === 0) return [];
         const formatted = [];
         for (const product of products) {
             let marketName = 'Vendeur';
             if (product.user_id) {
-                const { data: market } = await supabase
-                    .from('markets')
-                    .select('market_name, owner_name')
-                    .eq('id', product.user_id)
-                    .single();
+                const { data: market } = await supabase.from('markets').select('market_name, owner_name').eq('id', product.user_id).single();
                 marketName = market?.market_name || market?.owner_name || 'Vendeur';
             }
-            formatted.push({
-                id: product.id,
-                name: product.name,
-                price: product.price,
-                images: product.images || [],
-                market_name: marketName,
-                created_at: product.created_at
-            });
+            formatted.push({ id: product.id, name: product.name, price: product.price, images: product.images || [], market_name: marketName, created_at: product.created_at });
         }
         return formatted;
     }
 
     async function loadTopProducts() {
-        const { data: stats } = await supabase
-            .from('product_stats')
-            .select('product_id, view_count');
+        const { data: stats } = await supabase.from('product_stats').select('product_id, view_count');
         const viewCounts = {};
-        for (const stat of stats || []) {
-            viewCounts[stat.product_id] = (viewCounts[stat.product_id] || 0) + (stat.view_count || 0);
-        }
-        const sortedProductIds = Object.entries(viewCounts)
-            .filter(([_, count]) => count > 0)
-            .sort((a, b) => b[1] - a[1])
-            .slice(0, 10)
-            .map(([id]) => id);
+        for (const stat of stats || []) { viewCounts[stat.product_id] = (viewCounts[stat.product_id] || 0) + (stat.view_count || 0); }
+        const sortedProductIds = Object.entries(viewCounts).filter(([_, count]) => count > 0).sort((a, b) => b[1] - a[1]).slice(0, 10).map(([id]) => id);
         if (sortedProductIds.length === 0) return [];
-        const { data: products } = await supabase
-            .from('products')
-            .select('*')
-            .in('id', sortedProductIds)
-            .eq('active', true);
+        const { data: products } = await supabase.from('products').select('*').in('id', sortedProductIds).eq('active', true);
         if (!products) return [];
         const formatted = [];
         for (const product of products) {
             let marketName = 'Vendeur';
             if (product.user_id) {
-                const { data: market } = await supabase
-                    .from('markets')
-                    .select('market_name, owner_name')
-                    .eq('id', product.user_id)
-                    .single();
+                const { data: market } = await supabase.from('markets').select('market_name, owner_name').eq('id', product.user_id).single();
                 marketName = market?.market_name || market?.owner_name || 'Vendeur';
             }
-            formatted.push({
-                id: product.id,
-                name: product.name,
-                price: product.price,
-                images: product.images || [],
-                market_name: marketName,
-                views: viewCounts[product.id] || 0
-            });
+            formatted.push({ id: product.id, name: product.name, price: product.price, images: product.images || [], market_name: marketName, views: viewCounts[product.id] || 0 });
         }
         return formatted;
     }
@@ -414,158 +209,83 @@
         await loadAllProducts();
         const categoriesMap = new Map();
         for (const product of allProducts) {
-            if (product.category && product.category.trim()) {
-                const cat = product.category.trim();
-                categoriesMap.set(cat, (categoriesMap.get(cat) || 0) + 1);
-            }
+            if (product.category && product.category.trim()) { categoriesMap.set(product.category.trim(), (categoriesMap.get(product.category.trim()) || 0) + 1); }
         }
-        const iconMap = {
-            'Vêtements': 'fa-tshirt', 'Chaussures': 'fa-shoe-prints', 'Électronique': 'fa-mobile-alt',
-            'Accessoires': 'fa-shopping-bag', 'Maison': 'fa-home', 'Beauté': 'fa-smile',
-            'Sport': 'fa-futbol', 'Livres': 'fa-book', 'Alimentation': 'fa-apple-alt', 'Autre': 'fa-tag'
-        };
-        categoriesList = Array.from(categoriesMap.entries()).map(([name, count]) => ({
-            name: name, count: count, icon: iconMap[name] || 'fa-tag'
-        })).sort((a, b) => b.count - a.count);
+        const iconMap = { 'Vêtements': 'fa-tshirt', 'Chaussures': 'fa-shoe-prints', 'Électronique': 'fa-mobile-alt', 'Accessoires': 'fa-shopping-bag', 'Maison': 'fa-home', 'Beauté': 'fa-smile', 'Sport': 'fa-futbol', 'Livres': 'fa-book', 'Alimentation': 'fa-apple-alt', 'Autre': 'fa-tag' };
+        categoriesList = Array.from(categoriesMap.entries()).map(([name, count]) => ({ name: name, count: count, icon: iconMap[name] || 'fa-tag' })).sort((a, b) => b.count - a.count);
     }
 
     async function loadPromoProducts() {
-        const { data: boosts } = await supabase
-            .from('product_boosts')
-            .select('*, products!inner(*)')
-            .eq('is_active', true)
-            .eq('products.active', true);
+        const { data: boosts } = await supabase.from('product_boosts').select('*, products!inner(*)').eq('is_active', true).eq('products.active', true);
         if (!boosts || boosts.length === 0) return [];
         const productsWithBoost = [];
         for (const boost of boosts) {
             const product = boost.products;
-            const { data: market } = await supabase
-                .from('markets')
-                .select('market_name, owner_name, city')
-                .eq('id', product.user_id)
-                .single();
-            productsWithBoost.push({
-                ...product,
-                images: product.images || [],
-                boost: {
-                    discount_percent: boost.discount_percent,
-                    boost_type: boost.boost_type,
-                    title: boost.title,
-                    description: boost.description,
-                    end_date: boost.end_date
-                },
-                market_name: market?.market_name || market?.owner_name || 'Vendeur',
-                market_city: market?.city || ''
-            });
+            const { data: market } = await supabase.from('markets').select('market_name, owner_name, city').eq('id', product.user_id).single();
+            productsWithBoost.push({ ...product, images: product.images || [], boost: { discount_percent: boost.discount_percent, boost_type: boost.boost_type, title: boost.title, description: boost.description, end_date: boost.end_date }, market_name: market?.market_name || market?.owner_name || 'Vendeur', market_city: market?.city || '' });
         }
         return productsWithBoost;
     }
 
     async function loadVendors() {
-        const { data: markets } = await supabase
-            .from('markets')
-            .select('id, market_name, owner_name, city, phone, avatar_url')
-            .eq('market_active', true)
-            .order('created_at', { ascending: false });
+        const { data: markets } = await supabase.from('markets').select('id, market_name, owner_name, city, phone, avatar_url').eq('market_active', true).order('created_at', { ascending: false });
         if (!markets) return [];
         const vendorsWithCount = [];
         for (const market of markets) {
-            const { count, error } = await supabase
-                .from('products')
-                .select('id', { count: 'exact', head: true })
-                .eq('user_id', market.id)
-                .eq('active', true);
+            const { count, error } = await supabase.from('products').select('id', { count: 'exact', head: true }).eq('user_id', market.id).eq('active', true);
             vendorsWithCount.push({ ...market, products_count: error ? 0 : count || 0 });
         }
         return vendorsWithCount;
     }
 
     async function loadInfiniteProducts() {
-        const { data: products } = await supabase
-            .from('products')
-            .select('*')
-            .eq('active', true)
-            .order('created_at', { ascending: false });
+        const { data: products } = await supabase.from('products').select('*').eq('active', true).order('created_at', { ascending: false });
         return products || [];
     }
 
-    // ============ CARROUSEL D'IMAGES ============
     function initProductCarousel(container, images, productId) {
         if (!container || !images || images.length <= 1) return;
-        
         const imgElement = container.querySelector('.carousel-img');
         const prevBtn = container.querySelector('.carousel-nav-prev');
         const nextBtn = container.querySelector('.carousel-nav-next');
         const dotsContainer = container.querySelector('.carousel-dots-container');
-        
         if (!imgElement) return;
-        
         let currentIndex = 0;
-        
         imgElement.src = images[0];
         imgElement.classList.add('active');
-        
         if (dotsContainer) {
             dotsContainer.innerHTML = '';
             images.forEach((_, i) => {
                 const dot = document.createElement('div');
                 dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
-                dot.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    goToSlide(i);
-                });
+                dot.addEventListener('click', (e) => { e.stopPropagation(); goToSlide(i); });
                 dotsContainer.appendChild(dot);
             });
         }
-        
         function goToSlide(index) {
             currentIndex = (index + images.length) % images.length;
             imgElement.src = images[currentIndex];
             if (dotsContainer) {
                 const dots = dotsContainer.querySelectorAll('.carousel-dot');
-                dots.forEach((dot, i) => {
-                    dot.classList.toggle('active', i === currentIndex);
-                });
+                dots.forEach((dot, i) => dot.classList.toggle('active', i === currentIndex));
             }
             resetInterval();
         }
-        
         function nextSlide() { goToSlide(currentIndex + 1); }
         function prevSlide() { goToSlide(currentIndex - 1); }
-        
         let interval = setInterval(nextSlide, 4000);
-        
-        function resetInterval() {
-            clearInterval(interval);
-            interval = setInterval(nextSlide, 4000);
-        }
-        
+        function resetInterval() { clearInterval(interval); interval = setInterval(nextSlide, 4000); }
         if (prevBtn) prevBtn.addEventListener('click', (e) => { e.stopPropagation(); prevSlide(); });
         if (nextBtn) nextBtn.addEventListener('click', (e) => { e.stopPropagation(); nextSlide(); });
-        
         allCarouselIntervals[productId] = interval;
-        
         container.addEventListener('mouseenter', () => clearInterval(interval));
         container.addEventListener('mouseleave', () => { interval = setInterval(nextSlide, 4000); allCarouselIntervals[productId] = interval; });
     }
 
     function createProductCarouselHtml(images, productId) {
-        if (!images || images.length === 0) {
-            return `<div class="product-carousel" data-product-id="${productId}"><div class="carousel-images-container"><img class="carousel-img active" src="" alt=""></div></div>`;
-        }
-        if (images.length === 1) {
-            return `<div class="product-carousel" data-product-id="${productId}"><div class="carousel-images-container"><img class="carousel-img active" src="${escapeHtml(images[0])}" alt=""></div></div>`;
-        }
-        return `
-            <div class="product-carousel" data-product-id="${productId}">
-                <div class="carousel-images-container">
-                    <img class="carousel-img active" src="${escapeHtml(images[0])}" alt="">
-                </div>
-                <button class="carousel-nav-prev"><i class="fas fa-chevron-left"></i></button>
-                <button class="carousel-nav-next"><i class="fas fa-chevron-right"></i></button>
-                <div class="carousel-dots-container"></div>
-            </div>
-        `;
+        if (!images || images.length === 0) return `<div class="product-carousel" data-product-id="${productId}"><div class="carousel-images-container"><img class="carousel-img active" src="" alt=""></div></div>`;
+        if (images.length === 1) return `<div class="product-carousel" data-product-id="${productId}"><div class="carousel-images-container"><img class="carousel-img active" src="${escapeHtml(images[0])}" alt=""></div></div>`;
+        return `<div class="product-carousel" data-product-id="${productId}"><div class="carousel-images-container"><img class="carousel-img active" src="${escapeHtml(images[0])}" alt=""></div><button class="carousel-nav-prev"><i class="fas fa-chevron-left"></i></button><button class="carousel-nav-next"><i class="fas fa-chevron-right"></i></button><div class="carousel-dots-container"></div></div>`;
     }
 
     function initAllCarousels() {
@@ -574,82 +294,14 @@
             if (!productId) return;
             let images = [];
             const product = [...promoProducts, ...newProducts, ...topProducts, ...infiniteProductsList].find(p => p.id == productId);
-            if (product && product.images && product.images.length > 0) {
-                images = product.images;
-            }
-            if (images.length > 1) {
-                initProductCarousel(carousel, images, productId);
-            }
+            if (product && product.images && product.images.length > 0) images = product.images;
+            if (images.length > 1) initProductCarousel(carousel, images, productId);
         });
     }
 
-    // ============ SECTION FAQ ============
-    function renderFaqSection() {
-        return `
-            <div class="faq-section">
-                <div class="faq-header">
-                    <h3><i class="fas fa-question-circle"></i> Foire aux questions</h3>
-                </div>
-                <div class="faq-scroll">
-                    <div class="faq-track" id="faqTrack">
-                        ${faqCards.map(faq => `
-                            <div class="faq-card">
-                                <div class="faq-icon">
-                                    <i class="fas ${faq.icon}"></i>
-                                </div>
-                                <div class="faq-content">
-                                    <div class="faq-question">${escapeHtml(faq.question)}</div>
-                                    <div class="faq-answer">${escapeHtml(faq.answer)}</div>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-
-    // ============ RENDU DES SECTIONS ============
     function renderPromoCarousel() {
         if (!promoProducts || promoProducts.length === 0) return '<div class="empty-state">Aucune offre promotionnelle pour le moment</div>';
-        return `
-            <div class="promo-carousel-container">
-                <div class="promo-carousel-track" id="promoCarouselTrack">
-                    ${promoProducts.map((product, idx) => {
-                        const images = product.images || [];
-                        const discount = product.boost.discount_percent;
-                        const newPrice = Math.round(product.price * (1 - discount / 100));
-                        const marketName = product.market_name;
-                        const carouselHtml = createProductCarouselHtml(images, product.id);
-                        return `
-                            <div class="promo-card" data-product-id="${product.id}" data-carousel-idx="${idx}">
-                                <div class="promo-card-header">
-                                    <div class="promo-card-image">
-                                        ${carouselHtml}
-                                    </div>
-                                    <div class="promo-card-market"><h4>${escapeHtml(marketName)}</h4><p>${escapeHtml(product.market_city)}</p></div>
-                                </div>
-                                <div class="promo-card-body">
-                                    <div class="product-name">${escapeHtml(product.name)}</div>
-                                    <div class="prices">
-                                        <span class="original-price">${formatPrice(product.price)} FCFA</span>
-                                        <span class="promo-badge-large">-${discount}%</span>
-                                        <span class="promo-price">${formatPrice(newPrice)} FCFA</span>
-                                    </div>
-                                </div>
-                                <div class="promo-card-footer">
-                                    <a href="viewproduct.html?id=${product.id}" class="promo-btn voir"><i class="fas fa-eye"></i> Voir</a>
-                                    <button class="promo-btn cart" data-id="${product.id}"><i class="fas fa-cart-plus"></i> Ajouter</button>
-                                </div>
-                            </div>
-                        `;
-                    }).join('')}
-                </div>
-                <button class="promo-carousel-nav prev" id="promoPrev"><i class="fas fa-chevron-left"></i></button>
-                <button class="promo-carousel-nav next" id="promoNext"><i class="fas fa-chevron-right"></i></button>
-                <div class="promo-carousel-dots" id="promoDots"></div>
-            </div>
-        `;
+        return `<div class="promo-carousel-container"><div class="promo-carousel-track" id="promoCarouselTrack">${promoProducts.map((product, idx) => { const images = product.images || []; const discount = product.boost.discount_percent; const newPrice = Math.round(product.price * (1 - discount / 100)); const marketName = product.market_name; const carouselHtml = createProductCarouselHtml(images, product.id); return `<div class="promo-card" data-product-id="${product.id}" data-carousel-idx="${idx}"><div class="promo-card-header"><div class="promo-card-image">${carouselHtml}</div><div class="promo-card-market"><h4>${escapeHtml(marketName)}</h4><p>${escapeHtml(product.market_city)}</p></div></div><div class="promo-card-body"><div class="product-name">${escapeHtml(product.name)}</div><div class="prices"><span class="original-price">${formatPrice(product.price)} FCFA</span><span class="promo-badge-large">-${discount}%</span><span class="promo-price">${formatPrice(newPrice)} FCFA</span></div></div><div class="promo-card-footer"><a href="viewproduct.html?id=${product.id}" class="promo-btn voir"><i class="fas fa-eye"></i> Voir</a><button class="promo-btn cart" data-id="${product.id}"><i class="fas fa-cart-plus"></i> Ajouter</button></div></div>`; }).join('')}</div><button class="promo-carousel-nav prev" id="promoPrev"><i class="fas fa-chevron-left"></i></button><button class="promo-carousel-nav next" id="promoNext"><i class="fas fa-chevron-right"></i></button><div class="promo-carousel-dots" id="promoDots"></div></div>`;
     }
 
     function initPromoCarousel() {
@@ -662,41 +314,18 @@
         dotsContainer.innerHTML = promoProducts.map((_, i) => `<div class="promo-dot ${i === 0 ? 'active' : ''}" data-index="${i}"></div>`).join('');
         let currentIndex = 0;
         let interval = null;
-        function goToSlide(index) {
-            currentIndex = (index + totalSlides) % totalSlides;
-            track.style.transform = `translateX(-${currentIndex * 100}%)`;
-            document.querySelectorAll('.promo-dot').forEach((dot, i) => dot.classList.toggle('active', i === currentIndex));
-        }
+        function goToSlide(index) { currentIndex = (index + totalSlides) % totalSlides; track.style.transform = `translateX(-${currentIndex * 100}%)`; document.querySelectorAll('.promo-dot').forEach((dot, i) => dot.classList.toggle('active', i === currentIndex)); }
         function nextSlide() { goToSlide(currentIndex + 1); resetTimer(); }
         function prevSlide() { goToSlide(currentIndex - 1); resetTimer(); }
         function resetTimer() { if (interval) clearInterval(interval); if (totalSlides > 1) interval = setInterval(nextSlide, 5000); }
-        prevBtn.addEventListener('click', prevSlide);
-        nextBtn.addEventListener('click', nextSlide);
+        prevBtn.addEventListener('click', prevSlide); nextBtn.addEventListener('click', nextSlide);
         document.querySelectorAll('.promo-dot').forEach(dot => dot.addEventListener('click', () => { goToSlide(parseInt(dot.dataset.index)); resetTimer(); }));
         resetTimer();
-        document.querySelectorAll('.promo-btn.cart').forEach(btn => btn.addEventListener('click', async (e) => { e.stopPropagation(); const productId = btn.getAttribute('data-id'); if (productId && currentUserId) await addToCart(productId); else if (!currentUserId) { showToast('Connectez-vous', 'error'); window.location.href = 'login.html'; } }));
+        document.querySelectorAll('.promo-btn.cart').forEach(btn => btn.addEventListener('click', async (e) => { e.stopPropagation(); const productId = btn.getAttribute('data-id'); if (productId && currentUserId && currentUserVerified) await addToCart(productId); else { showToast('Connectez-vous pour ajouter au panier', 'error'); } }));
     }
 
     function renderInfoCards() {
-        return `
-            <div class="info-cards-section">
-                <div class="info-cards-header"><h3><i class="fas fa-info-circle"></i> À savoir</h3></div>
-                <div class="info-cards-carousel">
-                    <div class="info-cards-track" id="infoCardsTrack">
-                        ${infoCards.map(card => `
-                            <div class="info-card ${card.type}">
-                                <div class="info-card-header"><div class="info-card-icon"><i class="fas ${card.icon}"></i></div><div class="info-card-title"><h4>${escapeHtml(card.title)}</h4></div></div>
-                                <div class="info-card-body"><div class="info-message">${escapeHtml(card.message)}</div></div>
-                                <div class="info-card-footer"><div class="info-footer-text"><i class="fas fa-heart"></i> ${escapeHtml(card.footer)}</div></div>
-                            </div>
-                        `).join('')}
-                    </div>
-                    <button class="info-carousel-nav prev" id="infoPrev"><i class="fas fa-chevron-left"></i></button>
-                    <button class="info-carousel-nav next" id="infoNext"><i class="fas fa-chevron-right"></i></button>
-                    <div class="info-carousel-dots" id="infoDots"></div>
-                </div>
-            </div>
-        `;
+        return `<div class="info-cards-section"><div class="info-cards-header"><h3><i class="fas fa-info-circle"></i> À savoir</h3></div><div class="info-cards-carousel"><div class="info-cards-track" id="infoCardsTrack">${infoCards.map(card => `<div class="info-card ${card.type}"><div class="info-card-header"><div class="info-card-icon"><i class="fas ${card.icon}"></i></div><div class="info-card-title"><h4>${escapeHtml(card.title)}</h4></div></div><div class="info-card-body"><div class="info-message">${escapeHtml(card.message)}</div></div><div class="info-card-footer"><div class="info-footer-text"><i class="fas fa-heart"></i> ${escapeHtml(card.footer)}</div></div></div>`).join('')}</div><button class="info-carousel-nav prev" id="infoPrev"><i class="fas fa-chevron-left"></i></button><button class="info-carousel-nav next" id="infoNext"><i class="fas fa-chevron-right"></i></button><div class="info-carousel-dots" id="infoDots"></div></div></div>`;
     }
 
     function initInfoCarousel() {
@@ -709,31 +338,18 @@
         dotsContainer.innerHTML = infoCards.map((_, i) => `<div class="info-dot ${i === 0 ? 'active' : ''}" data-index="${i}"></div>`).join('');
         let currentIndex = 0;
         let interval = null;
-        function goToSlide(index) {
-            currentIndex = (index + totalSlides) % totalSlides;
-            track.style.transform = `translateX(-${currentIndex * 100}%)`;
-            document.querySelectorAll('.info-dot').forEach((dot, i) => dot.classList.toggle('active', i === currentIndex));
-        }
+        function goToSlide(index) { currentIndex = (index + totalSlides) % totalSlides; track.style.transform = `translateX(-${currentIndex * 100}%)`; document.querySelectorAll('.info-dot').forEach((dot, i) => dot.classList.toggle('active', i === currentIndex)); }
         function nextSlide() { goToSlide(currentIndex + 1); resetTimer(); }
         function prevSlide() { goToSlide(currentIndex - 1); resetTimer(); }
         function resetTimer() { if (interval) clearInterval(interval); if (totalSlides > 1) interval = setInterval(nextSlide, 6000); }
-        prevBtn.addEventListener('click', prevSlide);
-        nextBtn.addEventListener('click', nextSlide);
+        prevBtn.addEventListener('click', prevSlide); nextBtn.addEventListener('click', nextSlide);
         document.querySelectorAll('.info-dot').forEach(dot => dot.addEventListener('click', () => { goToSlide(parseInt(dot.dataset.index)); resetTimer(); }));
         resetTimer();
     }
 
     function renderCategoriesSection() {
         if (!categoriesList || categoriesList.length === 0) return `<div class="categories-section"><div class="categories-header"><h3><i class="fas fa-th-large"></i> Catégories populaires</h3></div><div class="empty-categories">Aucune catégorie disponible</div></div>`;
-        return `
-            <div class="categories-section">
-                <div class="categories-header"><h3><i class="fas fa-th-large"></i> Catégories populaires</h3>${currentCategoryFilter !== 'all' ? '<button class="reset-filter-btn" id="resetCategoryFilter">Effacer le filtre</button>' : ''}</div>
-                <div class="categories-scroll"><div class="categories-track" id="categoriesTrack">
-                    <div class="category-card ${currentCategoryFilter === 'all' ? 'active' : ''}" data-category="all"><div class="category-icon"><i class="fas fa-star"></i></div><div class="category-name">Tous</div><div class="category-count">${allProducts.length}</div></div>
-                    ${categoriesList.map(cat => `<div class="category-card ${currentCategoryFilter === cat.name ? 'active' : ''}" data-category="${escapeHtml(cat.name)}"><div class="category-icon"><i class="fas ${cat.icon}"></i></div><div class="category-name">${escapeHtml(cat.name)}</div><div class="category-count">${cat.count}</div></div>`).join('')}
-                </div></div>
-            </div>
-        `;
+        return `<div class="categories-section"><div class="categories-header"><h3><i class="fas fa-th-large"></i> Catégories populaires</h3>${currentCategoryFilter !== 'all' ? '<button class="reset-filter-btn" id="resetCategoryFilter">Effacer le filtre</button>' : ''}</div><div class="categories-scroll"><div class="categories-track" id="categoriesTrack"><div class="category-card ${currentCategoryFilter === 'all' ? 'active' : ''}" data-category="all"><div class="category-icon"><i class="fas fa-star"></i></div><div class="category-name">Tous</div><div class="category-count">${allProducts.length}</div></div>${categoriesList.map(cat => `<div class="category-card ${currentCategoryFilter === cat.name ? 'active' : ''}" data-category="${escapeHtml(cat.name)}"><div class="category-icon"><i class="fas ${cat.icon}"></i></div><div class="category-name">${escapeHtml(cat.name)}</div><div class="category-count">${cat.count}</div></div>`).join('')}</div></div></div>`;
     }
 
     function initCategoriesFilter() {
@@ -743,63 +359,20 @@
 
     function renderNewProductsSection() {
         if (!newProducts || newProducts.length === 0) return `<div class="new-products-section"><div class="new-products-header"><h3><i class="fas fa-clock"></i> Nouveautés de la semaine</h3></div><div class="empty-state">Aucun nouveau produit cette semaine</div></div>`;
-        return `
-            <div class="new-products-section">
-                <div class="new-products-header"><h3><i class="fas fa-clock"></i> Nouveautés de la semaine</h3></div>
-                <div class="new-products-scroll"><div class="new-products-track" id="newProductsTrack">
-                    ${newProducts.map(product => {
-                        const randomColor = getRandomColor();
-                        const discount = productBoosts[product.id] || 0;
-                        const originalPrice = product.price;
-                        const discountedPrice = discount > 0 ? Math.round(originalPrice * (1 - discount / 100)) : originalPrice;
-                        const carouselHtml = createProductCarouselHtml(product.images, product.id);
-                        return `<div class="new-product-card ${randomColor}" data-product-id="${product.id}">
-                            ${carouselHtml}
-                            ${discount > 0 ? `<div class="new-product-badge promo">-${discount}%</div>` : '<div class="new-product-badge">Nouveau</div>'}
-                            <div class="new-product-name">${escapeHtml(product.name)}</div>
-                            <div class="new-product-market"><i class="fas fa-store"></i> ${escapeHtml(product.market_name)}</div>
-                            <div class="new-product-price">${discount > 0 ? `<span class="original-price">${formatPrice(originalPrice)} FCFA</span><span class="discounted-price">${formatPrice(discountedPrice)} FCFA</span>` : `<span>${formatPrice(originalPrice)} FCFA</span>`}</div>
-                            <div class="new-product-buttons"><a href="viewproduct.html?id=${product.id}" class="new-product-btn voir"><i class="fas fa-eye"></i> Voir</a><button class="new-product-btn cart" data-id="${product.id}"><i class="fas fa-cart-plus"></i> Ajouter</button></div>
-                        </div>`;
-                    }).join('')}
-                </div></div>
-            </div>
-        `;
+        return `<div class="new-products-section"><div class="new-products-header"><h3><i class="fas fa-clock"></i> Nouveautés de la semaine</h3></div><div class="new-products-scroll"><div class="new-products-track" id="newProductsTrack">${newProducts.map(product => { const randomColor = getRandomColor(); const discount = productBoosts[product.id] || 0; const originalPrice = product.price; const discountedPrice = discount > 0 ? Math.round(originalPrice * (1 - discount / 100)) : originalPrice; const carouselHtml = createProductCarouselHtml(product.images, product.id); return `<div class="new-product-card ${randomColor}" data-product-id="${product.id}">${carouselHtml}${discount > 0 ? `<div class="new-product-badge promo">-${discount}%</div>` : '<div class="new-product-badge">Nouveau</div>'}<div class="new-product-name">${escapeHtml(product.name)}</div><div class="new-product-market"><i class="fas fa-store"></i> ${escapeHtml(product.market_name)}</div><div class="new-product-price">${discount > 0 ? `<span class="original-price">${formatPrice(originalPrice)} FCFA</span><span class="discounted-price">${formatPrice(discountedPrice)} FCFA</span>` : `<span>${formatPrice(originalPrice)} FCFA</span>`}</div><div class="new-product-buttons"><a href="viewproduct.html?id=${product.id}" class="new-product-btn voir"><i class="fas fa-eye"></i> Voir</a><button class="new-product-btn cart" data-id="${product.id}"><i class="fas fa-cart-plus"></i> Ajouter</button></div></div>`; }).join('')}</div></div></div>`;
     }
 
     function initNewProductsButtons() {
-        document.querySelectorAll('.new-product-btn.cart').forEach(btn => btn.addEventListener('click', async (e) => { e.stopPropagation(); const productId = btn.getAttribute('data-id'); if (productId && currentUserId) await addToCart(productId); else if (!currentUserId) { showToast('Connectez-vous', 'error'); window.location.href = 'login.html'; } }));
+        document.querySelectorAll('.new-product-btn.cart').forEach(btn => btn.addEventListener('click', async (e) => { e.stopPropagation(); const productId = btn.getAttribute('data-id'); if (productId && currentUserId && currentUserVerified) await addToCart(productId); else { showToast('Connectez-vous pour ajouter au panier', 'error'); } }));
     }
 
     function renderTopProductsSection() {
         if (!topProducts || topProducts.length === 0) return `<div class="top-products-section"><div class="top-products-header"><h3><i class="fas fa-chart-line"></i> Produits les plus vus</h3></div><div class="empty-state">Aucune donnée pour le moment</div></div>`;
-        return `
-            <div class="top-products-section">
-                <div class="top-products-header"><h3><i class="fas fa-chart-line"></i> Produits les plus vus</h3></div>
-                <div class="top-products-grid" id="topProductsGrid">
-                    ${topProducts.map(product => {
-                        const discount = productBoosts[product.id] || 0;
-                        const originalPrice = product.price;
-                        const discountedPrice = discount > 0 ? Math.round(originalPrice * (1 - discount / 100)) : originalPrice;
-                        const carouselHtml = createProductCarouselHtml(product.images, product.id);
-                        return `<div class="top-product-card" data-product-id="${product.id}">
-                            ${carouselHtml}
-                            <div class="top-product-info">
-                                <div class="top-product-name">${escapeHtml(product.name)}</div>
-                                <div class="top-product-market"><i class="fas fa-store"></i> ${escapeHtml(product.market_name)}</div>
-                                <div class="top-product-price">${discount > 0 ? `<span class="original-price">${formatPrice(originalPrice)} FCFA</span><span class="discounted-price">${formatPrice(discountedPrice)} FCFA</span><span class="promo-badge-small">-${discount}%</span>` : `<span>${formatPrice(originalPrice)} FCFA</span>`}</div>
-                                <div class="top-product-views"><i class="fas fa-eye"></i> ${product.views} vues</div>
-                                <div class="top-product-buttons"><a href="viewproduct.html?id=${product.id}" class="top-product-btn voir"><i class="fas fa-eye"></i> Voir</a><button class="top-product-btn cart" data-id="${product.id}"><i class="fas fa-cart-plus"></i> Ajouter</button></div>
-                            </div>
-                        </div>`;
-                    }).join('')}
-                </div>
-            </div>
-        `;
+        return `<div class="top-products-section"><div class="top-products-header"><h3><i class="fas fa-chart-line"></i> Produits les plus vus</h3></div><div class="top-products-grid" id="topProductsGrid">${topProducts.map(product => { const discount = productBoosts[product.id] || 0; const originalPrice = product.price; const discountedPrice = discount > 0 ? Math.round(originalPrice * (1 - discount / 100)) : originalPrice; const carouselHtml = createProductCarouselHtml(product.images, product.id); return `<div class="top-product-card" data-product-id="${product.id}">${carouselHtml}<div class="top-product-info"><div class="top-product-name">${escapeHtml(product.name)}</div><div class="top-product-market"><i class="fas fa-store"></i> ${escapeHtml(product.market_name)}</div><div class="top-product-price">${discount > 0 ? `<span class="original-price">${formatPrice(originalPrice)} FCFA</span><span class="discounted-price">${formatPrice(discountedPrice)} FCFA</span><span class="promo-badge-small">-${discount}%</span>` : `<span>${formatPrice(originalPrice)} FCFA</span>`}</div><div class="top-product-views"><i class="fas fa-eye"></i> ${product.views} vues</div><div class="top-product-buttons"><a href="viewproduct.html?id=${product.id}" class="top-product-btn voir"><i class="fas fa-eye"></i> Voir</a><button class="top-product-btn cart" data-id="${product.id}"><i class="fas fa-cart-plus"></i> Ajouter</button></div></div></div>`; }).join('')}</div></div>`;
     }
 
     function initTopProductsButtons() {
-        document.querySelectorAll('.top-product-btn.cart').forEach(btn => btn.addEventListener('click', async (e) => { e.stopPropagation(); const productId = btn.getAttribute('data-id'); if (productId && currentUserId) await addToCart(productId); else if (!currentUserId) { showToast('Connectez-vous', 'error'); window.location.href = 'login.html'; } }));
+        document.querySelectorAll('.top-product-btn.cart').forEach(btn => btn.addEventListener('click', async (e) => { e.stopPropagation(); const productId = btn.getAttribute('data-id'); if (productId && currentUserId && currentUserVerified) await addToCart(productId); else { showToast('Connectez-vous pour ajouter au panier', 'error'); } }));
     }
 
     function renderNewsSection(news, filter) {
@@ -824,32 +397,17 @@
         searchInput.addEventListener('input', filterVendors); attachVendorEvents();
     }
 
-    function renderSearchBanner() {
-        return `<div class="search-banner-section"><div class="search-banner-card"><div class="search-banner-icon"><i class="fas fa-search"></i></div><h3 class="search-banner-title">Vous cherchez quelque chose ?</h3><p class="search-banner-subtitle">Trouvez rapidement un produit, une marque ou un vendeur</p><button class="search-banner-btn" id="searchBannerBtn"><i class="fas fa-search"></i> Rechercher</button></div></div>`;
-    }
-
+    function renderSearchBanner() { return `<div class="search-banner-section"><div class="search-banner-card"><div class="search-banner-icon"><i class="fas fa-search"></i></div><h3 class="search-banner-title">Vous cherchez quelque chose ?</h3><p class="search-banner-subtitle">Trouvez rapidement un produit, une marque ou un vendeur</p><button class="search-banner-btn" id="searchBannerBtn"><i class="fas fa-search"></i> Rechercher</button></div></div>`; }
     function initSearchBanner() { const btn = document.getElementById('searchBannerBtn'); if (btn) btn.addEventListener('click', () => window.location.href = 'search.html'); }
 
-    function renderExtraInfoCards() {
-        return `<div class="info-cards-grid-section"><div class="info-cards-header"><h3><i class="fas fa-info-circle"></i> Informations utiles</h3></div><div class="info-cards-grid" id="extraInfoGrid">
-            ${extraInfoCards.map(card => `<div class="info-card-nm" data-card-id="${card.id}"><div class="info-card-nm-icon"><i class="fas ${card.icon}"></i></div><div class="info-card-nm-title">${escapeHtml(card.title)}</div><div class="info-card-nm-message">${escapeHtml(card.message)}</div>${card.buttons && card.buttons.length > 0 ? `<div class="info-card-nm-buttons">${card.buttons.map(btn => `<button class="info-card-nm-btn ${btn.color}" data-action="${btn.action}" data-platform="${btn.platform || ''}" data-url="${btn.url || ''}"><i class="fas ${btn.action === 'share' ? 'fa-share-alt' : (btn.action === 'copy' ? 'fa-copy' : 'fa-link')}"></i> ${btn.text}</button>`).join('')}</div>` : ''}</div>`).join('')}
-        </div></div>`;
-    }
-
-    function initExtraInfoCards() {
-        document.querySelectorAll('.info-card-nm-btn').forEach(btn => btn.addEventListener('click', async (e) => {
-            e.stopPropagation(); const action = btn.getAttribute('data-action'); const platform = btn.getAttribute('data-platform'); const url = btn.getAttribute('data-url'); const shareUrl = 'https://megane-market.online'; const shareText = 'Découvrez Megane Market - Votre marché de confiance !';
-            if (action === 'share') { if (platform === 'whatsapp') window.open(`https://wa.me/?text=${encodeURIComponent(shareText + ' ' + shareUrl)}`, '_blank'); else if (platform === 'facebook') window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank'); }
-            else if (action === 'copy') { try { await navigator.clipboard.writeText(shareUrl); showToast('Lien copié !', 'success'); } catch (err) { showToast('Erreur copie', 'error'); } }
-            else if (action === 'link' && url) window.location.href = url;
-        }));
-    }
+    function renderExtraInfoCards() { return `<div class="info-cards-grid-section"><div class="info-cards-header"><h3><i class="fas fa-info-circle"></i> Informations utiles</h3></div><div class="info-cards-grid" id="extraInfoGrid">${extraInfoCards.map(card => `<div class="info-card-nm" data-card-id="${card.id}"><div class="info-card-nm-icon"><i class="fas ${card.icon}"></i></div><div class="info-card-nm-title">${escapeHtml(card.title)}</div><div class="info-card-nm-message">${escapeHtml(card.message)}</div>${card.buttons && card.buttons.length > 0 ? `<div class="info-card-nm-buttons">${card.buttons.map(btn => `<button class="info-card-nm-btn ${btn.color}" data-action="${btn.action}" data-platform="${btn.platform || ''}" data-url="${btn.url || ''}"><i class="fas ${btn.action === 'share' ? 'fa-share-alt' : (btn.action === 'copy' ? 'fa-copy' : 'fa-link')}"></i> ${btn.text}</button>`).join('')}</div>` : ''}</div>`).join('')}</div></div>`; }
+    function initExtraInfoCards() { document.querySelectorAll('.info-card-nm-btn').forEach(btn => btn.addEventListener('click', async (e) => { e.stopPropagation(); const action = btn.getAttribute('data-action'); const platform = btn.getAttribute('data-platform'); const url = btn.getAttribute('data-url'); const shareUrl = 'https://megane-market.online'; const shareText = 'Découvrez Megane Market - Votre marché de confiance !'; if (action === 'share') { if (platform === 'whatsapp') window.open(`https://wa.me/?text=${encodeURIComponent(shareText + ' ' + shareUrl)}`, '_blank'); else if (platform === 'facebook') window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank'); } else if (action === 'copy') { try { await navigator.clipboard.writeText(shareUrl); showToast('Lien copié !', 'success'); } catch (err) { showToast('Erreur copie', 'error'); } } else if (action === 'link' && url) window.location.href = url; })); }
 
     async function addToCart(productId) {
         try {
             const { data: existing } = await supabase.from('cart').select('id, quantity').eq('user_id', currentUserId).eq('product_id', productId).maybeSingle();
             if (existing) { await supabase.from('cart').update({ quantity: existing.quantity + 1 }).eq('id', existing.id); showToast('Quantité augmentée', 'success'); }
-            else { await supabase.from('cart').insert({ user_id: currentUserId, product_id: productId, quantity: 1 }); showToast('Produit ajouté', 'success'); }
+            else { await supabase.from('cart').insert({ user_id: currentUserId, product_id: productId, quantity: 1 }); showToast('Produit ajouté au panier', 'success'); }
             await loadCartCount();
         } catch (err) { showToast('Erreur', 'error'); }
     }
@@ -870,7 +428,7 @@
     }
 
     function attachInfiniteEvents() {
-        document.querySelectorAll('.infinite-product-btn.cart').forEach(btn => btn.addEventListener('click', async (e) => { e.stopPropagation(); const id = btn.getAttribute('data-id'); if (id && currentUserId) await addToCart(id); else if (!currentUserId) { showToast('Connectez-vous', 'error'); window.location.href = 'login.html'; } }));
+        document.querySelectorAll('.infinite-product-btn.cart').forEach(btn => btn.addEventListener('click', async (e) => { e.stopPropagation(); const id = btn.getAttribute('data-id'); if (id && currentUserId && currentUserVerified) await addToCart(id); else { showToast('Connectez-vous pour ajouter au panier', 'error'); } }));
         document.querySelectorAll('.infinite-product-card').forEach(card => card.addEventListener('click', (e) => { if (e.target.classList.contains('infinite-product-btn')) return; const id = card.getAttribute('data-id'); if (id) window.location.href = `viewproduct.html?id=${id}`; }));
     }
 
@@ -899,16 +457,15 @@
 
     function initInfiniteObserver() {
         if (infiniteObserver) infiniteObserver.disconnect();
-        infiniteObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => { if (entry.isIntersecting && !infiniteIsLoading && infiniteHasMoreData) loadMoreInfiniteProducts(); });
-        }, { threshold: 0.1, rootMargin: '200px' });
-        const trigger = document.getElementById('infiniteTrigger');
-        if (trigger) infiniteObserver.observe(trigger);
-        const lastCard = document.querySelector('#infiniteProductsContainer .infinite-product-card:last-child');
-        if (lastCard) infiniteObserver.observe(lastCard);
+        infiniteObserver = new IntersectionObserver((entries) => { entries.forEach(entry => { if (entry.isIntersecting && !infiniteIsLoading && infiniteHasMoreData) loadMoreInfiniteProducts(); }); }, { threshold: 0.1, rootMargin: '200px' });
+        const trigger = document.getElementById('infiniteTrigger'); if (trigger) infiniteObserver.observe(trigger);
+        const lastCard = document.querySelector('#infiniteProductsContainer .infinite-product-card:last-child'); if (lastCard) infiniteObserver.observe(lastCard);
     }
 
-    // Sauvegarde du cache
+    function renderFaqSection() {
+        return `<div class="faq-section"><div class="faq-header"><h3><i class="fas fa-question-circle"></i> Foire aux questions</h3></div><div class="faq-scroll"><div class="faq-track" id="faqTrack">${faqCards.map(faq => `<div class="faq-card"><div class="faq-icon"><i class="fas ${faq.icon}"></i></div><div class="faq-content"><div class="faq-question">${escapeHtml(faq.question)}</div><div class="faq-answer">${escapeHtml(faq.answer)}</div></div></div>`).join('')}</div></div></div>`;
+    }
+
     function saveToCache() {
         const mainContentEl = document.getElementById('mainContent');
         if (mainContentEl && mainContentEl.innerHTML && !mainContentEl.innerHTML.includes('loader')) {
@@ -917,7 +474,6 @@
         }
     }
 
-    // Réinitialisation après chargement du cache
     window.initAfterCache = function() {
         initAllCarousels();
         attachInfiniteEvents();
@@ -934,18 +490,13 @@
     };
 
     async function renderPage() {
-        // Vérifier si le cache est valide
         const cachedHTML = sessionStorage.getItem('market_products_cache');
         const cachedTimestamp = sessionStorage.getItem('market_cache_timestamp');
         const now = Date.now();
         
         if (cachedHTML && cachedTimestamp && (now - parseInt(cachedTimestamp)) < 300000) {
             mainContent.innerHTML = cachedHTML;
-            setTimeout(() => {
-                if (typeof window.initAfterCache === 'function') {
-                    window.initAfterCache();
-                }
-            }, 100);
+            setTimeout(() => { if (typeof window.initAfterCache === 'function') window.initAfterCache(); }, 100);
             return;
         }
         
@@ -990,14 +541,12 @@
         initAllCarousels();
         await loadCartCount();
         await loadNotificationsCount();
-        
-        // Sauvegarder le cache
         saveToCache();
     }
 
     async function init() {
-        const allowed = await checkSessionAndRedirect();
-        if (allowed) await renderPage();
+        await checkSession();
+        await renderPage();
     }
     init();
 })();

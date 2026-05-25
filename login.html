@@ -23,7 +23,7 @@
             overflow-x: hidden;
         }
 
-        /* HEADER FIXE */
+        /* HEADER FIXE (messages) */
         .info-header {
             position: fixed;
             top: 0;
@@ -62,13 +62,46 @@
             color: #e8f5e9;
         }
 
+        /* BARRE LOGO (entre header et contenu) */
+        .logo-bar {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            right: 0;
+            z-index: 99;
+            background: #ffffff;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 0 20px;
+            border-bottom: 1px solid #e8ecf0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+        }
+
+        .logo-bar img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .logo-bar .logo-text {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #4ade80;
+            font-family: 'Poppins', sans-serif;
+            letter-spacing: 0.5px;
+        }
+
         /* CONTENU PRINCIPAL */
         .main-container {
             flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 80px 20px 80px 20px;
+            padding: 150px 20px 80px 20px;
             min-height: 100vh;
             background: #ffffff;
         }
@@ -464,8 +497,15 @@
             .info-header, .nav-footer {
                 height: 56px;
             }
+            .logo-bar {
+                top: 56px;
+                height: 60px;
+            }
+            .logo-bar .logo-text {
+                font-size: 1rem;
+            }
             .main-container {
-                padding: 76px 16px 76px 16px;
+                padding: 140px 16px 80px 16px;
             }
             .front, .back {
                 padding: 20px;
@@ -481,6 +521,12 @@
             <i class="fas fa-info-circle"></i>
             <span id="infoMessage">Bienvenue. Connectez-vous ou créez un compte.</span>
         </div>
+    </div>
+
+    <!-- BARRE LOGO -->
+    <div class="logo-bar">
+        <img src="assets/logo.png" alt="Megane Market" onerror="this.src='https://placehold.co/40x40?text=MM'">
+        <span class="logo-text">Megane Market</span>
     </div>
 
     <!-- CONTENU PRINCIPAL -->

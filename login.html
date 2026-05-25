@@ -15,94 +15,153 @@
 
         body {
             font-family: 'DM Sans', sans-serif;
-            background: #f0f2f5;
+            background: #ffffff;
             color: #1a2a3a;
             min-height: 100vh;
-            padding: 20px;
-        }
-
-        .page {
-            max-width: 500px;
-            margin: 0 auto;
-        }
-
-        .logo-header {
-            text-align: center;
-            margin-bottom: 32px;
-            padding: 20px 0;
-        }
-
-        .logo-header img {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 12px;
-        }
-
-        .logo-header h1 {
-            font-size: 1.5rem;
-            color: #4ade80;
-            font-weight: 700;
-        }
-
-        .logo-header p {
-            font-size: 0.85rem;
-            color: #8a9aaa;
-        }
-
-        .tab-container {
             display: flex;
-            gap: 8px;
-            background: #f0f2f5;
-            padding: 4px;
-            border-radius: 50px;
-            margin-bottom: 24px;
+            flex-direction: column;
+            overflow-x: hidden;
         }
 
-        .tab-btn {
+        /* HEADER FIXE */
+        .info-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: #4ade80;
+            border-radius: 0 0 30px 30px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .info-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: white;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .info-content i {
+            font-size: 1.1rem;
+        }
+
+        .info-content.error {
+            color: #fff0f0;
+        }
+
+        .info-content.success {
+            color: #e8f5e9;
+        }
+
+        /* CONTENU PRINCIPAL */
+        .main-container {
             flex: 1;
-            padding: 12px;
-            background: transparent;
-            border: none;
-            border-radius: 50px;
-            color: #8a9aaa;
-            font-weight: 600;
-            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 20px 80px 20px;
+            min-height: 100vh;
+            background: #ffffff;
+        }
+
+        .flip-container {
+            width: 100%;
+            max-width: 450px;
+            perspective: 1000px;
+        }
+
+        .flipper {
+            position: relative;
+            width: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .flipper.flip {
+            transform: rotateY(180deg);
+        }
+
+        .front, .back {
+            position: relative;
+            width: 100%;
+            backface-visibility: hidden;
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 28px 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e8ecf0;
+        }
+
+        .front {
+            transform: rotateY(0deg);
+        }
+
+        .back {
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform: rotateY(180deg);
+        }
+
+        /* Cartes */
+        .session-card {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 20px;
+            text-align: center;
+            border: 1px solid #e8ecf0;
             cursor: pointer;
             transition: all 0.2s;
         }
 
-        .tab-btn.active {
-            background: #4ade80;
-            color: white;
+        .session-card:hover {
+            border-color: #4ade80;
+            background: #f0fdf4;
         }
 
-        .form-card {
-            background: linear-gradient(135deg, #ffffff, #fafbfc);
-            border: 1px solid #e8ecf0;
-            border-radius: 24px;
-            padding: 28px 24px;
-            display: none;
-            box-shadow: 9px 9px 16px #a3b1c6, -9px -9px 16px #ffffff;
-        }
-
-        .form-card.active {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .form-card h2 {
-            font-size: 1.3rem;
-            margin-bottom: 24px;
+        .session-card .email {
+            font-weight: 600;
+            font-size: 0.85rem;
             color: #1a2a3a;
-            text-align: center;
+            margin-bottom: 8px;
+            word-break: break-all;
         }
+
+        .session-card .hint {
+            font-size: 0.7rem;
+            color: #8a9aaa;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 0.7rem;
+            color: #8a9aaa;
+            position: relative;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 40%;
+            height: 1px;
+            background: #e8ecf0;
+        }
+
+        .divider::before { left: 0; }
+        .divider::after { right: 0; }
 
         .input-group {
             position: relative;
@@ -120,24 +179,20 @@
 
         .input-group input {
             width: 100%;
-            padding: 14px 16px 14px 44px;
+            padding: 14px 50px 14px 44px;
             background: #fafbfc;
-            border: 1px solid #d0d5dd;
+            border: 1px solid #e8ecf0;
             border-radius: 30px;
             color: #1a2a3a;
             font-size: 0.95rem;
             outline: none;
-            transition: all 0.2s;
             font-family: 'DM Sans', sans-serif;
+            transition: all 0.2s;
         }
 
         .input-group input:focus {
             border-color: #4ade80;
-            box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.1);
-        }
-
-        .input-group input::placeholder {
-            color: #b0b8c5;
+            box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.1);
         }
 
         .toggle-password {
@@ -150,6 +205,71 @@
             color: #8a9aaa;
             cursor: pointer;
             font-size: 1rem;
+            padding: 5px;
+        }
+
+        .toggle-password:hover {
+            color: #4ade80;
+        }
+
+        /* Mot de passe oublié repliable */
+        .forgot-container {
+            margin-bottom: 20px;
+        }
+
+        .forgot-trigger {
+            text-align: right;
+            cursor: pointer;
+            font-size: 0.8rem;
+            color: #4ade80;
+            font-weight: 500;
+            display: inline-block;
+            width: 100%;
+            text-align: right;
+        }
+
+        .forgot-trigger:hover {
+            text-decoration: underline;
+        }
+
+        .forgot-panel {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 16px;
+            margin-top: 12px;
+            border: 1px solid #e8ecf0;
+            display: none;
+        }
+
+        .forgot-panel.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .forgot-panel .input-group {
+            margin-bottom: 12px;
+        }
+
+        .forgot-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-secondary {
+            flex: 1;
+            padding: 10px;
+            background: #f0f2f5;
+            border: 1px solid #e8ecf0;
+            border-radius: 30px;
+            color: #1a2a3a;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: #e8ecf0;
         }
 
         .btn-primary {
@@ -157,14 +277,14 @@
             padding: 14px;
             background: #4ade80;
             border: none;
-            border-radius: 40px;
+            border-radius: 30px;
             color: white;
             font-weight: 700;
             font-size: 1rem;
             cursor: pointer;
             transition: all 0.2s;
             font-family: 'DM Sans', sans-serif;
-            box-shadow: 5px 5px 10px #a3b1c6, -5px -5px 10px #ffffff;
+            margin-top: 8px;
         }
 
         .btn-primary:hover {
@@ -172,35 +292,7 @@
             transform: translateY(-2px);
         }
 
-        .form-footer {
-            text-align: right;
-            margin-bottom: 20px;
-        }
-
-        .forgot-link {
-            color: #4ade80;
-            text-decoration: none;
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
-
-        .forgot-link:hover {
-            text-decoration: underline;
-        }
-
-        .back-link {
-            display: block;
-            text-align: center;
-            margin-top: 16px;
-            color: #8a9aaa;
-            text-decoration: none;
-            font-size: 0.85rem;
-        }
-
-        .back-link:hover {
-            color: #4ade80;
-        }
-
+        /* Inscription étapes */
         .step-nav {
             display: flex;
             gap: 12px;
@@ -211,8 +303,8 @@
             flex: 1;
             padding: 12px;
             background: #f0f2f5;
-            border: 1px solid #d0d5dd;
-            border-radius: 40px;
+            border: 1px solid #e8ecf0;
+            border-radius: 30px;
             color: #1a2a3a;
             font-weight: 600;
             cursor: pointer;
@@ -226,13 +318,8 @@
             color: white;
         }
 
-        .step-btn.next:hover {
-            background: #22c55e;
-        }
-
-        .step-btn.prev:hover {
-            background: #e8ecf0;
-        }
+        .step-btn.prev:hover { background: #e8ecf0; }
+        .step-btn.next:hover { background: #22c55e; transform: translateY(-2px); }
 
         .step {
             display: none;
@@ -240,6 +327,12 @@
 
         .step.active {
             display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .strength-box {
@@ -250,35 +343,59 @@
             color: #ffaa44;
         }
 
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            background: #1a2a3a;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 60px;
-            font-size: 0.85rem;
-            opacity: 0;
-            transition: all 0.3s ease;
-            z-index: 1000;
-        }
-
-        .toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
-
-        .toast.success {
-            background: #4ade80;
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            font-weight: 700;
             color: #1a2a3a;
         }
 
-        .toast.error {
-            background: #ff4d4d;
+        /* FOOTER FIXE */
+        .nav-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: #ffffff;
+            border-radius: 30px 30px 0 0;
+            height: 60px;
+            border-top: 1px solid #e8ecf0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            padding: 0 20px;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.03);
         }
 
+        .nav-pill {
+            flex: 1;
+            padding: 10px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #f0f2f5;
+            color: #8a9aaa;
+            text-align: center;
+            border: none;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .nav-pill.active {
+            background: #4ade80;
+            color: white;
+        }
+
+        .nav-pill:hover:not(.active) {
+            background: #e8ecf0;
+            color: #1a2a3a;
+        }
+
+        /* MODALE LOADING */
         .modal-loading {
             position: fixed;
             top: 0;
@@ -286,16 +403,15 @@
             width: 100%;
             height: 100%;
             background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(4px);
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 1100;
+            z-index: 1000;
         }
 
         .modal-card {
             background: white;
-            border-radius: 28px;
+            border-radius: 24px;
             padding: 32px;
             text-align: center;
             border: 1px solid #e8ecf0;
@@ -315,420 +431,485 @@
             to { transform: rotate(360deg); }
         }
 
-        @media (max-width: 480px) {
-            body {
-                padding: 16px;
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: #1a2a3a;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1100;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast.success {
+            background: #4ade80;
+            color: #1a2a3a;
+        }
+
+        .toast.error {
+            background: #ff4d4d;
+        }
+
+        @media (max-width: 600px) {
+            .info-header, .nav-footer {
+                height: 56px;
             }
-            .form-card {
+            .main-container {
+                padding: 76px 16px 76px 16px;
+            }
+            .front, .back {
                 padding: 20px;
-            }
-            .logo-header h1 {
-                font-size: 1.3rem;
             }
         }
     </style>
 </head>
 <body>
 
-<div class="page">
-    <div class="logo-header">
-        <img src="assets/logo.png" alt="Megane Market" onerror="this.src='https://placehold.co/60x60?text=MM'">
-        <h1>Megane Market</h1>
-        <p>Votre marché de confiance</p>
+    <!-- HEADER FIXE - Messages info -->
+    <div class="info-header" id="infoHeader">
+        <div class="info-content" id="infoContent">
+            <i class="fas fa-info-circle"></i>
+            <span id="infoMessage">Bienvenue. Connectez-vous ou créez un compte.</span>
+        </div>
     </div>
 
-    <div class="tab-container">
-        <button class="tab-btn active" data-tab="login">Connexion</button>
-        <button class="tab-btn" data-tab="register">Inscription</button>
-    </div>
+    <!-- CONTENU PRINCIPAL -->
+    <div class="main-container">
+        <div class="flip-container">
+            <div class="flipper" id="flipper">
+                <!-- FACE AVANT : CONNEXION -->
+                <div class="front" id="frontPanel">
+                    <!-- Carte dernière session -->
+                    <div id="lastSessionCard" class="session-card" style="display: none;">
+                        <div class="email" id="lastSessionEmail"></div>
+                        <div class="hint">Cliquez pour utiliser ce compte</div>
+                    </div>
 
-    <!-- FORMULAIRE CONNEXION -->
-    <div id="loginForm" class="form-card active">
-        <h2>Connexion</h2>
-        <div class="input-group">
-            <i class="fas fa-envelope"></i>
-            <input type="email" id="loginEmail" placeholder="Email">
-        </div>
-        <div class="input-group">
-            <i class="fas fa-lock"></i>
-            <input type="password" id="loginPassword" placeholder="Mot de passe">
-            <button type="button" class="toggle-password" data-target="loginPassword">
-                <i class="fa-regular fa-eye"></i>
-            </button>
-        </div>
-        <div class="form-footer">
-            <a href="#" id="forgotPasswordLink" class="forgot-link">Mot de passe oublié ?</a>
-        </div>
-        <button id="doLoginBtn" class="btn-primary">Se connecter</button>
-    </div>
+                    <div id="loginDivider" class="divider" style="display: none;">ou</div>
 
-    <!-- FORMULAIRE INSCRIPTION (4 étapes) -->
-    <div id="registerForm" class="form-card">
-        <div id="step1" class="step active">
-            <h2>Email</h2>
-            <div class="input-group">
-                <i class="fas fa-envelope"></i>
-                <input type="email" id="regEmail" placeholder="Votre email">
+                    <!-- Carte connexion standard -->
+                    <div class="input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="loginEmail" placeholder="Email" autocomplete="email">
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="loginPassword" placeholder="Mot de passe" autocomplete="current-password">
+                        <button type="button" class="toggle-password" data-target="loginPassword">
+                            <i class="fa-regular fa-eye"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Mot de passe oublié repliable -->
+                    <div class="forgot-container">
+                        <div class="forgot-trigger" id="forgotTrigger">
+                            <i class="fas fa-question-circle"></i> Mot de passe oublié ?
+                        </div>
+                        <div id="forgotPanel" class="forgot-panel">
+                            <div class="input-group">
+                                <i class="fas fa-envelope"></i>
+                                <input type="email" id="forgotEmail" placeholder="Votre email">
+                            </div>
+                            <div class="forgot-buttons">
+                                <button id="cancelForgotBtn" class="btn-secondary">Annuler</button>
+                                <button id="sendResetBtn" class="btn-secondary" style="background:#4ade80; color:white; border:none;">Envoyer</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button id="doLoginBtn" class="btn-primary">Se connecter</button>
+                </div>
+
+                <!-- FACE ARRIÈRE : INSCRIPTION -->
+                <div class="back" id="backPanel">
+                    <div id="step1" class="step active">
+                        <h2>Email</h2>
+                        <div class="input-group">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="regEmail" placeholder="Votre email">
+                        </div>
+                    </div>
+                    <div id="step2" class="step">
+                        <h2>Mot de passe</h2>
+                        <div class="input-group">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="regPassword" placeholder="Mot de passe">
+                            <button type="button" class="toggle-password" data-target="regPassword">
+                                <i class="fa-regular fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="input-group">
+                            <i class="fas fa-check-circle"></i>
+                            <input type="password" id="regConfirmPassword" placeholder="Confirmer">
+                            <button type="button" class="toggle-password" data-target="regConfirmPassword">
+                                <i class="fa-regular fa-eye"></i>
+                            </button>
+                        </div>
+                        <div id="passwordStrength" class="strength-box"></div>
+                    </div>
+                    <div id="step3" class="step">
+                        <h2>Nom complet</h2>
+                        <div class="input-group">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="regFullName" placeholder="Votre nom">
+                        </div>
+                        <div style="font-size:0.7rem; color:#8a9aaa; text-align:center; margin-top:8px;">
+                            <i class="fas fa-sync-alt"></i> Nom suggéré : <span id="normalizedName">buyer-</span>
+                        </div>
+                    </div>
+                    <div class="step-nav">
+                        <button id="prevBtn" class="step-btn prev">Précédent</button>
+                        <button id="nextBtn" class="step-btn next">Suivant</button>
+                    </div>
+                </div>
             </div>
         </div>
-        <div id="step2" class="step">
-            <h2>Mot de passe</h2>
-            <div class="input-group">
-                <i class="fas fa-lock"></i>
-                <input type="password" id="regPassword" placeholder="Mot de passe">
-                <button type="button" class="toggle-password" data-target="regPassword">
-                    <i class="fa-regular fa-eye"></i>
-                </button>
-            </div>
-            <div class="input-group">
-                <i class="fas fa-check-circle"></i>
-                <input type="password" id="regConfirmPassword" placeholder="Confirmer">
-                <button type="button" class="toggle-password" data-target="regConfirmPassword">
-                    <i class="fa-regular fa-eye"></i>
-                </button>
-            </div>
-            <div id="passwordStrength" class="strength-box"></div>
-        </div>
-        <div id="step3" class="step">
-            <h2>Nom complet</h2>
-            <div class="input-group">
-                <i class="fas fa-user"></i>
-                <input type="text" id="regFullName" placeholder="Votre nom complet">
-            </div>
-        </div>
-        <div class="step-nav">
-            <button id="prevBtn" class="step-btn prev">Précédent</button>
-            <button id="nextBtn" class="step-btn next">Suivant</button>
+    </div>
+
+    <!-- FOOTER FIXE - Navigation -->
+    <div class="nav-footer">
+        <button id="loginTabBtn" class="nav-pill active">Connexion</button>
+        <button id="registerTabBtn" class="nav-pill">Inscription</button>
+    </div>
+
+    <!-- MODALE CHARGEMENT -->
+    <div id="loadingModal" class="modal-loading" style="display: none;">
+        <div class="modal-card">
+            <div class="spinner"></div>
+            <p id="modalStatus">Chargement...</p>
         </div>
     </div>
 
-    <!-- MOT DE PASSE OUBLIÉ -->
-    <div id="forgotForm" class="form-card">
-        <h2>Réinitialisation</h2>
-        <div class="input-group">
-            <i class="fas fa-envelope"></i>
-            <input type="email" id="forgotEmail" placeholder="Votre email">
-        </div>
-        <button id="resetPasswordBtn" class="btn-primary">Envoyer</button>
-        <a href="#" id="backToLoginLink" class="back-link">Retour à la connexion</a>
-    </div>
-</div>
+    <div id="toast" class="toast"></div>
 
-<div id="loadingModal" class="modal-loading" style="display: none;">
-    <div class="modal-card">
-        <div class="spinner"></div>
-        <p id="modalStatus">Chargement...</p>
-    </div>
-</div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        (function() {
+            const SUPABASE_URL = 'https://emcsigvlopntwbfkkjkh.supabase.co';
+            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtY3NpZ3Zsb3BudHdiZmtramtoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4ODE5MTgsImV4cCI6MjA5NDQ1NzkxOH0.YwYoV-azL3WEFtHoh4yoF7xTLrOwZILKCzJrGPsCs6I';
 
-<div id="toast" class="toast"></div>
+            const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-    (function() {
-        const SUPABASE_URL = 'https://emcsigvlopntwbfkkjkh.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtY3NpZ3Zsb3BudHdiZmtramtoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4ODE5MTgsImV4cCI6MjA5NDQ1NzkxOH0.YwYoV-azL3WEFtHoh4yoF7xTLrOwZILKCzJrGPsCs6I';
-
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-        let currentStep = 1;
-        let userEmail = '';
-        let userPassword = '';
-        let userFullName = '';
-
-        const loginTab = document.querySelector('[data-tab="login"]');
-        const registerTab = document.querySelector('[data-tab="register"]');
-        const loginForm = document.getElementById('loginForm');
-        const registerForm = document.getElementById('registerForm');
-        const forgotForm = document.getElementById('forgotForm');
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
-        const loadingModal = document.getElementById('loadingModal');
-        const toastEl = document.getElementById('toast');
-
-        function showToast(message, type = 'info') {
-            toastEl.textContent = message;
-            toastEl.className = `toast ${type} show`;
-            setTimeout(() => toastEl.classList.remove('show'), 3000);
-        }
-
-        function showLoading(msg = 'Chargement...') {
-            document.getElementById('modalStatus').textContent = msg;
-            loadingModal.style.display = 'flex';
-        }
-
-        function hideLoading() {
-            loadingModal.style.display = 'none';
-        }
-
-        function switchTab(tab) {
-            if (tab === 'login') {
-                loginTab.classList.add('active');
-                registerTab.classList.remove('active');
-                loginForm.classList.add('active');
-                registerForm.classList.remove('active');
-                forgotForm.classList.remove('active');
-                resetRegistration();
-            } else {
-                loginTab.classList.remove('active');
-                registerTab.classList.add('active');
-                loginForm.classList.remove('active');
-                registerForm.classList.add('active');
-                forgotForm.classList.remove('active');
-                resetRegistration();
-            }
-        }
-
-        function showStep(step) {
-            for (let i = 1; i <= 3; i++) {
-                const el = document.getElementById(`step${i}`);
-                if (el) el.classList.toggle('active', i === step);
-            }
-            if (prevBtn) prevBtn.style.display = step > 1 ? 'block' : 'none';
-            if (nextBtn) nextBtn.textContent = step === 3 ? 'Créer' : 'Suivant';
-        }
-
-        function checkPasswordStrength(password) {
-            const hasMinLength = password.length >= 6;
-            const strengthDiv = document.getElementById('passwordStrength');
+            // DOM elements
+            const flipper = document.getElementById('flipper');
+            const loginTabBtn = document.getElementById('loginTabBtn');
+            const registerTabBtn = document.getElementById('registerTabBtn');
+            const infoContentDiv = document.getElementById('infoContent');
+            const infoMessageSpan = document.getElementById('infoMessage');
+            const loadingModal = document.getElementById('loadingModal');
             
-            if (strengthDiv && password.length > 0) {
-                if (!hasMinLength) {
-                    strengthDiv.innerHTML = '❌ Minimum 6 caractères';
+            // Connexion
+            const loginEmail = document.getElementById('loginEmail');
+            const loginPassword = document.getElementById('loginPassword');
+            const doLoginBtn = document.getElementById('doLoginBtn');
+            const lastSessionCard = document.getElementById('lastSessionCard');
+            const lastSessionEmail = document.getElementById('lastSessionEmail');
+            const loginDivider = document.getElementById('loginDivider');
+            
+            // Mot de passe oublié
+            const forgotTrigger = document.getElementById('forgotTrigger');
+            const forgotPanel = document.getElementById('forgotPanel');
+            const forgotEmail = document.getElementById('forgotEmail');
+            const cancelForgotBtn = document.getElementById('cancelForgotBtn');
+            const sendResetBtn = document.getElementById('sendResetBtn');
+            
+            // Inscription
+            const regEmail = document.getElementById('regEmail');
+            const regPassword = document.getElementById('regPassword');
+            const regConfirmPassword = document.getElementById('regConfirmPassword');
+            const regFullName = document.getElementById('regFullName');
+            const normalizedNameSpan = document.getElementById('normalizedName');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            let currentStep = 1;
+            let userEmail = '';
+            let userPassword = '';
+            let userFullName = '';
+
+            // Vibration
+            function vibrate() {
+                if (navigator.vibrate) navigator.vibrate(200);
+            }
+
+            function setInfoMessage(message, type = 'info') {
+                infoMessageSpan.textContent = message;
+                infoContentDiv.className = 'info-content';
+                if (type === 'error') infoContentDiv.classList.add('error');
+                else if (type === 'success') infoContentDiv.classList.add('success');
+                if (type === 'error') vibrate();
+            }
+
+            function showLoading(msg = 'Chargement...') {
+                document.getElementById('modalStatus').textContent = msg;
+                loadingModal.style.display = 'flex';
+            }
+
+            function hideLoading() {
+                loadingModal.style.display = 'none';
+            }
+
+            function showToast(message, type = 'info') {
+                const toast = document.getElementById('toast');
+                toast.textContent = message;
+                toast.className = `toast ${type} show`;
+                setTimeout(() => toast.classList.remove('show'), 3000);
+            }
+
+            // Flip 3D
+            function flipToLogin() {
+                flipper.classList.remove('flip');
+                loginTabBtn.classList.add('active');
+                registerTabBtn.classList.remove('active');
+                setInfoMessage('Connectez-vous à votre compte.');
+                loadLastSession();
+                forgotPanel.classList.remove('show');
+            }
+
+            function flipToRegister() {
+                flipper.classList.add('flip');
+                registerTabBtn.classList.add('active');
+                loginTabBtn.classList.remove('active');
+                setInfoMessage('Créez votre compte. Étape 1/3 : Email');
+                resetRegistration();
+                forgotPanel.classList.remove('show');
+            }
+
+            // Dernière session
+            function saveLastSession(email) {
+                localStorage.setItem('megane_last_email', email);
+            }
+
+            function loadLastSession() {
+                const lastEmail = localStorage.getItem('megane_last_email');
+                if (lastEmail && lastEmail !== '') {
+                    lastSessionEmail.textContent = lastEmail;
+                    lastSessionCard.style.display = 'block';
+                    loginDivider.style.display = 'block';
                 } else {
-                    strengthDiv.innerHTML = '✅ Mot de passe valide';
+                    lastSessionCard.style.display = 'none';
+                    loginDivider.style.display = 'none';
                 }
-            } else if (strengthDiv) {
-                strengthDiv.innerHTML = '';
             }
-            return hasMinLength;
-        }
 
-        function nextStep() {
-            if (currentStep === 1) {
-                const email = document.getElementById('regEmail').value;
+            function useLastSession() {
+                const email = localStorage.getItem('megane_last_email');
+                if (email) {
+                    loginEmail.value = email;
+                    loginPassword.focus();
+                    setInfoMessage(`Email pré-rempli. Entrez votre mot de passe.`);
+                }
+            }
+
+            lastSessionCard.addEventListener('click', useLastSession);
+
+            // Connexion
+            async function login() {
+                const email = loginEmail.value.trim();
+                const password = loginPassword.value;
+                if (!email || !password) {
+                    setInfoMessage('Email et mot de passe requis.', 'error');
+                    return;
+                }
+                showLoading('Connexion...');
+                try {
+                    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+                    if (error) throw error;
+                    saveLastSession(email);
+                    setInfoMessage('Connexion réussie ! Redirection...', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'https://megane-market.online/index.html';
+                    }, 1000);
+                } catch (error) {
+                    setInfoMessage('Email ou mot de passe incorrect.', 'error');
+                    hideLoading();
+                }
+            }
+
+            doLoginBtn.addEventListener('click', login);
+            loginPassword.addEventListener('keypress', (e) => { if (e.key === 'Enter') login(); });
+
+            // Mot de passe oublié
+            forgotTrigger.addEventListener('click', () => {
+                forgotPanel.classList.toggle('show');
+                if (forgotPanel.classList.contains('show')) {
+                    forgotEmail.value = loginEmail.value || '';
+                    forgotEmail.focus();
+                }
+            });
+
+            cancelForgotBtn.addEventListener('click', () => {
+                forgotPanel.classList.remove('show');
+            });
+
+            sendResetBtn.addEventListener('click', async () => {
+                const email = forgotEmail.value.trim();
                 if (!email || !email.includes('@')) {
-                    showToast('Email invalide', 'error');
+                    setInfoMessage('Email valide requis.', 'error');
                     return;
                 }
-                userEmail = email;
-                showToast('Email valide', 'success');
-            }
-            else if (currentStep === 2) {
-                const pwd = document.getElementById('regPassword').value;
-                const confirm = document.getElementById('regConfirmPassword').value;
-                
-                if (!checkPasswordStrength(pwd)) {
-                    showToast('Mot de passe trop faible (6+ caractères)', 'error');
-                    return;
+                showLoading('Envoi...');
+                try {
+                    const { error } = await supabase.auth.resetPasswordForEmail(email);
+                    if (error) throw error;
+                    setInfoMessage('Lien envoyé ! Vérifiez votre boîte mail.', 'success');
+                    forgotPanel.classList.remove('show');
+                    showToast('✅ Email de réinitialisation envoyé !', 'success');
+                } catch (error) {
+                    setInfoMessage(`Erreur: ${error.message}`, 'error');
+                } finally {
+                    hideLoading();
                 }
-                if (pwd !== confirm) {
-                    showToast('Les mots de passe ne correspondent pas', 'error');
-                    return;
-                }
-                userPassword = pwd;
-                showToast('Mot de passe valide', 'success');
-            }
-            else if (currentStep === 3) {
-                const fullName = document.getElementById('regFullName').value;
-                if (!fullName.trim()) {
-                    showToast('Nom complet requis', 'error');
-                    return;
-                }
-                userFullName = fullName;
-                createAccount();
-                return;
+            });
+
+            // Inscription
+            function generateNormalizedName() {
+                const randomNum = Math.floor(Math.random() * 10000) + 1;
+                return `buyer-${randomNum}`;
             }
             
-            currentStep++;
-            showStep(currentStep);
-        }
+            function setNormalizedName() {
+                const generated = generateNormalizedName();
+                normalizedNameSpan.textContent = generated;
+                regFullName.value = generated;
+            }
 
-        function prevStep() {
-            if (currentStep > 1) {
-                currentStep--;
+            function showStep(step) {
+                for (let i = 1; i <= 3; i++) {
+                    const el = document.getElementById(`step${i}`);
+                    if (el) el.classList.toggle('active', i === step);
+                }
+                if (prevBtn) prevBtn.style.display = step > 1 ? 'block' : 'none';
+                if (nextBtn) nextBtn.textContent = step === 3 ? 'Créer' : 'Suivant';
+                
+                const stepMessages = {
+                    1: 'Étape 1/3 : Entrez votre email',
+                    2: 'Étape 2/3 : Choisissez un mot de passe sécurisé',
+                    3: 'Étape 3/3 : Votre nom'
+                };
+                setInfoMessage(stepMessages[step] || 'Inscription en cours');
+            }
+
+            function checkPasswordStrength(password) {
+                const hasMinLength = password.length >= 6;
+                const strengthDiv = document.getElementById('passwordStrength');
+                if (strengthDiv && password.length > 0) {
+                    strengthDiv.innerHTML = hasMinLength ? '✅ Mot de passe valide' : '❌ Minimum 6 caractères';
+                } else if (strengthDiv) {
+                    strengthDiv.innerHTML = '';
+                }
+                return hasMinLength;
+            }
+
+            function nextStep() {
+                if (currentStep === 1) {
+                    const email = regEmail.value.trim();
+                    if (!email || !email.includes('@')) {
+                        setInfoMessage('Email invalide.', 'error');
+                        return;
+                    }
+                    userEmail = email;
+                    setInfoMessage('Email valide !', 'success');
+                }
+                else if (currentStep === 2) {
+                    const pwd = regPassword.value;
+                    const confirm = regConfirmPassword.value;
+                    if (!checkPasswordStrength(pwd)) {
+                        setInfoMessage('Mot de passe trop faible (6+ caractères)', 'error');
+                        return;
+                    }
+                    if (pwd !== confirm) {
+                        setInfoMessage('Les mots de passe ne correspondent pas.', 'error');
+                        return;
+                    }
+                    userPassword = pwd;
+                    setInfoMessage('Mot de passe valide !', 'success');
+                }
+                else if (currentStep === 3) {
+                    const fullName = regFullName.value.trim();
+                    if (!fullName) {
+                        setInfoMessage('Nom complet requis.', 'error');
+                        return;
+                    }
+                    userFullName = fullName;
+                    createAccount();
+                    return;
+                }
+                currentStep++;
                 showStep(currentStep);
             }
-        }
 
-        function resetRegistration() {
-            currentStep = 1;
-            userEmail = '';
-            userPassword = '';
-            userFullName = '';
-            document.getElementById('regEmail').value = '';
-            document.getElementById('regPassword').value = '';
-            document.getElementById('regConfirmPassword').value = '';
-            document.getElementById('regFullName').value = '';
-            document.getElementById('passwordStrength').innerHTML = '';
-            showStep(1);
-        }
+            function prevStep() {
+                if (currentStep > 1) {
+                    currentStep--;
+                    showStep(currentStep);
+                }
+            }
 
-        async function createAccount() {
-            showLoading('Création du compte...');
-            
-            try {
-                const { data, error } = await supabase.auth.signUp({
-                    email: userEmail,
-                    password: userPassword,
-                    options: {
-                        data: { full_name: userFullName }
-                    }
-                });
-                
-                if (error) throw error;
-                
-                if (data.user) {
-                    // 1. Créer le profil dans buyers
-                    const { error: buyerError } = await supabase
-                        .from('buyers')
-                        .insert({
-                            id: data.user.id,
-                            email: userEmail,
-                            full_name: userFullName,
-                            created_at: new Date().toISOString()
-                        });
-                    
-                    if (buyerError) {
-                        console.error('Erreur création profil buyer:', buyerError);
-                        showToast('Erreur création profil', 'error');
-                    }
-                    
-                    // 2. Créer l'entrée dans email_verifications
-                    const token = crypto.randomUUID();
-                    const expiresAt = new Date();
-                    expiresAt.setHours(expiresAt.getHours() + 24);
-                    
-                    const { error: verifError } = await supabase
-                        .from('email_verifications')
-                        .insert({
+            function resetRegistration() {
+                currentStep = 1;
+                userEmail = '';
+                userPassword = '';
+                userFullName = '';
+                regEmail.value = '';
+                regPassword.value = '';
+                regConfirmPassword.value = '';
+                setNormalizedName();
+                showStep(1);
+            }
+
+            async function createAccount() {
+                showLoading('Création du compte...');
+                try {
+                    const { data, error } = await supabase.auth.signUp({
+                        email: userEmail,
+                        password: userPassword,
+                        options: { data: { full_name: userFullName } }
+                    });
+                    if (error) throw error;
+                    if (data.user) {
+                        const { error: buyerError } = await supabase
+                            .from('buyers')
+                            .insert({
+                                id: data.user.id,
+                                email: userEmail,
+                                full_name: userFullName,
+                                created_at: new Date().toISOString()
+                            });
+                        if (buyerError) console.error('Erreur création buyer:', buyerError);
+                        
+                        const token = crypto.randomUUID();
+                        const expiresAt = new Date();
+                        expiresAt.setHours(expiresAt.getHours() + 24);
+                        await supabase.from('email_verifications').insert({
                             user_id: data.user.id,
                             email: userEmail,
                             token: token,
                             expires_at: expiresAt.toISOString(),
                             is_verified: false
                         });
-                    
-                    if (verifError) {
-                        console.error('Erreur création email_verifications:', verifError);
                     }
-                }
-                
-                showToast('✅ Compte créé avec succès !', 'success');
-                
-                setTimeout(() => {
-                    hideLoading();
-                    switchTab('login');
-                    document.getElementById('loginEmail').value = userEmail;
-                    showToast('Connectez-vous pour commencer', 'success');
-                }, 1500);
-                
-            } catch (error) {
-                hideLoading();
-                showToast(`❌ Erreur: ${error.message}`, 'error');
-            }
-        }
-
-        async function login() {
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            
-            if (!email || !password) {
-                showToast('Email et mot de passe requis', 'error');
-                return;
-            }
-            
-            showLoading('Connexion...');
-            
-            try {
-                const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-                if (error) throw error;
-                
-                if (data.user) {
-                    // Vérifier si l'utilisateur existe dans buyers, sinon le créer
-                    const { data: buyer, error: buyerError } = await supabase
-                        .from('buyers')
-                        .select('id')
-                        .eq('id', data.user.id)
-                        .single();
-                    
-                    if (buyerError || !buyer) {
-                        // Créer le profil buyer manquant
-                        await supabase
-                            .from('buyers')
-                            .insert({
-                                id: data.user.id,
-                                email: data.user.email,
-                                full_name: data.user.user_metadata?.full_name || '',
-                                created_at: new Date().toISOString()
-                            });
-                    }
-                    
-                    // Vérifier si email est vérifié
-                    const { data: verifData, error: verifError } = await supabase
-                        .from('email_verifications')
-                        .select('is_verified')
-                        .eq('user_id', data.user.id)
-                        .single();
-                    
-                    if (verifError || !verifData || verifData.is_verified === false) {
-                        // Créer une entrée email_verifications si elle n'existe pas
-                        if (verifError && verifError.code === 'PGRST116') {
-                            const token = crypto.randomUUID();
-                            const expiresAt = new Date();
-                            expiresAt.setHours(expiresAt.getHours() + 24);
-                            await supabase
-                                .from('email_verifications')
-                                .insert({
-                                    user_id: data.user.id,
-                                    email: data.user.email,
-                                    token: token,
-                                    expires_at: expiresAt.toISOString(),
-                                    is_verified: false
-                                });
-                        }
-                        hideLoading();
-                        showToast('⚠️ Vérifiez votre email avant de continuer', 'error');
-                        window.location.href = 'https://megane-market.online/email-verify.html';
-                        return;
-                    }
-                    
-                    showToast('✅ Connexion réussie !', 'success');
+                    setInfoMessage('Compte créé ! Redirection vers vérification email...', 'success');
                     setTimeout(() => {
-                        hideLoading();
-                        window.location.href = 'https://megane-market.online/index.html';
-                    }, 1000);
-                }
-            } catch (error) {
-                hideLoading();
-                showToast('❌ Email ou mot de passe incorrect', 'error');
-            }
-        }
-
-        async function resetPassword() {
-            const email = document.getElementById('forgotEmail').value;
-            if (!email || !email.includes('@')) {
-                showToast('Email valide requis', 'error');
-                return;
-            }
-            
-            showLoading('Envoi...');
-            try {
-                const { error } = await supabase.auth.resetPasswordForEmail(email);
-                if (error) throw error;
-                showToast('✅ Lien envoyé ! Vérifiez votre boîte mail', 'success');
-                setTimeout(() => {
+                        window.location.href = 'https://megane-market.online/email-verify.html';
+                    }, 1500);
+                } catch (error) {
+                    setInfoMessage(`Erreur: ${error.message}`, 'error');
                     hideLoading();
-                    forgotForm.classList.remove('active');
-                    loginForm.classList.add('active');
-                }, 2000);
-            } catch (error) {
-                hideLoading();
-                showToast(`❌ Erreur: ${error.message}`, 'error');
+                }
             }
-        }
 
-        function initPasswordToggles() {
+            // Toggle password visibility
             document.querySelectorAll('.toggle-password').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const target = document.getElementById(btn.getAttribute('data-target'));
@@ -744,36 +925,20 @@
                     }
                 });
             });
-        }
 
-        function initEventListeners() {
-            loginTab.addEventListener('click', () => switchTab('login'));
-            registerTab.addEventListener('click', () => switchTab('register'));
+            // Écouteurs inscription
             prevBtn.addEventListener('click', prevStep);
             nextBtn.addEventListener('click', nextStep);
-            document.getElementById('doLoginBtn').addEventListener('click', login);
-            document.getElementById('resetPasswordBtn').addEventListener('click', resetPassword);
+            regPassword.addEventListener('input', () => checkPasswordStrength(regPassword.value));
             
-            document.getElementById('forgotPasswordLink').addEventListener('click', (e) => {
-                e.preventDefault();
-                loginForm.classList.remove('active');
-                forgotForm.classList.add('active');
-            });
+            // Écouteurs navigation
+            loginTabBtn.addEventListener('click', flipToLogin);
+            registerTabBtn.addEventListener('click', flipToRegister);
             
-            document.getElementById('backToLoginLink').addEventListener('click', (e) => {
-                e.preventDefault();
-                forgotForm.classList.remove('active');
-                loginForm.classList.add('active');
-            });
-        }
-
-        function init() {
-            initPasswordToggles();
-            initEventListeners();
-        }
-        
-        init();
-    })();
-</script>
+            // Initialisation
+            setNormalizedName();
+            loadLastSession();
+        })();
+    </script>
 </body>
 </html>

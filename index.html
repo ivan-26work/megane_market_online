@@ -6,24 +6,19 @@
     <title>Megane Market - Le marché en ligne de confiance en Côte d'Ivoire</title>
     <meta name="theme-color" content="#4ade80">
     <meta name="description" content="Megane Market : la plateforme de e-commerce en Côte d'Ivoire. Achetez et vendez des produits en toute sécurité. Découvrez des milliers d'offres de vendeurs vérifiés à Abidjan et dans toute la Côte d'Ivoire.">
-    <meta name="keywords" content="Megane Market, e-commerce, marché en ligne, Côte d'Ivoire, Abidjan, acheter en ligne, vendeurs ivoiriens, produits locaux, shopping en ligne CI">
+    <meta name="keywords" content="Megane Market, e-commerce, marché en ligne, Côte d'Ivoire, Abidjan, acheter en ligne, vendeurs ivoiriens, produits locaux">
     <meta name="author" content="Megane Market">
     <meta name="robots" content="index, follow">
-    <meta name="language" content="French">
-    <meta name="revisit-after" content="7 days">
-    <meta name="copyright" content="Megane Market">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Megane Market">
     
-    <!-- Open Graph / Facebook -->
+    <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://megane-market.online/">
     <meta property="og:title" content="Megane Market - Le marché en ligne de confiance en Côte d'Ivoire">
-    <meta property="og:description" content="Achetez et vendez en toute sécurité sur Megane Market. Des milliers de produits disponibles auprès de vendeurs vérifiés en Côte d'Ivoire.">
+    <meta property="og:description" content="Achetez et vendez en toute sécurité sur Megane Market.">
     <meta property="og:image" content="https://megane-market.online/assets/logo.png">
-    <meta property="og:image:width" content="512">
-    <meta property="og:image:height" content="512">
     <meta property="og:site_name" content="Megane Market">
     <meta property="og:locale" content="fr_FR">
     
@@ -33,7 +28,7 @@
     <meta name="twitter:description" content="Achetez et vendez en toute sécurité sur Megane Market en Côte d'Ivoire.">
     <meta name="twitter:image" content="https://megane-market.online/assets/logo.png">
     
-    <!-- Schema.org pour logo dans Google -->
+    <!-- Schema.org -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -41,24 +36,14 @@
       "name": "Megane Market",
       "url": "https://megane-market.online",
       "logo": "https://megane-market.online/assets/logo.png",
-      "image": "https://megane-market.online/assets/logo.png",
-      "description": "Megane Market - Le marché en ligne de confiance en Côte d'Ivoire",
-      "sameAs": [
-        "https://www.facebook.com/meganemarket",
-        "https://www.instagram.com/meganemarket"
-      ]
+      "description": "Megane Market - Le marché en ligne de confiance en Côte d'Ivoire"
     }
     </script>
     
-    <!-- Canonical URL -->
     <link rel="canonical" href="https://megane-market.online/">
-    
-    <!-- Favicon et manifeste -->
     <link rel="icon" type="image/png" href="assets/logo.png">
     <link rel="apple-touch-icon" href="assets/logo.png">
     <link rel="manifest" href="manifest.json">
-    
-    <!-- Polices -->
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -72,6 +57,7 @@
             min-height: 100vh;
             padding-bottom: 80px;
         }
+        /* HEADER NÉOMORPHIQUE VERT */
         .main-header {
             position: sticky;
             top: 16px;
@@ -103,25 +89,97 @@
         }
         .status-badge.complet { background: #4ade80; color: #1a2a3a; }
         .status-badge.incomplet { background: #ffaa44; color: #1a2a3a; }
-        .welcome-carousel { margin: 20px 16px; position: relative; }
-        .carousel-container { position: relative; overflow: hidden; border-radius: 24px; }
-        .carousel-track { display: flex; transition: transform 0.5s ease; }
-        .welcome-card {
-            flex: 0 0 100%;
+        
+        /* CARTE ACTION (toujours visible) */
+        .action-card {
             background: linear-gradient(135deg, #d4efdf, #b8e0c2);
             border-radius: 24px;
-            padding: 24px;
+            margin: 20px 16px;
+            padding: 32px 24px;
             text-align: center;
             box-shadow: 9px 9px 16px #9bb8a8, -9px -9px 16px #f0fff4;
         }
-        .welcome-icon { width: 70px; height: 70px; background: rgba(255,255,255,0.4); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 2rem; color: #2e7d32; }
-        .welcome-title { font-size: 1rem; font-weight: 800; color: #1a3a1a; margin-bottom: 8px; }
-        .welcome-message { font-size: 0.8rem; color: #2e7d32; line-height: 1.5; }
+        .action-icon { width: 70px; height: 70px; background: rgba(255,255,255,0.4); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+        .action-icon i { font-size: 2rem; color: #2e7d32; }
+        .action-card h3 { font-size: 1.1rem; margin-bottom: 8px; color: #1a3a1a; }
+        .action-card p { font-size: 0.85rem; color: #2e7d32; margin-bottom: 20px; }
+        .action-btn {
+            background: #4ade80;
+            border: none;
+            border-radius: 40px;
+            padding: 12px 28px;
+            color: #1a2a3a;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            box-shadow: 5px 5px 10px #9bb8a8, -5px -5px 10px #f0fff4;
+            transition: all 0.2s;
+        }
+        .action-btn:hover { background: #22c55e; transform: translateY(-2px); }
+        
+        /* CARROUSEL CATÉGORIES (compte vérifié) */
+        .categories-carousel {
+            margin: 20px 16px;
+            position: relative;
+            display: none;
+        }
+        .carousel-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 28px;
+        }
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+        .category-slide {
+            flex: 0 0 100%;
+            background: linear-gradient(135deg, #d4efdf, #b8e0c2);
+            border-radius: 28px;
+            padding: 20px;
+            box-shadow: 9px 9px 16px #9bb8a8, -9px -9px 16px #f0fff4;
+        }
+        .category-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #1a3a1a;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .category-products {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            scrollbar-width: thin;
+            padding-bottom: 8px;
+        }
+        .category-products::-webkit-scrollbar { height: 4px; }
+        .category-products::-webkit-scrollbar-track { background: #e8ecf0; border-radius: 4px; }
+        .category-products::-webkit-scrollbar-thumb { background: #4ade80; border-radius: 4px; }
+        .cat-product-card {
+            flex: 0 0 140px;
+            background: rgba(255,255,255,0.4);
+            border-radius: 20px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .cat-product-card:hover { transform: translateY(-4px); background: rgba(255,255,255,0.6); }
+        .cat-product-img { width: 100%; height: 120px; border-radius: 16px; object-fit: cover; margin-bottom: 8px; background: rgba(255,255,255,0.5); }
+        .cat-product-img-placeholder { width: 100%; height: 120px; border-radius: 16px; background: rgba(255,255,255,0.5); display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #2e7d32; margin-bottom: 8px; }
+        .cat-product-name { font-weight: 600; font-size: 0.7rem; color: #1a3a1a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .carousel-nav {
-            position: absolute; top: 50%; transform: translateY(-50%);
+            position: absolute; top: 40%; transform: translateY(-50%);
             background: rgba(0,0,0,0.5); border: none; border-radius: 50%;
             width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; color: white; font-size: 1rem; transition: all 0.2s; z-index: 10;
+            cursor: pointer; color: white; z-index: 10; transition: all 0.2s;
         }
         .carousel-nav:hover { background: #4ade80; }
         .carousel-nav.prev { left: 12px; }
@@ -129,6 +187,8 @@
         .carousel-dots { display: flex; justify-content: center; gap: 8px; padding: 16px 0 4px; }
         .carousel-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(46,125,50,0.3); cursor: pointer; }
         .carousel-dot.active { background: #4ade80; width: 24px; border-radius: 4px; }
+        
+        /* SECTION OFFRES DU MOMENT (produits boostés - carte premium) */
         .promo-section { margin: 24px 16px; }
         .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
         .section-header h2 { font-size: 1rem; font-weight: 700; color: #1a2a3a; display: flex; align-items: center; gap: 8px; }
@@ -164,53 +224,51 @@
         .promo-actions { display: flex; gap: 8px; margin-top: 4px; }
         .promo-btn {
             flex: 1; padding: 8px; border-radius: 40px; font-size: 0.7rem; font-weight: 600;
-            cursor: pointer; border: none; font-family: 'DM Sans', sans-serif;
-            background: #ffffff; color: #2e7d32; box-shadow: 5px 5px 10px #9bb8a8, -5px -5px 10px #f0fff4;
+            cursor: pointer; border: none; background: #ffffff; color: #2e7d32;
+            box-shadow: 5px 5px 10px #9bb8a8, -5px -5px 10px #f0fff4;
             transition: all 0.2s;
         }
         .promo-btn.cart { background: #4ade80; color: #1a2a3a; }
         .promo-btn:hover { transform: translateY(-2px); }
         .empty-promo { text-align: center; padding: 40px; color: #8a9aaa; background: #e0e5ec; border-radius: 20px; }
-        .action-card {
+        
+        /* CARTE MESSAGE AUTHENTIFICATION */
+        .auth-message-card {
             background: linear-gradient(135deg, #d4efdf, #b8e0c2);
             border-radius: 24px;
             margin: 20px 16px;
-            padding: 32px 24px;
+            padding: 24px;
             text-align: center;
             box-shadow: 9px 9px 16px #9bb8a8, -9px -9px 16px #f0fff4;
+            display: none;
         }
-        .action-btn {
+        .auth-message-card i { font-size: 2.5rem; color: #4ade80; margin-bottom: 12px; display: block; }
+        .auth-message-card h3 { font-size: 1rem; margin-bottom: 8px; color: #1a3a1a; }
+        .auth-message-card p { font-size: 0.8rem; color: #2e7d32; margin-bottom: 16px; }
+        .auth-message-btn {
             background: #4ade80;
             border: none;
             border-radius: 40px;
-            padding: 14px 28px;
+            padding: 10px 24px;
             color: #1a2a3a;
             font-weight: 700;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             cursor: pointer;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
             text-decoration: none;
+            display: inline-block;
             box-shadow: 5px 5px 10px #9bb8a8, -5px -5px 10px #f0fff4;
         }
-        .action-btn:hover { background: #22c55e; transform: translateY(-2px); }
+        
         @media (max-width: 600px) {
             .main-header { margin: 12px 12px 0 12px; padding: 0 16px; height: 60px; }
             .logo-img { width: 32px; height: 32px; }
             .header-center { font-size: 1rem; }
             .status-badge { padding: 5px 10px; font-size: 0.6rem; }
             .status-badge span { display: none; }
-            .welcome-card { padding: 20px; }
-            .welcome-icon { width: 55px; height: 55px; font-size: 1.5rem; }
-            .welcome-title { font-size: 0.9rem; }
-            .welcome-message { font-size: 0.75rem; }
-            .carousel-nav { width: 30px; height: 30px; font-size: 0.8rem; }
             .promo-product-card { flex: 0 0 280px; padding: 12px; gap: 12px; }
             .promo-img-wrap { width: 80px; height: 80px; }
-            .promo-name { font-size: 0.75rem; }
-            .action-card { padding: 24px 20px; }
+            .cat-product-card { flex: 0 0 120px; }
+            .cat-product-img, .cat-product-img-placeholder { height: 100px; }
         }
     </style>
 </head>
@@ -227,38 +285,35 @@
         </div>
     </header>
 
-    <!-- CARROUSEL BIENVENUE -->
-    <div class="welcome-carousel">
-        <div class="carousel-container">
-            <div class="carousel-track" id="welcomeTrack">
-                <div class="welcome-card">
-                    <div class="welcome-icon"><i class="fas fa-hand-peace"></i></div>
-                    <div class="welcome-title">Bienvenue sur Megane Market</div>
-                    <div class="welcome-message">La plateforme qui connecte acheteurs et vendeurs de confiance. Découvrez des produits variés et faites de bonnes affaires.</div>
-                </div>
-                <div class="welcome-card">
-                    <div class="welcome-icon"><i class="fas fa-shield-alt"></i></div>
-                    <div class="welcome-title">Achats sécurisés</div>
-                    <div class="welcome-message">Vos données sont protégées. Les échanges se font directement avec les vendeurs via WhatsApp. Megane Market ne stocke aucune information bancaire.</div>
-                </div>
-                <div class="welcome-card">
-                    <div class="welcome-icon"><i class="fas fa-smile"></i></div>
-                    <div class="welcome-title">100% satisfait ou remboursé</div>
-                    <div class="welcome-message">Nous travaillons avec des vendeurs vérifiés pour vous garantir une expérience d'achat sereine et fiable.</div>
-                </div>
-                <div class="welcome-card">
-                    <div class="welcome-icon"><i class="fas fa-handshake"></i></div>
-                    <div class="welcome-title">Rejoignez notre communauté</div>
-                    <div class="welcome-message">Des milliers d'acheteurs et vendeurs nous font déjà confiance. Créez votre compte et commencez dès maintenant.</div>
-                </div>
-            </div>
-            <button class="carousel-nav prev" id="welcomePrev"><i class="fas fa-chevron-left"></i></button>
-            <button class="carousel-nav next" id="welcomeNext"><i class="fas fa-chevron-right"></i></button>
-        </div>
-        <div class="carousel-dots" id="welcomeDots"></div>
+    <!-- CARTE ACTION (toujours visible) -->
+    <div class="action-card" id="actionCard">
+        <div class="action-icon"><i class="fas fa-store"></i></div>
+        <h3 id="actionTitle">Visiter le marché</h3>
+        <p id="actionText">Découvrez tous nos produits et vendeurs.</p>
+        <a href="market-new.html" class="action-btn" id="actionBtn">
+            <i class="fas fa-store"></i> Visiter le marché
+        </a>
     </div>
 
-    <!-- SECTION OFFRES DU MOMENT -->
+    <!-- CARTE MESSAGE AUTHENTIFICATION -->
+    <div id="authMessageCard" class="auth-message-card">
+        <i class="fas" id="authMessageIcon"></i>
+        <h3 id="authMessageTitle"></h3>
+        <p id="authMessageText"></p>
+        <a href="#" id="authMessageBtn" class="auth-message-btn"></a>
+    </div>
+
+    <!-- CARROUSEL CATÉGORIES (compte vérifié) -->
+    <div id="categoriesCarousel" class="categories-carousel">
+        <div class="carousel-container">
+            <div class="carousel-track" id="categoriesTrack"></div>
+            <button class="carousel-nav prev" id="carouselPrev"><i class="fas fa-chevron-left"></i></button>
+            <button class="carousel-nav next" id="carouselNext"><i class="fas fa-chevron-right"></i></button>
+        </div>
+        <div class="carousel-dots" id="carouselDots"></div>
+    </div>
+
+    <!-- SECTION OFFRES DU MOMENT (produits boostés) -->
     <div class="promo-section">
         <div class="section-header">
             <h2><i class="fas fa-fire"></i> Offres du moment</h2>
@@ -270,18 +325,6 @@
         </div>
     </div>
 
-    <!-- CARD ACTION (bouton dynamique) -->
-    <div class="action-card" id="actionCard">
-        <div class="action-icon" style="width:70px; height:70px; background:rgba(255,255,255,0.4); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 16px;">
-            <i class="fas fa-store" style="font-size:2rem; color:#2e7d32;"></i>
-        </div>
-        <h3 id="actionTitle" style="font-size:1.1rem; margin-bottom:8px;">Visiter le marché</h3>
-        <p id="actionText" style="font-size:0.85rem; color:#2e7d32; margin-bottom:20px;">Découvrez tous nos produits et vendeurs.</p>
-        <a href="market-new.html" class="action-btn" id="actionBtn">
-            <i class="fas fa-store"></i> Visiter le marché
-        </a>
-    </div>
-
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         (function() {
@@ -290,53 +333,38 @@
 
             const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             const statusBtn = document.getElementById('statusBtn');
-            const actionTitle = document.getElementById('actionTitle');
-            const actionText = document.getElementById('actionText');
-            const actionBtn = document.getElementById('actionBtn');
-            const welcomeTrack = document.getElementById('welcomeTrack');
-            const welcomePrev = document.getElementById('welcomePrev');
-            const welcomeNext = document.getElementById('welcomeNext');
-            const welcomeDots = document.getElementById('welcomeDots');
+            const authMessageCard = document.getElementById('authMessageCard');
+            const authMessageIcon = document.getElementById('authMessageIcon');
+            const authMessageTitle = document.getElementById('authMessageTitle');
+            const authMessageText = document.getElementById('authMessageText');
+            const authMessageBtn = document.getElementById('authMessageBtn');
+            const categoriesCarousel = document.getElementById('categoriesCarousel');
+            const categoriesTrack = document.getElementById('categoriesTrack');
+            const carouselPrev = document.getElementById('carouselPrev');
+            const carouselNext = document.getElementById('carouselNext');
+            const carouselDots = document.getElementById('carouselDots');
             const promoTrack = document.getElementById('promoTrack');
 
-            let currentSlide = 0;
+            let allProducts = [];
+            let categoriesList = [];
             let carouselInterval = null;
-            const totalSlides = 4;
-
-            function initCarousel() {
-                if (!welcomeTrack) return;
-                welcomeDots.innerHTML = '';
-                for (let i = 0; i < totalSlides; i++) {
-                    const dot = document.createElement('div');
-                    dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
-                    dot.addEventListener('click', () => goToSlide(i));
-                    welcomeDots.appendChild(dot);
-                }
-                function goToSlide(index) {
-                    currentSlide = (index + totalSlides) % totalSlides;
-                    welcomeTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
-                    document.querySelectorAll('.carousel-dot').forEach((dot, i) => dot.classList.toggle('active', i === currentSlide));
-                }
-                function nextSlide() { goToSlide(currentSlide + 1); resetTimer(); }
-                function prevSlide() { goToSlide(currentSlide - 1); resetTimer(); }
-                function resetTimer() { if (carouselInterval) clearInterval(carouselInterval); if (totalSlides > 1) carouselInterval = setInterval(nextSlide, 5000); }
-                welcomePrev.addEventListener('click', prevSlide);
-                welcomeNext.addEventListener('click', nextSlide);
-                resetTimer();
-            }
-
-            function updateStatusBadge(isComplete) {
-                if (isComplete) {
-                    statusBtn.className = 'status-badge complet';
-                    statusBtn.innerHTML = '<i class="fas fa-check-circle"></i> <span>Compte complet</span>';
-                } else {
-                    statusBtn.className = 'status-badge incomplet';
-                    statusBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> <span>Compte incomplet</span>';
-                }
-            }
+            let currentSlide = 0;
+            let productBoosts = {};
+            let currentUserId = null;
+            let currentUserVerified = false;
 
             function formatPrice(price) { return new Intl.NumberFormat('fr-FR').format(price); }
             function escapeHtml(text) { if (!text) return ''; const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+            function updateStatusBadge(isComplete) {
+                if (isComplete) { statusBtn.className = 'status-badge complet'; statusBtn.innerHTML = '<i class="fas fa-check-circle"></i> <span>Compte complet</span>'; }
+                else { statusBtn.className = 'status-badge incomplet'; statusBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> <span>Compte incomplet</span>'; }
+            }
+
+            async function loadProductBoosts() {
+                const { data } = await supabase.from('product_boosts').select('product_id, discount_percent').eq('is_active', true);
+                productBoosts = {};
+                for (const boost of data || []) { if (boost.discount_percent > 0) productBoosts[boost.product_id] = boost.discount_percent; }
+            }
 
             async function loadPromoProducts() {
                 const { data: boosts } = await supabase.from('product_boosts').select('*, products!inner(*)').eq('is_active', true).eq('products.active', true);
@@ -357,22 +385,8 @@
                     const discountedPrice = Math.round(originalPrice * (1 - discount / 100));
                     const imageUrl = product.images && product.images[0] ? product.images[0] : null;
                     return `<div class="promo-product-card" data-id="${product.id}">
-                        <div class="promo-img-wrap">
-                            ${imageUrl ? `<img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(product.name)}" onerror="this.src=''">` : `<div class="image-placeholder"><i class="fas fa-image"></i></div>`}
-                            <div class="promo-badge">-${discount}%</div>
-                        </div>
-                        <div class="promo-info">
-                            <div class="promo-name">${escapeHtml(product.name)}</div>
-                            <div class="promo-shop"><i class="fas fa-store"></i> ${escapeHtml(product.market_name)}</div>
-                            <div class="promo-price-row">
-                                <span class="promo-original-price">${formatPrice(originalPrice)} FCFA</span>
-                                <span class="promo-current-price">${formatPrice(discountedPrice)} FCFA</span>
-                            </div>
-                            <div class="promo-actions">
-                                <button class="promo-btn view">Voir</button>
-                                <button class="promo-btn cart">Ajouter</button>
-                            </div>
-                        </div>
+                        <div class="promo-img-wrap">${imageUrl ? `<img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(product.name)}" onerror="this.src=''">` : `<div class="image-placeholder"><i class="fas fa-image"></i></div>`}<div class="promo-badge">-${discount}%</div></div>
+                        <div class="promo-info"><div class="promo-name">${escapeHtml(product.name)}</div><div class="promo-shop"><i class="fas fa-store"></i> ${escapeHtml(product.market_name)}</div><div class="promo-price-row"><span class="promo-original-price">${formatPrice(originalPrice)} FCFA</span><span class="promo-current-price">${formatPrice(discountedPrice)} FCFA</span></div><div class="promo-actions"><button class="promo-btn view">Voir</button><button class="promo-btn cart">Ajouter</button></div></div>
                     </div>`;
                 }).join('');
                 document.querySelectorAll('.promo-product-card').forEach(card => {
@@ -381,6 +395,92 @@
                     card.querySelector('.cart')?.addEventListener('click', (e) => { e.stopPropagation(); showToast('Connectez-vous pour ajouter au panier', 'error'); });
                     card.addEventListener('click', (e) => { if (e.target.classList.contains('promo-btn')) return; if (productId) window.location.href = `viewproduct.html?id=${productId}`; });
                 });
+            }
+
+            async function loadAllProducts() {
+                const { data: products } = await supabase.from('products').select('*').eq('active', true);
+                allProducts = products || [];
+                const categoriesMap = new Map();
+                for (const product of allProducts) {
+                    if (product.category && product.category.trim()) { categoriesMap.set(product.category.trim(), (categoriesMap.get(product.category.trim()) || 0) + 1); }
+                }
+                categoriesList = Array.from(categoriesMap.keys()).sort();
+            }
+
+            function getProductsByCategory(category, limit = 3) {
+                return allProducts.filter(p => p.category === category).slice(0, limit);
+            }
+
+            function initCarousel() {
+                if (!categoriesTrack || categoriesList.length === 0) return;
+                const totalSlides = categoriesList.length;
+                carouselDots.innerHTML = categoriesList.map((_, i) => `<div class="carousel-dot ${i === 0 ? 'active' : ''}" data-index="${i}"></div>`).join('');
+                function goToSlide(index) {
+                    currentSlide = (index + totalSlides) % totalSlides;
+                    categoriesTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
+                    document.querySelectorAll('.carousel-dot').forEach((dot, i) => dot.classList.toggle('active', i === currentSlide));
+                }
+                function nextSlide() { goToSlide(currentSlide + 1); resetTimer(); }
+                function prevSlide() { goToSlide(currentSlide - 1); resetTimer(); }
+                function resetTimer() { if (carouselInterval) clearInterval(carouselInterval); if (totalSlides > 1) carouselInterval = setInterval(nextSlide, 6000); }
+                carouselPrev.addEventListener('click', prevSlide);
+                carouselNext.addEventListener('click', nextSlide);
+                document.querySelectorAll('.carousel-dot').forEach(dot => dot.addEventListener('click', () => { goToSlide(parseInt(dot.dataset.index)); resetTimer(); }));
+                resetTimer();
+            }
+
+            function renderCategoriesCarousel() {
+                if (categoriesList.length === 0) return;
+                categoriesTrack.innerHTML = categoriesList.map(category => {
+                    const products = getProductsByCategory(category, 3);
+                    return `<div class="category-slide"><div class="category-title"><i class="fas fa-tag"></i> ${escapeHtml(category)}</div><div class="category-products">${products.map(p => {
+                        const imageUrl = p.images && p.images[0] ? p.images[0] : null;
+                        return `<div class="cat-product-card" data-id="${p.id}">${imageUrl ? `<img src="${escapeHtml(imageUrl)}" class="cat-product-img" onerror="this.src=''">` : `<div class="cat-product-img-placeholder"><i class="fas fa-image"></i></div>`}<div class="cat-product-name">${escapeHtml(p.name)}</div></div>`;
+                    }).join('')}</div></div>`;
+                }).join('');
+                document.querySelectorAll('.cat-product-card').forEach(card => {
+                    card.addEventListener('click', () => { const id = card.getAttribute('data-id'); if (id) window.location.href = `viewproduct.html?id=${id}`; });
+                });
+                initCarousel();
+            }
+
+            function showAuthMessage(icon, title, message, btnText, btnLink) {
+                authMessageIcon.className = `fas ${icon}`;
+                authMessageTitle.textContent = title;
+                authMessageText.textContent = message;
+                authMessageBtn.textContent = btnText;
+                authMessageBtn.href = btnLink;
+                authMessageCard.style.display = 'block';
+                categoriesCarousel.style.display = 'none';
+            }
+
+            function hideAuthMessage() {
+                authMessageCard.style.display = 'none';
+                categoriesCarousel.style.display = 'block';
+            }
+
+            async function checkSession() {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (!session) {
+                    currentUserId = null;
+                    currentUserVerified = false;
+                    updateStatusBadge(false);
+                    showAuthMessage('fa-sign-in-alt', 'Connectez-vous', 'Connectez-vous pour profiter de toutes les fonctionnalités de Megane Market.', 'Se connecter', 'login.html');
+                    return false;
+                }
+                currentUserId = session.user.id;
+                const { data: verifData } = await supabase.from('email_verifications').select('is_verified').eq('user_id', currentUserId).single();
+                currentUserVerified = verifData?.is_verified === true;
+                if (!currentUserVerified) {
+                    updateStatusBadge(false);
+                    showAuthMessage('fa-envelope', 'Email non vérifié', 'Merci de vérifier votre email pour confirmer que c\'est le vôtre et recevoir des notifications.', 'Vérifier mon email', 'email-verify.html');
+                    return false;
+                }
+                const { data: buyer } = await supabase.from('buyers').select('full_name, phone, city').eq('id', currentUserId).single();
+                const isComplete = !!(buyer?.full_name && buyer.full_name.trim() !== '' && buyer?.phone && buyer.phone.trim() !== '' && buyer?.city && buyer.city.trim() !== '');
+                updateStatusBadge(isComplete);
+                hideAuthMessage();
+                return true;
             }
 
             function showToast(message, type = 'info') {
@@ -394,39 +494,13 @@
                 setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3000);
             }
 
-            async function updateActionButton() {
-                const { data: { session } } = await supabase.auth.getSession();
-                if (!session) {
-                    actionTitle.textContent = 'Visiter le marché';
-                    actionText.textContent = 'Découvrez tous nos produits et vendeurs sans obligation de connexion.';
-                    actionBtn.href = 'market-new.html';
-                    actionBtn.innerHTML = '<i class="fas fa-store"></i> Visiter le marché';
-                    updateStatusBadge(false);
-                    return;
-                }
-                const { data: verifData } = await supabase.from('email_verifications').select('is_verified').eq('user_id', session.user.id).single();
-                const isVerified = verifData?.is_verified === true;
-                if (!isVerified) {
-                    actionTitle.textContent = 'Vérifiez votre email';
-                    actionText.textContent = 'Pour accéder au marché, veuillez d\'abord vérifier votre adresse email.';
-                    actionBtn.href = 'email-verify.html';
-                    actionBtn.innerHTML = '<i class="fas fa-envelope"></i> Vérifier mon email';
-                    updateStatusBadge(false);
-                    return;
-                }
-                const { data: buyer } = await supabase.from('buyers').select('full_name, phone, city').eq('id', session.user.id).single();
-                const isComplete = !!(buyer?.full_name && buyer.full_name.trim() !== '' && buyer?.phone && buyer.phone.trim() !== '' && buyer?.city && buyer.city.trim() !== '');
-                updateStatusBadge(isComplete);
-                actionTitle.textContent = 'Commencer mes achats';
-                actionText.textContent = isComplete ? 'Vous êtes prêt à acheter sur Megane Market.' : 'Complétez votre profil pour une meilleure expérience.';
-                actionBtn.href = 'market-new.html';
-                actionBtn.innerHTML = '<i class="fas fa-store"></i> Commencer mes achats';
-            }
-
             async function init() {
-                initCarousel();
+                await loadProductBoosts();
+                await loadAllProducts();
                 await loadPromoProducts();
-                await updateActionButton();
+                const isVerified = await checkSession();
+                if (isVerified && categoriesList.length > 0) { renderCategoriesCarousel(); }
+                else if (isVerified && categoriesList.length === 0) { categoriesCarousel.style.display = 'none'; }
             }
             init();
         })();

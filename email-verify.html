@@ -313,7 +313,7 @@
             emailjs.init({ publicKey: "4TkvKRRbn9qDSIjG3" });
             
             const SERVICE_ID = "Megane_market";
-            const TEMPLATE_ID = "template_ugz1f33";
+            const TEMPLATE_ID = "template_hh5v53r";
 
             const iconArea = document.getElementById('iconArea');
             const titleEl = document.getElementById('title');
@@ -445,13 +445,7 @@
                     await emailjs.send(SERVICE_ID, TEMPLATE_ID, {
                         to_email: userEmail,
                         to_name: userEmail.split('@')[0],
-                        message: `Bienvenue sur Megane Market !\n\nPour activer votre compte et accéder à toutes les fonctionnalités, veuillez vérifier votre adresse email en cliquant sur le lien ci-dessous :\n\n${verificationLink}\n\nCe lien expire dans 24 heures.\n\nÀ bientôt sur Megane Market !`,
-                        subject: "Vérifiez votre email - Megane Market",
-                        from_name: "Megane Market",
-                        reply_to: "no-reply@megane-market.online",
-                        image_url: "https://emcsigvlopntwbfkkjkh.supabase.co/storage/v1/object/public/buyers-avatars/20260518_150104.jpg",
-                        button_url: verificationLink,
-                        button_text: "Vérifier mon email"
+                        verification_link: verificationLink
                     });
                     
                     showToast('Email de vérification envoyé ! Vérifiez votre boîte', 'success');
